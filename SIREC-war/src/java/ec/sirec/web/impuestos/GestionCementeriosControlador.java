@@ -218,7 +218,7 @@ public class GestionCementeriosControlador extends BaseControlador {
         CatalogoDetalle objCatDetAux = new CatalogoDetalle();
         try {
             objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod("NICHO", "N");
-            if (catDetUbicAtaud.getCatdetCodigo() == objCatDetAux.getCatdetCodigo()) {
+            if (catDetUbicAtaud.getCatdetCodigo().intValue() == objCatDetAux.getCatdetCodigo()) {
                 verNicho = 1;
                 verSuelo = 0;
             } else {
