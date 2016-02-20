@@ -46,6 +46,7 @@ public class CatastroPredialAlcabalaValoracionServicio {
     }
     
     public List<Object[]> listarAlcabalaEmitidaXAño(int anio) {
+        
         return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidas(anio);
     }
 }
