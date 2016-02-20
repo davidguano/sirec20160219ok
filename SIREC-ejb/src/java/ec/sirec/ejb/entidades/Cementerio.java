@@ -113,8 +113,9 @@ public class Cementerio implements Serializable {
     @JoinColumn(name = "catdet_parroquia", referencedColumnName = "catdet_codigo")
     @ManyToOne(optional = false)
     private CatalogoDetalle catdetParroquia;
-    @OneToMany(mappedBy = "cemCodigo")
-    private List<CementerioHistorialCambios> cementerioHistorialCambiosList;
+    @JoinColumn(name = "pro_occiso_ci", referencedColumnName = "pro_ci")
+    @ManyToOne(optional = false)
+    private Propietario proOccisoCi;
 
     public Cementerio() {
     }
@@ -274,14 +275,7 @@ public class Cementerio implements Serializable {
         return cementerioArchivoList;
     }
 
-    public List<CementerioHistorialCambios> getCementerioHistorialCambiosList() {
-        return cementerioHistorialCambiosList;
-    }
-
-    public void setCementerioHistorialCambiosList(List<CementerioHistorialCambios> cementerioHistorialCambiosList) {
-        this.cementerioHistorialCambiosList = cementerioHistorialCambiosList;
-    }
-
+   
     public void setCementerioArchivoList(List<CementerioArchivo> cementerioArchivoList) {
         this.cementerioArchivoList = cementerioArchivoList;
     }
@@ -309,6 +303,16 @@ public class Cementerio implements Serializable {
     public void setCatdetParroquia(CatalogoDetalle catdetParroquia) {
         this.catdetParroquia = catdetParroquia;
     }
+
+    public Propietario getProOccisoCi() {
+        return proOccisoCi;
+    }
+
+    public void setProOccisoCi(Propietario proOccisoCi) {
+        this.proOccisoCi = proOccisoCi;
+    }
+    
+    
 
     @Override
     public int hashCode() {

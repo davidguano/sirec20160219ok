@@ -38,6 +38,8 @@ public class Servicios implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "ser_valor")
     private BigDecimal serValor;
+    @Column(name = "ser_parametro1")
+    private Integer serParametro1;
     @Column(name = "ser_subtotal")
     private BigDecimal serSubtotal;
     @Column(name = "ser_descuento")
@@ -132,6 +134,14 @@ public class Servicios implements Serializable {
 
     public void setSerActivo(Boolean serActivo) {
         this.serActivo = serActivo;
+    }
+
+    public Integer getSerParametro1() {
+        return serParametro1;
+    }
+
+    public void setSerParametro1(Integer serParametro1) {
+        this.serParametro1 = serParametro1;
     }
     
     
