@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <center>
+        <h:panelGrid id="panelObraProyecto" width="1000" columns="1" >                                                 
+            <p:panel  style="background: #C4D770;" header="OBRA - PROYECTO" >   
+                <center>
+                    <h:panelGrid id="panelIngreso" columns="3">
+
+                        <p:outputLabel value="Descripción"/>
+                        <p:inputTextarea id="obDes" value="#{gestionContribucionControlador.obraProyectoActual.obrDescripcion}"   
+                                         rows="3" required="true" requiredMessage="Se nesecita un valor: Descripcion"
+                                         onkeyup="value = value.toUpperCase();"
+                                         style="width:300px ; font-family: Arial; font-size: 15px;"/>                                                                                                               
+
+                        <p:message  for="obDes" display="icon"/>
+
+                        <p:outputLabel value="#{txt.parroquia}"/>
+
+                        <p:selectOneMenu id="obParroq" value="#{gestionContribucionControlador.obraProyectoActual.catdetParroquia}" 
+                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                            <f:selectItem itemLabel="Seleccione Parroquia..." itemValue="" /> 
+                            <f:selectItems var="tipo" 
+                                           value="#{gestionContribucionControlador.listaParroquias}" 
+                                           itemLabel="#{tipo.catdetTexto}" 
+                                           itemValue="#{tipo}"/> 
+                            <p:column width="200" style="white-space: normal">  
+                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                            </p:column>                                            
+                        </p:selectOneMenu>
+                        <p:message  for="obParroq" display="icon"/>
+
+                        <p:outputLabel value="Estado:"/>
+
+                        <p:selectOneMenu id="obEst" value="#{gestionContribucionControlador.obraProyectoActual.catdetEstado}" 
+                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                            <f:selectItem itemLabel="Seleccione... " itemValue="" /> 
+                            <f:selectItems var="tipo" 
+                                           value="#{gestionContribucionControlador.listaEstado}" 
+                                           itemLabel="#{tipo.catdetTexto}" 
+                                           itemValue="#{tipo}"/> 
+                            <p:column width="200" style="white-space: normal">  
+                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                            </p:column>                                            
+                        </p:selectOneMenu>
+                        <p:message  for="obEst" display="icon"/>
+
+                        <p:outputLabel value="Ejecución:"/>
+                        <p:selectOneMenu id="obEje" value="#{gestionContribucionControlador.obraProyectoActual.catdetEjecucion}" 
+                                         panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px"
+                                         >
+                            <f:selectItem itemLabel="Seleccione... " itemValue="#{null}" /> 
+                            <f:selectItems var="tipo" 
+                                           value="#{gestionContribucionControlador.listaEjecucion}" 
+                                           itemLabel="#{tipo.catdetTexto}" 
+                                           itemValue="#{tipo}"/> 
+                            <p:column width="200" style="white-space: normal">  
+                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                            </p:column>
+                            <p:ajax event="change" listener="#{gestionContribucionControlador.listarContratistas()}"
+                                    process="@this" update=":frmContribucion:tabContribucion:panelIngreso2" async="true" global="false" />  
+                        </p:selectOneMenu>                                       
+                        <p:message  for="obEje" display="icon"/>
+
+                    </h:panelGrid>  
+
+                    <h:panelGrid id="panelIngreso2" columns="3"> 
+                        <p:outputLabel id="obEtiEje" value="#{gestionContribucionControlador.etiquedaEje}" 
+                                       rendered="#{gestionContribucionControlador.codEje=='E' or gestionContribucionControlador.codEje=='C'}" />
+
+                        <p:selectOneMenu id="obEmp" value="#{gestionContribucionControlador.obraProyectoActual.conCodigo}" 
+                                         panelStyle="width:180px" converter="#{constructoraConverter}" var="t" style="width:220px"
+                                         rendered="#{gestionContribucionControlador.codEje=='E' or gestionContribucionControlador.codEje=='C'}"                                                         
+                                         >
+                            <f:selectItem itemLabel="Seleccione... " itemValue="#{null}" /> 
+                            <f:selectItems var="tipo" 
+                                           value="#{gestionContribucionControlador.listaConstructora}" 
+                                           itemLabel="#{tipo.conApellidos} #{tipo.conNombres}" 
+                                           itemValue="#{tipo}"/> 
+                            <p:column width="200" style="white-space: normal">  
+                                <h:outputText escape="false" value="#{t.conApellidos} #{t.conNombres}" style="font-size: 10px"/> 
+                            </p:column>                                            
+                        </p:selectOneMenu>
+                        <p:message  for="obEmp" display="icon" rendered="#{gestionContribucionControlador.codEje=='E' or gestionContribucionControlador.codEje=='C'}"/>
+
+                        <p:outputLabel id="nCont" value="No. de contrato" rendered="#{gestionContribucionControlador.codEje=='C'}"/>                                                                                                                                                                                                          
+                        <p:inputText id="obNum" value="#{gestionContribucionControlador.obraProyectoActual.obrNumContrato}"
+                                     onkeypress="return isNumberKey(event)" required="true" requiredMessage="Se nesecita un valor: No. de contrato"
+                                     style="font-family: Arial; font-size: 15px;"
+                                     rendered="#{gestionContribucionControlador.codEje=='C'}" >                                             
+                        </p:inputText>
+                        <p:message  for="obNum" display="icon" rendered="#{gestionContribucionControlador.codEje=='C'}"/>
+
+                        <f:verbatim rendered="#{gestionContribucionControlador.obraProyectoActual.catdetEjecucion==null}"/>
+
+                        <p:outputLabel value="Fecha Inicio:" style="font-size: #{txt.font_size}"/>                                                                                                  
+                        <p:calendar id="obFini" value="#{gestionContribucionControlador.obraProyectoActual.obrFechaInicio}" pattern="dd-MM-yyyy" 
+                                    required="true" requiredMessage="Se nesecita un valor: Fecha Inicio"
+                                    style="font-family: Arial; font-size: 15px;"/>
+                        <p:message  for="obNum" display="icon"/>
+
+                        <p:outputLabel value="Fecha Fin:" style="font-size: #{txt.font_size}"/>                                                                                                  
+                        <p:calendar id="obFFin" value="#{gestionContribucionControlador.obraProyectoActual.obrFechaFin}" pattern="dd-MM-yyyy" 
+                                    required="true" requiredMessage="Se nesecita un valor: Fecha Fin"
+                                    style="font-family: Arial; font-size: 15px;"/>
+                        <p:message  for="obFFin" display="icon"/>
+
+
+                    </h:panelGrid>                                                                                                       
+
+                    <p:panel  style="background: #C4D770;" header="DISTRIBUCION DE OBRA" >
+
+                        <h:panelGrid id="panelDist" columns="3">                                                                                                                                                                                                                     
+                            <p:outputLabel value="OBRAS VIALES:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obVia" value="#{gestionContribucionControlador.obraProyectoActual.obrViales}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: OBRAS VIALES"
+                                         style="font-family: Arial; font-size: 15px;"
+                                         >
+                                <p:ajax event="keyup" listener="#{gestionContribucionControlador.sumarDistribucion()}"
+                                        process="@this" update=":frmContribucion:tabContribucion:obTotal" async="true" global="false" />  
+                            </p:inputText>
+                            <p:message  for="obVia" display="icon"/>
+
+                            <p:outputLabel value="ACERAS / BORDILLOS:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obAce" value="#{gestionContribucionControlador.obraProyectoActual.obrAcerasBordillos}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: ACERAS / BORDILLOS"
+                                         style="font-family: Arial; font-size: 15px;"
+                                         >
+                                <p:ajax event="keyup" listener="#{gestionContribucionControlador.sumarDistribucion()}"
+                                        process="@this" update=":frmContribucion:tabContribucion:obTotal" async="true" global="false" />
+                            </p:inputText>
+                            <p:message  for="obAce" display="icon"/>
+
+                            <p:outputLabel value="OBRAS DE SERVICIO:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obSer" value="#{gestionContribucionControlador.obraProyectoActual.obrServicio}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: OBRAS DE SERVICIO"
+                                         style="font-family: Arial; font-size: 15px;"
+                                         >
+                                <p:ajax event="keyup" listener="#{gestionContribucionControlador.sumarDistribucion()}"
+                                        process="@this" update=":frmContribucion:tabContribucion:obTotal" async="true" global="false" />
+                            </p:inputText>
+                            <p:message  for="obSer" display="icon"/>
+
+                            <p:outputLabel value="INF. URBANA:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obInf" value="#{gestionContribucionControlador.obraProyectoActual.obrInfUrbana}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: OBRAS DE SERVICIO"
+                                         style="font-family: Arial; font-size: 15px;"
+                                         >    
+                                <p:ajax event="keyup" listener="#{gestionContribucionControlador.sumarDistribucion()}"
+                                        process="@this" update=":frmContribucion:tabContribucion:obTotal" async="true" global="false" />
+                            </p:inputText>
+                            <p:message  for="obInf" display="icon"/>
+
+                            <p:outputLabel value="DESECACIÓN / RELLENOS:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obRell" value="#{gestionContribucionControlador.obraProyectoActual.obrDesecacionRellenos}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: DESECACIÓN / RELLENOS"
+                                         style="font-family: Arial; font-size: 15px;"
+                                         >      
+                                <p:ajax event="keyup" listener="#{gestionContribucionControlador.sumarDistribucion()}"
+                                        process="@this" update=":frmContribucion:tabContribucion:obTotal" async="true" global="false" />
+                            </p:inputText>
+                            <p:message  for="obRell" display="icon"/>
+
+                            <p:outputLabel value="TOTAL:"/>                                                                                                                                                                                                          
+                            <p:inputText id="obTotal" value="#{gestionContribucionControlador.obraProyectoActual.obrTotal}"
+                                         onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: TOTAL"
+                                         readonly="true" style="color:white ; font-family: Arial; font-size: 15px; background: black;"
+                                         >           
+
+                            </p:inputText>
+                            <p:message  for="obTotal" display="icon"/>
+
+                        </h:panelGrid> 
+                    </p:panel>   
+                    <p:commandButton value="#{txt.guardar_btn}" 
+                                     id="btnGuardar" 
+                                     action="#{gestionContribucionControlador.guardarObraProyecto()}" 
+                                     icon="ui-icon-disk"  
+                                     process="@this, panelIngreso, panelIngreso2" 
+                                     update=":frmContribucion:msgs, :frmContribucion:tabContribucion:panelIngreso,panelIngreso2,panelDist,panelLstObra"
+                                     async="true"
+                                     global="false"
+                                     />
+                    <h:panelGrid id="panelLstObra" columns="1">
+
+                        <p:dataTable id="lstObra" value="#{gestionContribucionControlador.listaObraProyecto}"  var="obra"
+                                     selectionMode="single"  rowKey="#{obra.obrCodigo}" 
+                                     rows="7"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     emptyMessage="No se han encontrado registros"                                                 
+                                     styleClass="pdataTable_font"
+                                     currentPageReportTemplate="{currentPage} de {totalPages}"> 
+                            <f:facet name="header">
+                                <p:outputLabel value="Lista de Obra/Proyecto" style="font-size:12px;"/>
+                            </f:facet>
+                            <p:column headerText="Descripción" width="80" filterBy="#{obra.obrDescripcion}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrDescripcion}" style="font-size:12px;" />
+                            </p:column>
+
+                            <p:column headerText="Parroquia" width="30" filterBy="#{obra.catdetParroquia.catdetTexto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catdetParroquia.catdetTexto}" style="font-size:12px;" />
+                            </p:column>
+
+                            <p:column headerText="Estado" width="20" filterBy="#{obra.catdetEstado.catdetTexto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catdetEstado.catdetTexto}" style="font-size:12px;" />
+                            </p:column>                                               
+                            <p:column headerText="Ejecución" width="20" filterBy="#{obra.catdetEjecucion.catdetTexto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catdetEjecucion.catdetTexto}" style="font-size:12px;" />
+                            </p:column>   
+
+                            <p:column headerText="Empresa pública / Contratista" width="50" filterBy="#{obra.conCodigo.conApellidos} #{obra.conCodigo.conNombres}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.conCodigo.conApellidos} #{obra.conCodigo.conNombres}" style="font-size:12px;" />
+                            </p:column>                                               
+                            <p:column headerText="No. Contrato" width="15" filterBy="#{obra.obrNumContrato}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrNumContrato}" style="font-size:12px;" />
+                            </p:column>                                               
+
+                            <p:column headerText="Fecha Inicio" width="20" filterBy="#{obra.obrFechaInicio}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrFechaInicio}" style="font-size:12px;" />
+                            </p:column> 
+                            <p:column headerText="Fecha Fin" width="20" filterBy="#{obra.obrFechaFin}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrFechaFin}" style="font-size:12px;" />
+                            </p:column> 
+                            <p:column headerText="Total" width="20" filterBy="#{obra.obrTotal}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrTotal}" style="font-size:12px;" />
+                            </p:column> 
+                            <p:column headerText="Tipo de obra" width="20" filterBy="#{obra.catdetTipoObra.catdetTexto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catdetTipoObra.catdetTexto}" style="font-size:12px;" />
+                            </p:column> 
+                            <p:column headerText="No. de decreto" width="20" filterBy="##{obra.obrNumDecreto}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrNumDecreto}" style="font-size:12px;" />
+                            </p:column>                                                                                     
+                            <p:column headerText="Determinación" style="width:45px;text-align: center">
+                                <p:commandButton icon="ui-icon-mail-closed" action="#{gestionContribucionControlador.determinar(obra)}"
+                                                 onclick="PF('dlg2').show();" process="@this" update=":frmContribucion:tabContribucion:carDetail" async="true" global="false">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:dialog header="Determinación de la Zona de beneficio o influencia" widgetVar="dlg2" modal="true" height="200" width="500" style="text-align:center; font-size:12px;"
+                                  position="center" >   
+
+                            <center>                                                                                                                                
+                                <p:panelGrid  id="carDetail" columns="2" style="text-align:center;">
+                                    <h:outputText value="Tipo de obra:"/>
+                                    <p:selectOneMenu id="obTip" value="#{gestionContribucionControlador.obraProyectoActual.catdetTipoObra}" 
+                                                     panelStyle="width:180px" converter="#{catalogoDetalleConverter}" var="t" style="width:220px">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionContribucionControlador.listaTipoObra}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>                                            
+                                    </p:selectOneMenu>                                                       
+                                    <h:outputText value="Número de decreto:"/>
+                                    <p:inputText id="obDec" value="#{gestionContribucionControlador.obraProyectoActual.obrNumDecreto}"
+                                                 onkeypress="return isNumberKey(event)" required="true" requiredMessage="Se nesecita un valor: Número de decreto"
+                                                 style="font-family: Arial; font-size: 15px;"
+                                                 >
+                                    </p:inputText>                                                      
+                                </p:panelGrid>
+
+                                <br></br>
+
+                                <h:panelGrid columns="2" style="text-align:center;">                                                                                                                                                                                      
+                                    <p:commandButton style="font-size:13px;" value="Aceptar" 
+                                                     id="btnAceptar" 
+                                                     action="#{gestionContribucionControlador.aceptarDeterminacion()}" 
+                                                     icon="ui-icon-check"  
+                                                     process="@this,carDetail" 
+                                                     update=":frmContribucion:tabContribucion:panelLstObra"
+                                                     async="true"
+                                                     global="false"
+                                                     />
+                                    <p:commandButton style="font-size:13px;" value="Cancelar" 
+                                                     id="btnCancelar"                                                                     
+                                                     icon="ui-icon-closethick"  
+                                                     process="@this" 
+                                                     update=":frmContribucion:tabContribucion:panelLstObra"
+                                                     async="true"
+                                                     global="false"
+                                                     />                                                                                 
+                                </h:panelGrid>
+                            </center>
+                        </p:dialog> 
+
+
+                    </h:panelGrid>      
+
+                </center>
+            </p:panel>                                                                                                                                                                                                        
+        </h:panelGrid>
+    </center>
+</html> 

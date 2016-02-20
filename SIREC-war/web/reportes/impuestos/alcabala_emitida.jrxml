@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
+	<property name="ireport.zoom" value="1.737986278420135"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="111"/>
+	<parameter name="logo_gad" class="java.lang.String"/>
+	<parameter name="codigos" class="java.lang.String"/>
+	<parameter name="fecha_genera" class="java.lang.String"/>
+	<parameter name="usuario_genera" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT  concat(cp.catpre_cod_nacional, cp.catpre_cod_local) clave_catastral,
+	a.catprealcval_anio,
+	(SELECT cd.catdet_texto parroquia from sirec.catalogo_detalle cd
+	where cd.catdet_codigo=cp.catdet_parroquia),
+	(SELECT cd.catdet_texto sector from sirec.catalogo_detalle cd
+	where cd.catdet_codigo=cp.catdet_sector),
+	(select pro.pro_direccion direccion from sirec.propietario pro, sirec.propietario_predio pp
+	where pro.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo),
+	(select concat(pro.pro_apellidos,' ',pro.pro_nombres) nombre_propietario from sirec.propietario pro, sirec.propietario_predio pp
+	where pro.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo),
+	(select pro.pro_ci ruc_ci from sirec.propietario pro, sirec.propietario_predio pp
+	where pro.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo),
+	a.catprealcval_comprador,
+	cp.catpre_area_total,
+	cp.catpre_area_total_cons,
+	(cp.catpre_area_total+cp.catpre_area_total_cons) total,
+	(select v.catpreval_avaluo_tot avaluo_total from sirec.catastro_predial_valoracion v
+	where v.catpre_codigo=cp.catpre_codigo and a.catprealcval_anio=v.catpreval_anio),
+	a.catprealcval_precioventa,
+	(SELECT cd.catdet_texto concepto from sirec.catalogo_detalle cd
+	where cd.catdet_codigo=a.catdet_concepto),
+	a.catprealcval_baseimp,
+  a.catprealcval_impuesto,
+  a.catprealcval_consejo_prov,
+  a.catprealcval_tasa_proc,
+  a.catprealcval_total,
+  a.catprealcval_observaciones
+  FROM sirec.catastro_predial_alcabala_valoracion a, sirec.catastro_predial cp
+WHERE 	a.catprealcval_activo=true and
+a.catpre_codigo=cp.catpre_codigo and
+a.catprealcval_codigo in($P!{codigos})
+order by a.catprealcval_anio, nombre_propietario asc]]>
+	</queryString>
+	<field name="clave_catastral" class="java.lang.String"/>
+	<field name="catprealcval_anio" class="java.lang.Integer"/>
+	<field name="parroquia" class="java.lang.String"/>
+	<field name="sector" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="nombre_propietario" class="java.lang.String"/>
+	<field name="ruc_ci" class="java.lang.String"/>
+	<field name="catprealcval_comprador" class="java.lang.String"/>
+	<field name="catpre_area_total" class="java.lang.Double"/>
+	<field name="catpre_area_total_cons" class="java.lang.Double"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="avaluo_total" class="java.math.BigDecimal"/>
+	<field name="catprealcval_precioventa" class="java.math.BigDecimal"/>
+	<field name="concepto" class="java.lang.String"/>
+	<field name="catprealcval_baseimp" class="java.math.BigDecimal"/>
+	<field name="catprealcval_impuesto" class="java.math.BigDecimal"/>
+	<field name="catprealcval_consejo_prov" class="java.math.BigDecimal"/>
+	<field name="catprealcval_tasa_proc" class="java.math.BigDecimal"/>
+	<field name="catprealcval_total" class="java.math.BigDecimal"/>
+	<field name="catprealcval_observaciones" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="88" splitType="Stretch">
+			<image>
+				<reportElement x="23" y="26" width="100" height="50" uuid="9472a441-fee0-4b7b-8f6c-d29b9de6ba15"/>
+				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="350" y="46" width="118" height="20" uuid="1a572aab-09a2-485a-a051-eed551db3c7a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ALCABALAS EMITIDAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="346" y="26" width="127" height="20" uuid="a1d9553b-f90d-479e-83ea-19bbe4a4fe2a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION FINANCIERA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="6" width="252" height="20" uuid="80d398b5-714f-4493-97c3-e3230cb4764e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="593" y="54" width="206" height="15" uuid="c722f916-1031-4349-a954-b0eea4b06664"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement x="696" y="69" width="103" height="15" uuid="339ab833-1065-48dd-8d54-46c4bd78daed"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="346" y="66" width="58" height="20" uuid="6575e204-c052-4e51-8dd9-e8eed5d8c186"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="407" y="66" width="100" height="20" uuid="f13b8424-1b23-4ee2-8008-a3c6966efe0d"/>
+				<textFieldExpression><![CDATA[$F{catprealcval_anio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Opaque" x="2" y="1" width="800" height="19" backcolor="#CAF4E9" uuid="8433ccbc-65c5-4fff-9fe9-3251a3f66d71"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="0" width="69" height="20" uuid="e1cb9a6f-b9c9-4781-9ef3-84ff83006364"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[ Clave catastral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="69" y="0" width="21" height="20" uuid="edb226b9-eebd-4fdd-ba17-d078ddac557c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Año]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="90" y="0" width="50" height="20" uuid="332d2e3c-d0e1-465e-af06-844f85d305d9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Parroquia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="189" y="0" width="49" height="20" uuid="aefac85a-b34f-488b-82c2-10d24331f936"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Dirección]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="238" y="0" width="60" height="20" uuid="2e6878f8-e838-41be-80f3-8bb77eb54d10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Vendedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="298" y="0" width="39" height="20" uuid="df56584c-2e42-46b7-af6b-b5a93e74114b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Ruc/CI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="337" y="0" width="50" height="20" uuid="553020c0-5989-415b-bcb4-1f51387ff006"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Comprador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="30" height="20" uuid="b977f0bc-2561-4c68-a81d-5018d3b4ae1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Area terreno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="417" y="0" width="30" height="20" uuid="d564d022-14e8-465d-90f2-af12bfdaa89b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Area Construcción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="447" y="0" width="30" height="20" uuid="1e727d7c-6273-48cd-a5af-8238ac8000f7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Area  Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="477" y="0" width="30" height="20" uuid="5d426eb1-3101-4b61-b462-3620547c1c5b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Avaluo actual]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="507" y="0" width="35" height="20" uuid="4ebe448a-5286-4a3a-956c-62494ae0f352"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Precio Venta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="542" y="0" width="55" height="20" uuid="05aa0e6e-bdec-4554-8aeb-f2c90f6bcc3b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Concepto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="597" y="0" width="32" height="20" uuid="95efc54c-953e-43b9-98f2-82893fc6e961"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Base imponible]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="629" y="0" width="30" height="20" uuid="aca5e8a9-1d8e-4228-a10d-9b824be93eb1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Impuesto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="659" y="0" width="24" height="20" uuid="a2d32c92-e5da-447b-b08b-c58066b9d0ce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Consejo Provincial]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="683" y="0" width="30" height="20" uuid="b2e0b875-bc57-4b1d-bbc4-c192da6a9a77"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Procesamiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="713" y="0" width="30" height="20" uuid="bdf478e2-427a-438a-b812-20fbfac3a93e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="743" y="0" width="59" height="20" uuid="1813478d-384a-4e28-969a-7151823a53ce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Observaciones]]></text>
+			</staticText>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="801" y="0" width="1" height="20" isPrintWhenDetailOverflows="true" uuid="27d6d02e-7511-4e7f-bef8-feda2134f0d5"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="20" isPrintWhenDetailOverflows="true" uuid="f9edbafb-8dbc-417f-885a-9976c018cf7f"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="19" width="798" height="1" isPrintWhenDetailOverflows="true" uuid="f6b36916-b3b6-4eea-a020-7832a99bfe18"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="799" height="1" isPrintWhenDetailOverflows="true" uuid="1630682d-f2e2-43e6-9884-d6247fa3f9d1"/>
+			</line>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="140" y="0" width="49" height="20" uuid="00379ebf-f467-4d5b-94f0-ba2d05d982c8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Sector]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="69" height="24" isPrintWhenDetailOverflows="true" uuid="4a32d6ef-95bb-41a1-945a-851a5647118d"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{clave_catastral}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="69" y="0" width="21" height="24" isPrintWhenDetailOverflows="true" uuid="103ee054-a359-4e93-a3c3-b8f871d7caa2"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_anio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="90" y="0" width="50" height="24" isPrintWhenDetailOverflows="true" uuid="5d16db4b-4df0-4716-b1ba-b2374f30044d"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parroquia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="189" y="0" width="49" height="24" isPrintWhenDetailOverflows="true" uuid="0000912f-d966-4e05-af33-92e5193cd29f"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="238" y="0" width="60" height="24" isPrintWhenDetailOverflows="true" uuid="fab9ac58-1939-4f72-aa8b-ca17f5bcab56"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_propietario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="298" y="0" width="39" height="24" isPrintWhenDetailOverflows="true" uuid="a13bdb92-00a7-426f-9858-27e49ef4dc4e"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_ci}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="337" y="0" width="50" height="24" isPrintWhenDetailOverflows="true" uuid="8e673c92-bc6b-4536-b66d-3f5f402f63b2"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_comprador}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="fc4d2c55-d13f-47a2-a0f2-f7e3fadac754"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catpre_area_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="417" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="ce4203bd-1196-433e-aced-a98361ab7bb7"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catpre_area_total_cons}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="447" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="9a2a57db-1ad4-4cae-aae9-8c94d6ba0673"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="477" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="0402b091-8462-46b8-bfb7-30b12a9db283"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{avaluo_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="507" y="0" width="35" height="24" isPrintWhenDetailOverflows="true" uuid="03337f47-8a03-4bc6-a105-fea4a8e315d8"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_precioventa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="542" y="0" width="55" height="24" isPrintWhenDetailOverflows="true" uuid="1b785aa9-ad78-4870-9f91-a7f3d271efa0"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="597" y="0" width="32" height="24" isPrintWhenDetailOverflows="true" uuid="af393e87-72b5-40e8-a0a3-612d3f4897a2"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_baseimp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="629" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="9739696a-a8bf-4b47-b7d2-8800ff9d7bdd"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_impuesto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="659" y="0" width="24" height="24" isPrintWhenDetailOverflows="true" uuid="aeb92215-10f1-480c-a71d-92fd8273dfac"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_consejo_prov}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="683" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="bde0883d-bb14-49d7-867b-2003e21d4ce0"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_tasa_proc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="713" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="af431880-a28b-4447-a4be-15f4009265e5"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="743" y="0" width="59" height="24" isPrintWhenDetailOverflows="true" uuid="fdd56ab2-8b12-4ad8-902c-af825204e74d"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{catprealcval_observaciones}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="1" height="24" isPrintWhenDetailOverflows="true" uuid="20b03886-4ca8-40d0-80b1-9b8e9ceb3a1f"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="801" y="0" width="1" height="24" isPrintWhenDetailOverflows="true" uuid="5330d918-f319-469a-8141-632600beec47"/>
+			</line>
+			<line>
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="23" width="802" height="1" isPrintWhenDetailOverflows="true" uuid="3a437405-03e4-4c43-8265-05e100c9b50a"/>
+			</line>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="140" y="0" width="49" height="24" isPrintWhenDetailOverflows="true" uuid="0e61f8dd-eb23-430d-869e-43a574b84d26"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sector}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="701" y="0" width="100" height="20" uuid="05a4d18b-2890-4038-a4cd-285c4d3759ee"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

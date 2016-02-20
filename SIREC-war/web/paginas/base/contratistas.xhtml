@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <center>
+                <h:form id="frmContratista" style="font-size: 12px;">         
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:panel  header="Registro de Contratistas y Empresas Públicas" style="background: #8BBAC9;">
+                        <h:panelGrid id="pnlIng" columns="6">
+                            <h:outputLabel value="Persona:" for="conTipoPersona" />
+                            <p:selectOneMenu id="conTipoPersona" value="#{contratistaControlador.constructoraActual.conTipoPersona}"
+                                             style="width:150px">
+                                <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Natural" itemValue="N"/>
+                                <f:selectItem itemLabel="Juridica" itemValue="J"/>
+                                <p:ajax event="change"  async="true"
+                                        global="false"
+                                        process="@this"
+                                        update="pnlProCi,proApellidos,proNombres,proFechaNacimiento,proRazonSocial"/>
+                            </p:selectOneMenu>
+                            <p:message for="conTipoPersona"/>    
+                            
+                             <h:outputLabel value="Tipo:" for="proTipoPerJur" />
+                             <p:selectOneMenu id="proTipoPerJur" value="#{contratistaControlador.constructoraActual.conTipo}"
+                                             style="width:150px">
+                                <f:selectItem itemLabel="Seleccione..." itemValue="#{null}"/>
+                                   <f:selectItem itemLabel="CONTRATISTA" itemValue="C" />
+                                   <f:selectItem itemLabel="EMPRESA PÚBLICA" itemValue="E" />
+                               
+                            </p:selectOneMenu>
+                            <p:message for="proTipoPerJur"/>
+                                                        
+                            <h:outputLabel value="Cédula/RUC:"/>
+                            <h:panelGrid id="pnlProCi">
+                                <f:verbatim rendered="#{contratistaControlador.constructoraActual.conTipoPersona==null}"/>
+                                <p:inputText id="proCi" value="#{contratistaControlador.constructoraActual.conIdentificacion}" 
+                                         maxlength="10" title="ProCi" required="true" requiredMessage="Identificacion requerida."
+                                         rendered="#{contratistaControlador.constructoraActual.conTipoPersona=='N'}">
+                                <p:ajax event="blur" async="true" global="false"
+                                        listener="#{contratistaControlador.validarCedulaRuc}"
+                                        process="@this"
+                                        update="@this,:frmContratista:msgs"/>
+                            </p:inputText>
+                                <p:inputText id="proRuc" value="#{contratistaControlador.constructoraActual.conIdentificacion}" 
+                                         maxlength="13" title="ProCi" required="true" requiredMessage="Identificacion requerida."
+                                         rendered="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}">
+                                <p:ajax event="blur" async="true" global="false"
+                                        listener="#{contratistaControlador.validarCedulaRuc}"
+                                        process="@this"
+                                        update="@this,:frmContratista:msgs"/>
+                            </p:inputText>
+                            </h:panelGrid>
+                            <p:message for="proCi" rendered="#{contratistaControlador.constructoraActual.conTipoPersona=='N'}"/>
+                            <p:message for="proRuc" rendered="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}"/>                                                       
+                              
+                            <f:verbatim rendered="#{contratistaControlador.constructoraActual.conTipoPersona==null}"/>                                                                                    
+                            <h:outputLabel value="Apellidos:" for="proApellidos" />
+                            <p:inputText id="proApellidos" 
+                                         value="#{contratistaControlador.constructoraActual.conApellidos}" 
+                                         title="ProApellidos" 
+                                         size="50" onkeyup="value = value.toUpperCase();" 
+                                         disabled="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}"
+                                         maxlength="200" requiredMessage="Apellidos son requeridos"/>
+                            <p:message for="proApellidos"/>
+                            
+                            
+                            <h:outputLabel value="Nombres:" for="proNombres" />
+                            <p:inputText id="proNombres" 
+                                         value="#{contratistaControlador.constructoraActual.conNombres}" 
+                                         maxlength="200" 
+                                         size="50" onkeyup="value = value.toUpperCase();" 
+                                         disabled="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}"
+                                         title="ProNombres" requiredMessage="Nombres son requeridos"/>
+                            <p:message for="proNombres"/>
+                            <h:outputLabel value="Fecha de Nacimiento:" for="proFechaNacimiento" />
+                            
+                            
+                            <p:calendar id="proFechaNacimiento" 
+                                        value="#{contratistaControlador.constructoraActual.conFechaNacimiento}" 
+                                        title="ProFechaNacimiento" 
+                                        disabled="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}"
+                                        requiredMessage="Fecha de Nacimiento es requerida"
+                                        pattern="dd-MM-yyyy">
+                            </p:calendar>
+                            <p:message for="proFechaNacimiento"/>
+                             
+                            <h:outputLabel value="Razon Social:" for="proRazonSocial" />
+                            <p:inputText id="proRazonSocial" 
+                                         size="50"
+                                         disabled="#{contratistaControlador.constructoraActual.conTipoPersona=='N'}"
+                                         value="#{contratistaControlador.constructoraActual.conRazonSocial}" title="ProRazonSocial" />
+                            <p:message for="proRazonSocial"/>
+                            
+                            <h:outputLabel value="Ciudad" for="catdetCiudad" />
+                            <p:autoComplete id="catdetCiudad" value="#{contratistaControlador.constructoraActual.catdetCiudad}" 
+                                            completeMethod="#{contratistaControlador.listarCatDetalles}" 
+                                            onkeyup="value = value.toUpperCase();" 
+                                            converter="#{catalogoDetalleConverter}"
+                                            var="ciu" itemLabel="#{ciu.catdetTexto}" itemValue="#{ciu}"  forceSelection="true"
+                                            >
+                                <p:column>
+                                    <h:outputText value="#{ciu.catdetTexto}" />
+                                </p:column>
+                            </p:autoComplete>
+                            <p:message for="catdetCiudad"/>
+                            
+                            <h:outputLabel value="Dirección:" for="proDireccion" />
+                            <p:inputTextarea id="proDireccion" onkeyup="value = value.toUpperCase();" 
+                                             value="#{contratistaControlador.constructoraActual.conDireccion}" 
+                                             title="ProDireccion"
+                                             cols="50" rows="2"/>
+                            <p:message for="proDireccion"/>
+                            
+                                                                                   
+                            <h:outputLabel value="Telefono:" for="proTelefono" />
+                            <p:inputText id="proTelefono" 
+                                         value="#{contratistaControlador.constructoraActual.conTelefono}" 
+                                         maxlength="100" onkeyup="value = value.toUpperCase();" 
+                                         title="ProTelefono" />
+                            <p:message for="proTelefono"/>
+                            <h:outputLabel value="Correo:" for="proCorreo" />
+                            <p:inputText id="proCorreo" value="#{contratistaControlador.constructoraActual.conCorreo}" 
+                                         maxlength="100" 
+                                         title="ProCorreo" />
+                            <p:message for="proCorreo"/>
+                                                                                  
+                            <h:outputLabel value="Tiene Discapacidad:" for="proDiscapacidad" />
+                            <p:selectBooleanCheckbox id="proDiscapacidad" 
+                                                     disabled="#{contratistaControlador.constructoraActual.conTipoPersona=='J'}"
+                                                     value="#{contratistaControlador.constructoraActual.conDiscapacidad}"/>
+                            <p:message for="proDiscapacidad"/>
+                            <h:outputLabel value="Observaciones:" for="proObservaciones" />
+                            <p:inputTextarea id="proObservaciones" 
+                                         onkeyup="value = value.toUpperCase();" 
+                                         value="#{contratistaControlador.constructoraActual.conObservaciones}" title="ProObservaciones" 
+                                         cols="50" rows="2"/>
+                            <p:message for="proObservaciones"/>
+                            
+                            
+                            
+                        </h:panelGrid>
+                        <h:panelGrid columns="2">
+                            <p:commandButton id="btnGuardarProp"
+                                             value="Guardar"
+                                             action="#{contratistaControlador.guardarConstructora()}"
+                                             async="true" global="false"
+                                             update="@form"
+                                             process="@this, pnlIng"/>
+                            
+                            
+                            <p:commandButton id="btnNuevoProp"
+                                             value="Nuevo"
+                                             action="#{contratistaControlador.inicializar}"
+                                             async="true" global="false"
+                                             update="@form"/>
+                        </h:panelGrid>
+                    </p:panel>
+                    
+                    <p:panel>
+                        <h:panelGrid>
+                            <p:dataTable value="#{contratistaControlador.listaConstructora}" var="item"
+                                         rows="10" paginator="true"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">
+                                <p:column headerText="Cédula/RUC" filterBy="#{item.conIdentificacion}" filterMatchMode="contains">
+                                    <h:outputText value="#{item.conIdentificacion}"/>
+                                </p:column>
+                                <p:column headerText="Persona">
+                                    <h:outputText value="Natural" rendered="#{item.conTipoPersona=='N'}"/>
+                                    <h:outputText value="Juridica" rendered="#{item.conTipoPersona=='J'}"/>
+                                </p:column>
+                                
+                                 <p:column headerText="Tipo">
+                                    <h:outputText value="CONTRATISTA" rendered="#{item.conTipo=='C'}"/>
+                                    <h:outputText value="EMPRESA PÚBLICA" rendered="#{item.conTipo=='E'}"/>
+                                </p:column>
+                                
+                                <p:column headerText="Apellidos" filterBy="#{item.conApellidos}" filterMatchMode="contains">
+                                    <h:outputText value="#{item.conApellidos}"/>
+                                </p:column>
+                                <p:column headerText="Nombres" filterBy="#{item.conNombres}" filterMatchMode="contains">
+                                    <h:outputText value="#{item.conNombres}"/>
+                                </p:column>
+                                <p:column headerText="Fecha Nac">
+                                    <h:outputText value="#{item.conFechaNacimiento}">
+                                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Razon Social" sortBy="#{item.conRazonSocial}">
+                                    <h:outputText value="#{item.conRazonSocial}"/>
+                                </p:column>
+                                <p:column headerText="Ciudad">
+                                    <h:outputText value="#{item.catdetCiudad.catdetTexto}"/>
+                                </p:column>
+                                <p:column headerText="Dirección">
+                                    <h:outputText value="#{item.conDireccion}"/>
+                                </p:column>
+                                <p:column headerText="Teléfono">
+                                    <h:outputText value="#{item.conTelefono}"/>
+                                </p:column>
+                                <p:column headerText="Correo">
+                                    <h:outputText value="#{item.conCorreo}"/>
+                                </p:column>
+                                <p:column headerText="Disc">
+                                    <h:selectBooleanCheckbox value="#{item.conDiscapacidad}" disabled="true"/>
+                                </p:column>
+                                <p:column headerText="Observaciones">
+                                    <h:outputText value="#{item.conObservaciones}"/>
+                                </p:column>
+                                <p:column headerText="Editar">
+                                    <p:commandButton id="btnSelProp"
+                                                     action="#{contratistaControlador.seleccionarPropietario(item)}"
+                                                     process="@this"
+                                                     async="true"
+                                                     global="false"
+                                                     icon="ui-icon-pencil"
+                                                     update="@form"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+
+                                </p:column>
+                                <p:column headerText="Eliminar">
+                                    <p:commandButton id="btnEliProp"
+                                                     action="#{contratistaControlador.eliminarPropietario(item)}"
+                                                     process="@this"
+                                                     async="true"
+                                                     global="false"
+                                                     icon="ui-icon-trash"
+                                                     update="@form"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel> 
+                   
+                </h:form>
+
+
+            </center>
+
+        </ui:define>
+    </ui:composition>
+</html>

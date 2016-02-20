@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <!--REPORTES DE PATENTE-->
+            <h:form id="frmAlcaEmi">   
+                <p:growl id="msgs" showSummary="true" sticky="true" showDetail="false"   /> 
+                <center>
+                    <p:panel header="Reportes Alcabalas Y Plusvarias" >
+                        <h:panelGrid id="pnlReporAlca">
+                            <p:panel id="pnlAlcaAnio" header="Reporte de Alcabalas Emitidas por año" style="font-size: 12px">
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel value="Año:" style="font-size: 12px"/>
+
+                                    <p:selectOneMenu id="cmbEmiAnio" 
+                                                     value="#{gestionRepAlcabalasEmitidasControlador.catDetAnio}" style="width:250px"
+                                                     converter="#{catalogoDetalleConverter}" var="t"
+                                                     requiredMessage="Se necesita un valor Año:"  required="true" >
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listAnios}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu>                                                                                                           
+
+                                    <p:commandButton value="Buscar" 
+                                                     id="btnReporteALBuscar" 
+                                                     action="#{gestionRepAlcabalasEmitidasControlador.listarAlcabalaEmitidas()}"  
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,cmbEmiAnio" 
+                                                     update=":frmAlcaEmi:pnlConListEmision"
+                                                     async="true"
+                                                     global="false"/>
+                                    
+                                </h:panelGrid>
+
+
+                                <h:panelGrid id="pnlConListEmision">                                                                           
+                                    <p:dataTable id="listaDatosReporte1" var="car" 
+                                                 value="#{gestionRepAlcabalasEmitidasControlador.listaAlcabalasEmitidas}" 
+                                                 scrollable="true" scrollHeight="200"
+                                                 selection="#{gestionRepAlcabalasEmitidasControlador.listaAlcabalasEmitidasSeleccion}" 
+                                                 scrollWidth="1400" widgetVar="carsTable"  rowKey="#{car[0]}" >                                          
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Lista de Alcabalas Emitidas #{gestionRepAlcabalasEmitidasControlador.catDetAnio.catdetValor}" style="font-size:10px;"/>
+                                        </f:facet>
+                                        <p:column width="35" headerText="Clave Catastral" style="font-size:10px;" >
+                                            <h:outputText value="#{car[1]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="5" headerText="Año" style="font-size:10px;" >
+                                            <h:outputText value="#{car[2]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Parroquia" style="font-size:10px;" >
+                                            <h:outputText value="#{car[3]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Sector" style="font-size:10px;" >
+                                            <h:outputText value="#{car[4]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Dirección" style="font-size:10px;" >
+                                            <h:outputText value="#{car[5]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Vendedor" style="font-size:10px;" >
+                                            <h:outputText value="#{car[6]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="25" headerText="Ruc/CI" style="font-size:10px;" >
+                                            <h:outputText value="#{car[7]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Comprador" style="font-size:10px;" >
+                                            <h:outputText value="#{car[8]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Area terreno" style="font-size:10px;" >
+                                            <h:outputText value="#{car[9]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Area construcción" style="font-size:10px;" >
+                                            <h:outputText value="#{car[10]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Area total" style="font-size:10px;" >
+                                            <h:outputText value="#{car[11]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Avalúo Actual" style="font-size:10px;" >
+                                            <h:outputText value="#{car[12]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Precio Venta" style="font-size:10px;" >
+                                            <h:outputText value="#{car[13]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Concepto" style="font-size:10px;" >
+                                            <h:outputText value="#{car[14]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Base imponible" style="font-size:10px;" >
+                                            <h:outputText value="#{car[15]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Impuesto" style="font-size:10px;" >
+                                            <h:outputText value="#{car[16]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Consejo Prov." style="font-size:10px;" >
+                                            <h:outputText value="#{car[17]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Procesamiento" style="font-size:10px;" >
+                                            <h:outputText value="#{car[18]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Total" style="font-size:10px;" >
+                                            <h:outputText value="#{car[19]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Observaciones" style="font-size:10px;" >
+                                            <h:outputText value="#{car[20]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="10" selectionMode="multiple"/>
+                                    </p:dataTable>                      
+                                </h:panelGrid>
+
+
+                                <p:commandButton style="font-size: 12px" id="btnReporteAL" value="Generar Reporte"
+                                                 action="#{gestionRepAlcabalasEmitidasControlador.reporteAlcabalaEmitidas()}"
+                                                 oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 async="true"
+                                                 global="false"
+                                                 process="@this,pnlConListEmision" 
+                                                 />
+                            </p:panel>
+
+
+
+
+
+
+                            <p:panel id="pnlPlusAnio" header="Reporte de Plusvalia Emitidas por año" style="font-size: 12px">
+                                <h:panelGrid columns="3">
+
+                                    <p:outputLabel value="Criterio de busqueda:"/>  
+                                    <p:selectOneMenu id="cmbCriterio" value="#{gestionRepAlcabalasEmitidasControlador.criterio}" style="width:152px">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" />                        
+                                        <f:selectItem itemLabel="Tipo de tarifa" itemValue="F" />
+                                        <f:selectItem itemLabel="#{txt.parroquia}" itemValue="P" />
+                                        <f:selectItem itemLabel="#{txt.sector}" itemValue="S" />
+                                        <f:selectItem itemLabel="#{txt.Manzana}" itemValue="M" />
+                                        <f:selectItem itemLabel="Año" itemValue="A" />
+                                        <p:ajax event="change" process="@this" update=":frmAlcaEmi:pnlPlusAnio" async="true" global="false"/>  
+                                    </p:selectOneMenu>
+                                    <p:message for="cmbCriterio" display="icon"/>
+
+                                    <p:outputLabel value=""/>
+                                    <p:selectOneMenu id="pComTTPL" value="#{gestionRepAlcabalasEmitidasControlador.catDetTipoTarifa}" 
+                                                     style="width:180px;font-weight: bold;background: green;"
+                                                     converter="#{catalogoDetalleConverter}" var="t" 
+                                                     required="true" requiredMessage="Se nesecita un valor: #{txt.TIPO_TARIFA}"
+                                                     rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='F'}">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listaTipoDeTarifa}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>                                                                             
+                                    </p:selectOneMenu> 
+                                    <p:message for="pComTTPL" display="icon" rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='F'}"/>
+
+
+                                    <p:selectOneMenu id="cmbEmiPlusAnio" 
+                                                     value="#{gestionRepAlcabalasEmitidasControlador.catDetAnioPL}" style="width:250px"
+                                                     converter="#{catalogoDetalleConverter}" var="t"
+                                                     requiredMessage="Se necesita un valor Año:"  required="true" 
+                                                     rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='A'}">
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listAnios}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu> 
+                                    <p:message for="cmbEmiPlusAnio" display="icon" rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='A'}"/>
+
+                                    <p:commandButton value="Buscar" 
+                                                     id="btnReportePLBuscar" 
+                                                     action="#{gestionRepAlcabalasEmitidasControlador.listarPlusvaliaEmitidas()}"  
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,cmbEmiPlusAnio,pComTTPL" 
+                                                     update=":frmAlcaEmi:pnlListEmisionPL"
+                                                     async="true"
+                                                     global="false"/>
+                                </h:panelGrid>
+
+                                <h:panelGrid id="pnlListEmisionPL">                                                                           
+                                    <p:dataTable id="listaDatosReportePL" var="car" 
+                                                 value="#{gestionRepAlcabalasEmitidasControlador.listaPlusvaliaEmitidas}" 
+                                                 scrollable="true" scrollHeight="200"
+                                                 selection="#{gestionRepAlcabalasEmitidasControlador.listaPlusvaliaEmitidasSeleccion}" 
+                                                 scrollWidth="1400" widgetVar="carsTable"  rowKey="#{car[0]}" >                                          
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Lista de Plusvalias Emitidas #{gestionRepAlcabalasEmitidasControlador.catDetAnioPL.catdetValor}" style="font-size:10px;"/>
+                                        </f:facet>
+                                        <p:column width="35" headerText="Clave Catastral" style="font-size:10px;" >
+                                            <h:outputText value="#{car[1]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="5" headerText="Año" style="font-size:10px;" >
+                                            <h:outputText value="#{car[2]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Parroquia" style="font-size:10px;" >
+                                            <h:outputText value="#{car[3]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Sector" style="font-size:10px;" >
+                                            <h:outputText value="#{car[4]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Dirección" style="font-size:10px;" >
+                                            <h:outputText value="#{car[5]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Propietario" style="font-size:10px;" >
+                                            <h:outputText value="#{car[6]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="25" headerText="Ruc/CI" style="font-size:10px;" >
+                                            <h:outputText value="#{car[7]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Tipo de Tarifa" style="font-size:10px;" >
+                                            <h:outputText value="#{car[8]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="F. Ultima escritura" style="font-size:10px;" >
+                                            <h:outputText value="#{car[9]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Venta" style="font-size:10px;" >
+                                            <h:outputText value="#{car[10]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Venta anterior" style="font-size:10px;" >
+                                            <h:outputText value="#{car[11]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Dif. bruta" style="font-size:10px;" >
+                                            <h:outputText value="#{car[12]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Mejoras" style="font-size:10px;" >
+                                            <h:outputText value="#{car[13]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="30" headerText="Dif. neta" style="font-size:10px;" >
+                                            <h:outputText value="#{car[14]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Años dominio" style="font-size:10px;" >
+                                            <h:outputText value="#{car[15]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Valor años dominio" style="font-size:10px;" >
+                                            <h:outputText value="#{car[16]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Dif. final" style="font-size:10px;" >
+                                            <h:outputText value="#{car[17]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Rebaja" style="font-size:10px;" >
+                                            <h:outputText value="#{car[18]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Valor rebaja" style="font-size:10px;" >
+                                            <h:outputText value="#{car[19]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Base Impuesto" style="font-size:10px;" >
+                                            <h:outputText value="#{car[20]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Tasa procesamiento" style="font-size:10px;" >
+                                            <h:outputText value="#{car[21]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="20" headerText="Impuesto" style="font-size:10px;" >
+                                            <h:outputText value="#{car[22]}" style="font-size:10px;" />
+                                        </p:column>
+                                        <p:column width="10" selectionMode="multiple"/>
+                                    </p:dataTable>                      
+                                </h:panelGrid>
+                                <p:commandButton style="font-size: 12px" id="btnReportePL" value="Generar Reporte"
+                                                 action="#{gestionRepAlcabalasEmitidasControlador.reportePlusvaliaEmitidas()}"
+                                                 oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 async="true"
+                                                 global="false"
+                                                 process="@this,pnlListEmisionPL" 
+                                                 />
+                            </p:panel>
+
+
+                          <!--  <p:panel id="pnlPlusTipoTarif" header="Reporte de Plusvalia Emitidas por Tipo de Tarifa" style="font-size: 12px">
+                                <h:panelGrid columns="4">
+                                    <p:outputLabel value="#{txt.TIPO_TARIFA}"/>
+
+                                    <p:selectOneMenu id="pComTT" value="#{gestionRepAlcabalasEmitidasControlador.catDetTipoTarifa}" style="width:180px;font-weight: bold;background: green;"
+                                                     converter="#{catalogoDetalleConverter}" var="t" required="true" requiredMessage="Se nesecita un valor: #{txt.TIPO_TARIFA}">
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listaTipoDeTarifa}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>                                                                             
+                                    </p:selectOneMenu> 
+
+                                    <p:commandButton style="font-size: 12px" id="btnReportePLTarif" value="Generar Reporte"
+                                                     action="#{gestionRepAlcabalasEmitidasControlador.reportePlusvaliaXTipoTarifa()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlPlusTipoTarif" 
+                                                     />
+                                    <p:column></p:column>
+                                </h:panelGrid>
+                            </p:panel>  -->
+
+                        </h:panelGrid>
+                    </p:panel>
+                </center>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

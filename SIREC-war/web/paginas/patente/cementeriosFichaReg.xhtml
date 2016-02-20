@@ -1,0 +1,530 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:psirec="http://java.sun.com/jsf/composite/psirec">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <!-- CEMENTERIOS -->
+            <h:form id="frmCementerios">   
+                <p:growl id="msgs" showDetail="true"/>
+                <center>
+                    <h:panelGrid id="pnlContieneCementerios" width="1000" columns="1" >
+                        <center>
+                            <h:panelGrid id="pnlBuscaCementerios" columns="1" width="1000">
+                                <p:panel>
+                                    <center>
+                                        <p:panel rendered="#{gestionCementeriosControlador.verBuscaCementerio==1}" header="Seleccione una opción de Busqueda:" style="font-size: 12px">
+                                            <p:selectOneRadio id="console" value="#{gestionCementeriosControlador.busOpcion}">
+                                                <f:selectItem itemLabel="Nombre de Occiso" itemValue="#{2}" />
+                                                <f:selectItem itemLabel="Nicho" itemValue="#{1}" />
+                                                <p:ajax update="pnlBusOccisoNicho" listener="#{gestionCementeriosControlador.buscaSelecciona()}" process="@this" ></p:ajax>
+                                            </p:selectOneRadio>
+                                        </p:panel>
+                                        <p:panel rendered="#{gestionCementeriosControlador.verBuscaCementerio==1}"  header="Búsqueda:" id="pnlBusOccisoNicho" style="font-size: 12px">
+                                            <h:panelGrid>
+                                                <center>
+                                                    <p:panel rendered="#{gestionCementeriosControlador.busxNicho==1}">
+                                                        <h:panelGrid columns="3" id="pnlBuscaPorNicho">
+                                                            <h:panelGrid>
+                                                                <p:outputLabel  style="font-size: #{txt.font_size}" value="Ingrese el N° Nicho"/>
+                                                                <p:inputText style="font-size: 12px" id="txtBuscaNicho"  value="#{gestionCementeriosControlador.numNicho}" 
+                                                                             maxlength="20" size="20"/>
+                                                                <p:message for="txtBuscaNicho" display="icon"/>
+                                                            </h:panelGrid>
+                                                            <h:panelGrid>
+                                                                <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_parroquia}"/>
+                                                                <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusParroquia" 
+                                                                                 value="#{gestionCementeriosControlador.catDetParroquia}" style="font-size: 12px;width:250px"
+                                                                                 converter="#{catalogoDetalleConverter}" var="t">
+                                                                    <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                                                    <f:selectItems var="tipTem"  
+                                                                                   value="#{gestionCementeriosControlador.listaCatDetParroquias}" 
+                                                                                   itemLabel="#{tipTem.catdetTexto}" 
+                                                                                   itemValue="#{tipTem}"/> 
+                                                                    <p:column width="200" style="white-space: normal">  
+                                                                        <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                                                    </p:column> 
+                                                                </p:selectOneMenu>   
+                                                                <p:message for="cmbBusParroquia" display="icon"/>
+                                                            </h:panelGrid>
+                                                            <p:commandButton value="#{txt.btn_aceptar}" 
+                                                                             style="font-size: 12px"
+                                                                             id="btnBuscaNicho" 
+                                                                             action="#{gestionCementeriosControlador.buscaNichoParroquia()}" 
+                                                                             icon="ui-icon-disk"  
+                                                                             process="@this,pnlBuscaPorNicho" 
+                                                                             update="pnlDatosCementerio"
+                                                                             async="true"
+                                                                             global="false"
+                                                                             />   
+                                                        </h:panelGrid>
+                                                    </p:panel>
+                                                </center>
+                                                <psirec:panelInformativo  rendered="#{gestionCementeriosControlador.resulBusqueda==1}" id="inf15xMilExoDedMulResult" background="#042B69" ancho="220" icono="fa-exclamation-triangle"
+                                                                          titulo="#{txt.lbl_head_error_patente}" tamanioTitulo="15" colorTitulo="white"
+                                                                          texto="#{txt.lbl_sin_resultados}" tamanioTexto="12" colorTexto="white"/>
+                                                <center>
+                                                    <p:panel rendered="#{gestionCementeriosControlador.busxOcciso==1}">
+                                                        <h:panelGrid columns="4" id="pnlBuscaPorNombre">
+                                                            <p:outputLabel value="Ingrese el nombre del occiso: "  style="font-size: 12px" />
+                                                            <p:autoComplete  
+                                                                value="#{gestionCementeriosControlador.cementerioActual}"
+                                                                onkeyup="value = value.toUpperCase()"
+                                                                completeMethod="#{gestionCementeriosControlador.sugiereNombreOcciso}"
+                                                                var="player"
+                                                                itemLabel="#{player.cemNombreOcciso}"
+                                                                itemValue="#{player}"
+                                                                size="50"
+                                                                converter="#{cementerioConverter}" >
+                                                                <p:ajax event="itemSelect" process="@this,pnlBuscaPorNombre" listener="#{gestionCementeriosControlador.onItemSelectCementerio}" update="pnlDatosCementerio" />
+                                                            </p:autoComplete>                                            
+                                                        </h:panelGrid>
+                                                    </p:panel>
+                                                </center>  
+                                            </h:panelGrid>
+                                        </p:panel>
+                                        <h:panelGrid columns="2">
+                                            <p:commandButton style="font-size: 12px" value="#{txt.btn_buscar}" 
+                                                             id="btnBusca" 
+                                                             action="#{gestionCementeriosControlador.buscarCementerio()}" 
+                                                             icon="ui-icon-disk"  
+                                                             process="@this,pnlBuscaCementerios" 
+                                                             update=":frmCementerios:pnlBuscaCementerios"
+                                                             async="true"
+                                                             global="false"
+                                                             />   
+                                            <p:commandButton  style="font-size: 12px" value="#{txt.btn_nuevo}" 
+                                                              id="btnNue" 
+                                                              action="#{gestionCementeriosControlador.inicializar()}" 
+                                                              icon="ui-icon-disk"  
+                                                              process="@this,pnlBuscaCementerios" 
+                                                              update=":frmCementerios:pnlBuscaCementerios"
+                                                              async="true"
+                                                              global="false"
+                                                              />    
+                                        </h:panelGrid>
+                                    </center>
+                                </p:panel>
+                            </h:panelGrid>
+                        </center>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <p:panel   header="#{txt.lbl_header_cementerios}" style="width: 99% !important; font-size: 12px !important;">
+                            <h:panelGrid columns="1" id="pnlDatosCementerio">
+                                <p:panel>
+                                    <h:panelGrid  columns="3">
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_parroquia}"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"    required="true" id="cmbPropParroquia" 
+                                                         value="#{gestionCementeriosControlador.catDetParroquia}" style="width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionCementeriosControlador.listaCatDetParroquias}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbPropParroquia" display="icon"/>                                      
+                                    </h:panelGrid>   
+
+                                    <h:panelGrid columns="6">
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ced_occico}"/>
+                                        <p:inputText  requiredMessage="#{txt.lbl_ced_occico} Se necesita un valor" id="compPnl1_7_1"  value="#{gestionCementeriosControlador.cementerioActual.occisoCi}" 
+                                                      size="40"/>
+                                        <p:message for="compPnl1_7" display="icon"/>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_occioso}"/>
+                                        <p:inputText  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.cementerioActual.cemNombreOcciso}" 
+                                                      size="40"/>
+                                        <p:message for="compPnl1_7" display="icon"/>
+                                    </h:panelGrid> 
+
+                                    <h:panelGrid columns="6">
+                                        <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_ced_rep}"/>
+                                        <p:inputText requiredMessage="#{txt.lbl_ced_rep} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionCementeriosControlador.ciRuc}" 
+                                                     maxlength="50" size="40"/>
+                                        <p:message for="compPnl1_10" display="icon"/>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_representante}"/>
+                                        <p:inputText   requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.cementerioActual.cemRepresentante}" 
+                                                       size="40"/>
+                                        <p:message for="compPnl1_8" display="icon"/>                                   
+                                    </h:panelGrid> 
+                                    <h:panelGrid columns="3">
+                                        <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_direc_representante}"/>
+                                        <p:inputTextarea style="width: 200px"  requiredMessage="#{txt.lbl_direc_representante} Se necesita un valor"  id="compPnl1_5"  value="#{gestionCementeriosControlador.cementerioActual.cemDirecRepresentante}" 
+                                                         />
+                                        <p:message for="compPnl1_5" display="icon"/>
+                                    </h:panelGrid>
+                                </p:panel>
+                                <h:panelGrid columns="9">
+                                    <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_num_papeleta}"/>
+                                    <p:inputText requiredMessage="#{txt.lbl_num_papeleta} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionCementeriosControlador.cementerioActual.cemNumPapeleta}" 
+                                                 maxlength="50" size="40"/>
+                                    <p:message for="compPnl1_11" display="icon"/>
+
+                                    <p:outputLabel style="font-size: #{txt.font_size}" for="button" value="#{txt.lbl_fec_fallece}"/>                               
+                                    <p:calendar navigator="true" required="true" locale="es" requiredMessage="#{txt.lbl_fec_fallece} Se necesita un valor" id="button" value="#{gestionCementeriosControlador.fechaFallece}" showOn="button" />
+                                    <p:message for="button" display="icon"/>
+
+                                    <p:outputLabel style="font-size: #{txt.font_size}" for="button" value="#{txt.lbl_fec_fin_contrato}"/>                               
+                                    <p:calendar navigator="true" required="true" locale="es" requiredMessage="#{txt.lbl_fec_fin_contrato} Se necesita un valor" id="button1" value="#{gestionCementeriosControlador.fehcaFinContrato}" showOn="button" />
+                                    <p:message for="button1" display="icon"/>
+
+                                </h:panelGrid> 
+                                <h:panelGrid columns="9">
+                                    <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_genero}"/>
+                                    <p:selectOneMenu requiredMessage="#{txt.lbl_genero} Se necesita un valor" required="true" id="cmbEstablecimiento" 
+                                                     value="#{gestionCementeriosControlador.catDetGenero}" style="width:250px"
+                                                     converter="#{catalogoDetalleConverter}" var="t">
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionCementeriosControlador.listGenero}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu>                               
+                                    <p:message for="cmbEstablecimiento" display="icon"/>
+
+                                    <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ubicacion}"/>
+                                    <p:selectOneMenu  requiredMessage="#{txt.lbl_ubicacion} Se necesita un valor" required="true" id="cmbTipEmpresa" 
+                                                      value="#{gestionCementeriosControlador.catDetUbicAtaud}" style="width:250px"
+                                                      converter="#{catalogoDetalleConverter}" var="t">
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionCementeriosControlador.listaUbicAtaud}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                        <p:ajax update="pnlConNichoSuelo" listener="#{gestionCementeriosControlador.activaNichoSuelo()}" process="@this" ></p:ajax>
+                                    </p:selectOneMenu>                               
+                                    <p:message for="cmbTipEmpresa" display="icon"/>
+
+                                    <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_estado}"/>
+                                    <p:selectOneMenu requiredMessage="#{txt.lbl_estado} Se necesita un valor"  required="true" id="cmbTipLocal" 
+                                                     value="#{gestionCementeriosControlador.catDetEstadoDefun}" style="width:250px"
+                                                     converter="#{catalogoDetalleConverter}" var="t">
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems var="tipTem"  
+                                                       value="#{gestionCementeriosControlador.listEstadoDefun}" 
+                                                       itemLabel="#{tipTem.catdetTexto}" 
+                                                       itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu>                               
+                                    <p:message for="cmbTipLocal" display="icon"/>
+
+
+                                </h:panelGrid> 
+                                <h:panelGrid columns="3">
+                                    <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_tipo}"/>
+                                    <p:selectOneMenu  requiredMessage="#{txt.lbl_tipo} Se necesita un valor"  required="true" id="cmbTipActividadEco" 
+                                                      value="#{gestionCementeriosControlador.catDetTipNicho}" style="width:250px"
+                                                      converter="#{catalogoDetalleConverter}" var="t">
+                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItems  var="tipTem"  
+                                                        value="#{gestionCementeriosControlador.listTipoNicho}" 
+                                                        itemLabel="#{tipTem.catdetTexto}" 
+                                                        itemValue="#{tipTem}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column> 
+                                    </p:selectOneMenu>                               
+                                    <p:message for="cmbTipActividadEco" display="icon"/> 
+                                </h:panelGrid>
+                                <h:panelGrid columns="3" id="pnlConNichoSuelo">
+                                    <p:outputLabel rendered="#{gestionCementeriosControlador.verNicho==1}" style="font-size: #{txt.font_size}" value="#{txt.lbl_num_nicho}"/>
+                                    <p:inputText rendered="#{gestionCementeriosControlador.verNicho==1}" required="true" requiredMessage="#{txt.lbl_num_nicho} Se necesita un valor"  id="compPnl1_24" value="#{gestionCementeriosControlador.cementerioActual.cemNumNicho}"  
+                                                 size="40"   />
+                                    <p:message rendered="#{gestionCementeriosControlador.verNicho==1}" for="compPnl1_24" display="icon"/>  
+
+                                    <p:outputLabel rendered="#{gestionCementeriosControlador.verSuelo==1}" style="font-size: #{txt.font_size}" value="#{txt.lbl_num_suelo}"/>
+                                    <p:inputText rendered="#{gestionCementeriosControlador.verSuelo==1}" requiredMessage="#{txt.lbl_num_suelo} Se necesita un valor"  id="compPnl1_26"  value="#{gestionCementeriosControlador.cementerioActual.cemNumSuelo}" 
+                                                 maxlength="20" size="40"/>
+                                    <p:message rendered="#{gestionCementeriosControlador.verSuelo==1}" for="compPnl1_26" display="icon"/> 
+
+                                    <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_obserba}"/>
+                                    <p:inputTextarea requiredMessage="#{txt.lbl_obserba} Se necesita un valor" style="width: 200px" id="compPnl1_29"  value="#{gestionCementeriosControlador.cementerioActual.cemObservacion}" 
+                                                     />
+                                    <p:message for="compPnl1_29" display="icon"/> 
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel header="Archivo" id="panelArchivos" style="font-size: #{txt.font_size}">
+                            <center><h:panelGrid>
+                                    <p:panel header="Adjuntar Documentos" style="font-size: #{txt.font_size}">
+                                        <h:panelGrid columns="3">
+                                            <h:panelGrid width="150">
+                                                <p:graphicImage value="/imagenes/subir.png" height="40px" width="40px"/>
+                                            </h:panelGrid>
+                                            <p:fileUpload fileUploadListener="#{gestionCementeriosControlador.handleFileUpload}"  
+                                                          mode="advanced"
+                                                          dragDropSupport="false"
+                                                          multiple="true"  
+                                                          update=":frmCementerios:msgs,:frmCementerios:info"
+                                                          sizeLimit="1000000"
+                                                          allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
+                                                          invalidSizeMessage="El archivo debe ser maximo 1MB"
+                                                          label="Seleccione el archivo" 
+                                                          uploadLabel="Cargar"
+                                                          cancelLabel="Cancelar"
+                                                          process="@this,info"  >                                                                                             
+                                                <f:attribute name="tipoArchivo" value="Capacitación teórica" />
+                                            </p:fileUpload>  
+                                            <h:panelGroup id="info">
+                                                <p:panel rendered="#{gestionCementeriosControlador.listaFiles.size()>0}">
+                                                    <f:facet name="header">
+                                                        <h:outputText value="Archivos:" />
+                                                    </f:facet>
+                                                    <p:dataGrid  columns="1" value="#{gestionCementeriosControlador.listaFiles}"  var="file" >
+                                                        <p:panel>
+                                                            <h:panelGrid columns="2">
+                                                                <h:panelGrid columns="4">
+                                                                    <h:outputText value="Achivo:" />
+                                                                    <h:outputText value="#{file.name}" />  
+                                                                    <h:outputText value=" " />
+                                                                    <p:column headerText="#{txt.eliminar_btn}" style="width:50px;text-align: center;font-size:12px;" >
+                                                                        <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                                                         actionListener="#{gestionCementeriosControlador.confirmaEliminarArchivo(file)}" 
+                                                                                         process="@this" async="true" global="false" update=":frmCementerios,:frmCementerios:msgs">
+                                                                            <p:confirm header="Confirmación"  message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                                                        </p:commandButton>
+                                                                    </p:column>  
+                                                                </h:panelGrid>
+                                                            </h:panelGrid>
+                                                        </p:panel>
+                                                    </p:dataGrid>
+                                                </p:panel>
+                                            </h:panelGroup>
+                                        </h:panelGrid>   
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>
+                                    </p:panel>
+                                    <h:panelGrid id="tablaListaArchvosCargados">
+                                        <p:panel style="width: 750px" header="Archivos Cargados" rendered="#{gestionCementeriosControlador.listadoArchivos.size()>0}">
+                                            <p:dataTable    paginator="true" rows="5" id="tablaListaIndArchivos" value="#{gestionCementeriosControlador.listadoArchivos}"  var="archivoColumna"   
+                                                            selectionMode="single" rowKey="#{archivoColumna.patarcCodigo}"
+                                                            styleClass="pdataTable_font"
+                                                            currentPageReportTemplate="{currentPage} de {totalPages}">                              
+                                                <p:column   headerText="Nombre Archivo" width="100" style="font-size:12px;">
+                                                    <h:outputText value="#{archivoColumna.patarcNombre}" style="font-size:12px;" />
+                                                </p:column> 
+
+                                                <p:column headerText="#{txt.eliminar_btn}" style="width:50px;text-align: center;font-size:12px;" >
+                                                    <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                                     actionListener="#{gestionCementeriosControlador.confirmaEliminarPatArchivo(archivoColumna)}" 
+                                                                     process="@this" update=":frmCementerios:tablaListaArchvosCargados,:frmCementerios:tablaListaArchvosCargados:message" async="true" global="false">
+                                                        <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                                    </p:commandButton>
+                                                </p:column>  
+                                            </p:dataTable>     
+                                        </p:panel>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="#{txt.btn_guardar}" 
+                                         style="font-size: 12px"
+                                         id="btnGuardar" 
+                                         action="#{gestionCementeriosControlador.guardarCementerios()}" 
+                                         icon="ui-icon-disk"  
+                                         process="@this,pnlDatosCementerio,panelArchivos" 
+                                         update=":frmCementerios:msgs"
+                                         async="true"
+                                         global="false"
+                                         ajax="false"
+
+                                         />
+                        <p:commandButton value="#{txt.btn_cancelar}"
+                                         style="font-size: 12px"
+                                         id="btnNuevo" 
+                                         action="#{gestionCementeriosControlador.inicializar()}" 
+                                         icon="ui-icon-document"  
+                                         process="@this,pnlDatosCementerio" 
+                                         update=":frmCementerios:pnlContieneCementerios"
+                                         async="true"
+                                         global="false"
+                                         />
+                    </h:panelGrid>    
+                </center>
+                <center>
+                    <p:panel>
+                        <h:panelGrid id="pnlContieneListados" columns="1">
+                            <h:panelGrid id="pnlConLisInhumado">
+                                <p:dataTable paginator="true" rows="10" id="tablaListaInumado" value="#{gestionCementeriosControlador.listaOccisoInumado}"  var="inuColumna"   
+                                             selectionMode="single" rowKey="#{inuColumna.cemCodigo}"
+                                             styleClass="pdataTable_font"
+                                             currentPageReportTemplate="{currentPage} de {totalPages}">  
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{txt.lbl_header_list_inumado}" style="font-size:15px;"/>
+                                    </f:facet>
+                                    <p:column filterBy="#{inuColumna.cemNombreOcciso}" headerText="#{txt.lbl_nom_occiso_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNombreOcciso}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column filterBy="#{inuColumna.cemRepresentante}" headerText="#{txt.lbl_nom_rep_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemRepresentante}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column    headerText="#{txt.lbl_num_papeleta_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNumPapeleta}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemNumNicho}" style="font-size:12px;" />
+                                    </p:column>  
+                                    <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemFechaFallece}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_fec_fin_contrato}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.cemFechaFinContrato}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.btn_cambia_estado}" style="width:50px;text-align: center;font-size:12px;" >
+                                        <p:commandButton style="font-size:12px;" icon="ui-icon-pencil"  onclick="PF('dlgCambio').show();" action="#{gestionCementeriosControlador.recuperarCementerioCampos(inuColumna)}" 
+                                                         process="@this" update=":frmCementerios:pnlDatosModifica" async="true" global="false">
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>                       
+                            </h:panelGrid>
+
+                            <!--Panel guarda cambios de estado -->
+                            <p:dialog header="Cambios de estado" style="font-size: 10px" widgetVar="dlgCambio" width="700" height="500">
+                                <p:panel header="Registro de modificaciones: Inhumado a Exhumado">
+                                    <h:panelGrid id="panlCambioEstado">
+                                        <h:panelGrid columns="2" id="pnlDatosModifica">
+                                            <h:outputLabel value="Nombre del occiso: "/><h:outputLabel value="#{gestionCementeriosControlador.cementerioActual.cemNombreOcciso}" />
+                                            <h:outputLabel value="Cambio de estado a: "/><h:outputLabel value="Exhumado"/>
+                                        </h:panelGrid>
+                                        <h:panelGrid>
+                                            <p:outputLabel  style="font-size: #{txt.font_size}" value="Ingrese sus #{txt.lbl_obserba}"/>
+                                            <p:inputTextarea id="txtDirN"  value="#{gestionCementeriosControlador.observacionesCambioHis}" 
+                                                             />
+                                            <p:message for="txtDirN"/>
+                                        </h:panelGrid>
+
+                                        <p:panel header="Archivo" style="font-size: #{txt.font_size}">
+                                            <center>
+                                                <h:panelGrid>
+                                                    <p:panel header="Adjuntar Documentos" style="font-size: #{txt.font_size}">
+                                                        <h:panelGrid columns="3">
+                                                            <h:panelGrid width="150">
+                                                                <p:graphicImage value="/imagenes/subir.png" height="40px" width="40px"/>
+                                                            </h:panelGrid>
+                                                            <p:fileUpload fileUploadListener="#{gestionCementeriosControlador.handleFileUpload}"  
+                                                                          mode="advanced"
+                                                                          dragDropSupport="false"
+                                                                          multiple="true"  
+                                                                          update=":frmCementerios:msgs,:frmCementerios:infoCambioEstado"
+                                                                          sizeLimit="1000000"
+                                                                          allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
+                                                                          invalidSizeMessage="El archivo debe ser maximo 1MB"
+                                                                          label="Seleccione el archivo" 
+                                                                          uploadLabel="Cargar"
+                                                                          cancelLabel="Cancelar"
+                                                                          process="@this,info"  >                                                                                             
+                                                                <f:attribute name="tipoArchivo" value="Capacitación teórica" />
+                                                            </p:fileUpload>  
+                                                            <h:panelGroup id="infoCambioEstado">
+                                                                <p:panel rendered="#{gestionCementeriosControlador.listaFiles.size()>0}">
+                                                                    <f:facet name="header">
+                                                                        <h:outputText value="Archivos:" />
+                                                                    </f:facet>
+                                                                    <p:dataGrid  columns="1" value="#{gestionCementeriosControlador.listaFiles}"  var="file" >
+                                                                        <p:panel>
+                                                                            <h:panelGrid columns="2">
+                                                                                <h:panelGrid columns="4">
+                                                                                    <h:outputText value="Achivo:" />
+                                                                                    <h:outputText value="#{file.name}" />  
+                                                                                    <h:outputText value=" " />
+                                                                                    <p:column headerText="#{txt.eliminar_btn}" style="width:50px;text-align: center;font-size:12px;" >
+                                                                                        <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
+                                                                                                         actionListener="#{gestionCementeriosControlador.confirmaEliminarArchivo(file)}" 
+                                                                                                         process="@this" async="true" global="false" update=":frmCementerios,:frmCementerios:msgs">
+                                                                                            <p:confirm header="Confirmación"  message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
+                                                                                        </p:commandButton>
+                                                                                    </p:column>  
+                                                                                </h:panelGrid>
+                                                                            </h:panelGrid>
+                                                                        </p:panel>
+                                                                    </p:dataGrid>
+                                                                </p:panel>
+                                                            </h:panelGroup>
+                                                        </h:panelGrid>   
+                                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                                                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                                        </p:confirmDialog>
+                                                    </p:panel>                                    
+                                                </h:panelGrid>
+                                            </center>
+                                        </p:panel>
+                                        <h:panelGrid columns="2">
+                                            <p:commandButton value="#{txt.btn_guardar}" style="font-size: 12px" process="@this,panlCambioEstado" update="pnlConLisInhumado,pnlConLisExhumado,msgs"
+                                                             action="#{gestionCementeriosControlador.guardarCementerioHistorial()}"/>
+                                            <p:commandButton value="#{txt.btn_cancelar}" style="font-size: 12px"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid> 
+                                </p:panel>
+                            </p:dialog>
+                            <!-- Fin panel guarda cambios de estado -->
+
+                            <h:panelGrid id="pnlConLisExhumado">
+                                <p:dataTable paginator="true" rows="10" id="tablaListaExumado" value="#{gestionCementeriosControlador.listOccisoExumado}"  var="exuColumna"   
+                                             selectionMode="single" rowKey="#{exuColumna.cemCodigo}"
+                                             styleClass="pdataTable_font"
+                                             currentPageReportTemplate="{currentPage} de {totalPages}">  
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{txt.lbl_header_list_exumado}" style="font-size:15px;"/>
+                                    </f:facet>
+                                    <p:column filterBy="#{exuColumna.cemNombreOcciso}" headerText="#{txt.lbl_nom_occiso_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNombreOcciso}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column filterBy="#{exuColumna.cemRepresentante}" headerText="#{txt.lbl_nom_rep_list}" width="100" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemRepresentante}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column    headerText="#{txt.lbl_num_papeleta_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNumPapeleta}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemNumNicho}" style="font-size:12px;" />
+                                    </p:column>  
+                                    <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemFechaFallece}" style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="#{txt.lbl_fec_fin_contrato}" width="35" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.cemFechaFinContrato}" style="font-size:12px;" />
+                                    </p:column>                                  
+                                </p:dataTable>                       
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:panel>                    
+                </center>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

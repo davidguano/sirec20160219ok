@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <center>
+                <h:form id="frmBaja" style="font-size: 12px;">         
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:panel header="Bajas de Títulos">
+                    <h:panelGrid id="pnlBajaBusqueda">
+                        <p:panel>
+                            <h:panelGrid id="pnl" columns="3">
+                                <p:commandButton id="btnNuevo"
+                                                 value="Nuevo"
+                                                 icon="fa fa-file-o"
+                                                 action="#{bajaControlador.inicializar}"
+                                                 process="@this"
+                                                 update="@form"/>
+                                <f:verbatim/>
+                                <f:verbatim/>
+                                <p:outputLabel value="Tipo de Impuesto:" for="tipoImp"/>
+                                <p:selectOneMenu id="tipoImp" value="#{bajaControlador.tipoImpuesto}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Predial" itemValue="PR"/>
+                                    <f:selectItem itemLabel="Patente" itemValue="PA"/>
+                                    <f:selectItem itemLabel="Patente 1.5x1000" itemValue="PM"/>
+                                </p:selectOneMenu>
+                                <p:message for="tipoImp"/>
+
+                                <p:outputLabel value="CI/RUC:" for="ciRuc"/>
+                                <p:inputText id="ciRuc" value="#{bajaControlador.ciProp}"
+                                             maxlength="13"/>
+                                <p:commandButton icon="fa fa-search"
+                                                 async="true" global="false"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 process="@this,tipoImp,ciRuc"
+                                                 update="pnlTitulosBajas"
+                                                 action="#{bajaControlador.listarRecaudacionesBajasPorTipoYCedula}"/>
+
+                                <p:outputLabel value="Apellidos:" for="apell"/>
+                                <p:inputText id="apell" value="#{bajaControlador.apellidosProp}"
+                                             maxlength="13"/>
+                                <p:commandButton icon="fa fa-search"
+                                                 async="true" global="false"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 process="@this,tipoImp,apell"
+                                                 update="pnlTitulosBajas"
+                                                 action="#{bajaControlador.listarRecaudacionesBajasPorTipoYApellidos}"/>
+
+                                <p:outputLabel value="Clave Catastral:" for="claveCat"/>
+                                <p:inputText id="claveCat" value="#{bajaControlador.claveCat}"
+                                             maxlength="13"/>
+                                <p:commandButton icon="fa fa-search"
+                                                 async="true" global="false"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 process="@this,tipoImp,claveCat"
+                                                 update="pnlTitulosBajas"
+                                                 action="#{bajaControlador.listarRecaudacionesBajasPorTipoYClaveCat}"/>
+
+                                <p:outputLabel value="Clave Patente:" for="clavePat"/>
+                                <p:inputText id="clavePat" value="#{bajaControlador.clavePat}"
+                                             maxlength="13"/>
+                                <p:commandButton icon="fa fa-search"
+                                                 async="true" global="false"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 process="@this,tipoImp,clavePat"
+                                                 update="pnlTitulosBajas"
+                                                 action="#{bajaControlador.listarRecaudacionesBajasPorTipoYClavePat}"/>
+                            </h:panelGrid>
+                            <h:panelGrid id="pnlTitulosBajas" width="800">
+                                <p:dataTable id="lstTitulos" value="#{bajaControlador.listaRecaudacionesTitulos}"
+                                             var="rec">
+                                    <f:facet name="header">
+                                        Títulos registrados
+                                    </f:facet>
+                                    <p:column headerText="CI/RUC">
+                                        <h:outputText value="#{rec.cxcCodigo.proCi.proCi}"/>
+                                    </p:column>
+                                    <p:column headerText="Contribuyente">
+                                        <h:outputText value="#{rec.cxcCodigo.proCi.proApellidos} #{rec.cxcCodigo.proCi.proNombres}"/>
+                                    </p:column>
+                                    <p:column headerText="Rec.">
+                                        <h:outputText value="REC-#{rec.recCodigo.recCodigo}"/>
+                                    </p:column>
+                                    <p:column headerText="Rubro">
+                                        <h:outputText value="Predial" rendered="#{rec.recdetTipo=='PR'}"/>
+                                        <h:outputText value="Patente" rendered="#{rec.recdetTipo=='PA'}"/>
+                                        <h:outputText value="Patente 1.5x1000" rendered="#{rec.recdetTipo=='PM'}"/>
+                                    </p:column>
+                                    <p:column headerText="Referencia" width="150">
+                                        <h:panelGrid border="0">
+                                            <h:outputText value="#{rec.recdetReferencia}"/>
+                                            <h:outputText value="ANULADO" rendered="#{rec.recdetBaja}" style="color:red"/>
+                                            </h:panelGrid>
+                                    </p:column>
+                                    <p:column headerText="Valor">
+                                        <h:outputText value="#{rec.recdetValor}"/>
+                                    </p:column>
+                                    <p:column width="30">
+                                        <p:commandButton id="btnSeleccionar" icon="fa fa-pencil"
+                                                         action="#{bajaControlador.seleccionarTitulo(rec)}"
+                                                         process="@this" update=":frmBaja:pnlBaja,:frmBaja:msgs"
+                                                         onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                         async="true" global="false"/>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <p:dataTable id="lstBajas" value="#{bajaControlador.listaBajas}"
+                                             var="baja">
+                                    <f:facet name="header">
+                                        Títulos anulados
+                                    </f:facet>
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{baja.bajNombreArchivo}"/>
+                                    </p:column>
+                                    <p:column headerText="CI/RUC">
+                                        <h:outputText value="#{baja.recdetCodigo.cxcCodigo.proCi.proCi}"/>
+                                    </p:column>
+                                    <p:column headerText="Contribuyente">
+                                        <h:outputText value="#{baja.recdetCodigo.cxcCodigo.proCi.proApellidos} #{baja.recdetCodigo.cxcCodigo.proCi.proNombres}"/>
+                                    </p:column>
+                                    <p:column headerText="Rec.">
+                                        <h:outputText value="REC-#{baja.recdetCodigo.recCodigo.recCodigo}"/>
+                                    </p:column>
+                                    <p:column headerText="Referencia" width="150">
+                                        <h:outputText value="#{baja.recdetCodigo.recdetReferencia}"/>
+                                    </p:column>
+                                    <p:column headerText="Valor">
+                                        <h:outputText value="#{baja.recdetCodigo.recdetValor}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:panelGrid>
+                    <h:panelGrid id="pnlBaja">
+                        <p:panel>
+                            <h:panelGrid columns="3">
+                                <p:outputLabel value="Motivo:"/>
+                                <p:selectOneMenu id="mot" value="#{bajaControlador.bajaActual.bajTipo}"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Tercera Edad" itemValue="3E"/>
+                                    <f:selectItem itemLabel="Mediante Oficio" itemValue="OF"/>
+                                    <f:selectItem itemLabel="Prescripcion" itemValue="PR"/>
+                                </p:selectOneMenu>
+                                <p:message for="mot"/>
+                                <p:outputLabel value="Titulo:"/>
+                                <p:outputLabel value="#{bajaControlador.bajaActual.recdetCodigo.recdetTipo} #{bajaControlador.bajaActual.recdetCodigo.recdetReferencia}" />
+                                <f:verbatim/>
+                                <p:outputLabel value="Observaciones:" for="obs"/>
+                                <p:inputTextarea id="obs" value="#{bajaControlador.bajaActual.bajObservaciones}"
+                                                 required="true"
+                                                 cols="50"
+                                                 rows="3"/>
+                                <p:message for="obs"/>
+                                <f:verbatim/>
+                                
+                                <f:verbatim/>
+                            </h:panelGrid>
+                            <h:panelGrid columns="2">
+                                <p:commandButton id="btnVistaPrevia" icon="fa fa-info"
+                                                 value="Ver Vista Previa"
+                                                 action="#{bajaControlador.generarTituloAnuladoVistaPrevia}"
+                                                             process="@this"
+                                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                             async="true" global="false"
+                                                             update="msgs"
+                                                             oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"/>
+                                <p:commandButton id="btnBaja" 
+                                                 value="Registrar Baja"
+                                                 process="@this,mot,obs"
+                                                 action="#{bajaControlador.guardarBaja}"
+                                                 update="@form"
+                                                 icon="fa fa-save"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 async="true" global="false"/>
+                            </h:panelGrid>
+                            
+                        </p:panel>
+                    </h:panelGrid>
+
+
+                    </p:panel>
+                </h:form>
+
+
+            </center>
+
+        </ui:define>
+    </ui:composition>
+</html>
+
+
+
+

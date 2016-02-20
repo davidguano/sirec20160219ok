@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <center>
+                <h:form id="frmCoactiva" style="font-size: 12px;">         
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:panel header="Coactivas">
+                        <h:panelGrid columns="2">
+                            <p:panel header="Búsqueda de Contribuyente">
+                                <h:panelGrid columns="3" width="400">
+                                    <h:outputLabel value="Por CI/RUC:" for="recProCi" />
+                                    <p:autoComplete id="recProCi" value="#{coactivaControlador.propietarioBusqueda}" 
+                                                    completeMethod="#{coactivaControlador.obtenerPropietarioPorCedula}" 
+                                                    converter="#{propietarioConverter}"
+                                                    size="25"
+                                                    minQueryLength="5" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    var="pro" itemLabel="#{pro.proCi}" itemValue="#{pro}">
+                                        <p:column>
+                                            <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                process="@this"
+                                                listener="#{coactivaControlador.seleccionarPropietario}"
+                                                update="recProApe,recProNom,pnlListas"
+                                                async="true" global="false"/>
+                                    </p:autoComplete>
+                                    <p:message for="recProCi"/>
+
+                                    <h:outputLabel value="Por Apellidos:" for="recProApe" />
+                                    <p:autoComplete id="recProApe" value="#{coactivaControlador.propietarioBusqueda}" 
+                                                    completeMethod="#{coactivaControlador.obtenerPropietarioPorApellidos}" 
+                                                    converter="#{propietarioConverter}"
+                                                    minQueryLength="5" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    size="25"
+                                                    var="pro" itemLabel="#{pro.proApellidos}" itemValue="#{pro}"  forceSelection="true">
+                                        <p:column>
+                                            <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                process="@this"
+                                                listener="#{coactivaControlador.seleccionarPropietario}"
+                                                update="recProCi,recProNom,pnlListas"
+                                                async="true" global="false"/>
+                                    </p:autoComplete>
+                                    <p:message for="recProApe"/>
+                                    <h:outputLabel value="Por Nombres:" for="recProNom" />
+                                    <p:autoComplete id="recProNom" value="#{coactivaControlador.propietarioBusqueda}" 
+                                                    completeMethod="#{coactivaControlador.obtenerPropietarioPorNombres}" 
+                                                    converter="#{propietarioConverter}"
+                                                    minQueryLength="5" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    size="25"
+                                                    var="pro" itemLabel="#{pro.proNombres}" itemValue="#{pro}"  forceSelection="true">
+                                        <p:column>
+                                            <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                process="@this"
+                                                listener="#{coactivaControlador.seleccionarPropietario}"
+                                                update="recProApe,recProCi,pnlListas"
+                                                async="true" global="false"/>
+                                    </p:autoComplete>
+                                    <p:message for="recProNom"/>
+
+                                    <h:outputLabel value="Por Clave Catastral:" for="recClaveC" />
+                                    <p:autoComplete id="recClaveC" value="#{coactivaControlador.propietarioBusqueda}" 
+                                                    completeMethod="#{coactivaControlador.obtenerPropietarioPorClaveCatastro}" 
+                                                    converter="#{propietarioConverter}"
+                                                    minQueryLength="19" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    size="25"
+                                                    var="pro" itemLabel="#{pro.proCi}" itemValue="#{pro}"  forceSelection="true">
+                                        <p:column>
+                                            <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                process="@this"
+                                                listener="#{coactivaControlador.seleccionarPropietario}"
+                                                update="recProApe,recProCi,pnlListas"
+                                                async="true" global="false"/>
+                                    </p:autoComplete>
+                                    <p:message for="recClaveC"/>
+
+                                    <h:outputLabel value="Por Clave Patente:" for="recClaveP" />
+                                    <p:autoComplete id="recClaveP" value="#{coactivaControlador.propietarioBusqueda}" 
+                                                    completeMethod="#{coactivaControlador.obtenerPropietarioPorClavePatente}" 
+                                                    converter="#{propietarioConverter}"
+                                                    minQueryLength="1" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    size="25" maxlength="6"
+                                                    var="pro" itemLabel="#{pro.proCi}" itemValue="#{pro}"  forceSelection="true">
+                                        <p:column>
+                                            <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                process="@this"
+                                                listener="#{coactivaControlador.seleccionarPropietario}"
+                                                update="pnlListas"
+                                                async="true" global="false"/>
+                                    </p:autoComplete>
+                                    <p:message for="recClaveP"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </h:panelGrid>
+
+                        <h:panelGrid id="pnlListas" width="800">
+                            <p:dataTable id="lstPendientes" value="#{coactivaControlador.listaCuentasPendientes}"
+                                         var="item">
+                                <f:facet name="header">
+                                    Deudas pendientes
+                                </f:facet>
+                                <p:column width="20">
+                                    <p:selectBooleanCheckbox value="#{item.seleccionado}" />
+                                </p:column>
+                                <p:column headerText="Contribuyente">
+                                    <h:panelGrid>
+                                        <h:outputText value="#{item.proCi.proCi}"/>
+                                        <h:outputText value="#{item.proCi.proApellidos} #{item.proCi.proNombres}"/>
+                                    </h:panelGrid>
+                                </p:column>
+                                <p:column headerText="Rubro">
+                                    <h:outputText value="Predial" rendered="#{item.cxcTipo=='PR'}"/>
+                                    <h:outputText value="Patente" rendered="#{item.cxcTipo=='PA'}"/>
+                                    <h:outputText value="Patente 1.5x1000" rendered="#{item.cxcTipo=='PM'}"/>
+                                    <h:outputText value="Alcabala" rendered="#{item.cxcTipo=='AL'}"/>
+                                    <h:outputText value="Plusvalia" rendered="#{item.cxcTipo=='PL'}"/>
+                                    <h:outputText value="Servicio" rendered="#{item.cxcTipo=='SE'}"/>
+                                </p:column>
+                                <p:column headerText="Referencia" width="150">
+                                    <h:outputText value="#{item.cxcReferencia}"/>
+                                </p:column>
+                                <p:column headerText="Valor Total">
+                                    <h:outputText value="#{item.cxcValorTotal}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <h:panelGrid>
+                                <p:commandButton id="btnIniciar"
+                                                 value="GENERAR"
+                                                 action="#{coactivaControlador.guardarCoactivas}"
+                                                 async="true" global="false"
+                                                 icon="fa fa-exclamation-circle"
+                                                 process="@this,lstPendientes"
+                                                 update="lstCoactivas,lstPendientes"/>
+                            </h:panelGrid>
+                            <p:dataTable id="lstCoactivas" value="#{coactivaControlador.listaCoactivas}"
+                                         var="item">
+                                <f:facet name="header">
+                                    Procesos de Coactiva
+                                </f:facet>
+                                <p:column headerText="Contribuyente">
+                                    <h:panelGrid>
+                                        <h:outputText value="#{item.cxcCodigo.proCi.proCi}"/>
+                                        <h:outputText value="#{item.cxcCodigo.proCi.proApellidos} #{item.cxcCodigo.proCi.proNombres}"/>
+                                    </h:panelGrid>
+                                </p:column>
+                                <p:column headerText="Rubro">
+                                    <h:outputText value="Predial" rendered="#{item.cxcCodigo.cxcTipo=='PR'}"/>
+                                    <h:outputText value="Patente" rendered="#{item.cxcCodigo.cxcTipo=='PA'}"/>
+                                    <h:outputText value="Patente 1.5x1000" rendered="#{item.cxcCodigo.cxcTipo=='PM'}"/>
+                                    <h:outputText value="Alcabala" rendered="#{item.cxcCodigo.cxcTipo=='AL'}"/>
+                                    <h:outputText value="Plusvalia" rendered="#{item.cxcCodigo.cxcTipo=='PL'}"/>
+                                    <h:outputText value="Servicio" rendered="#{item.cxcCodigo.cxcTipo=='SE'}"/>
+                                </p:column>
+                                <p:column headerText="Referencia" width="150">
+                                    <h:outputText value="#{item.cxcCodigo.cxcReferencia}"/>
+                                </p:column>
+                                <p:column headerText="Valor Total">
+                                    <h:outputText value="#{item.cxcCodigo.cxcValorTotal}"/>
+                                </p:column>
+                                <p:column headerText="N1" width="20">
+                                    <p:selectBooleanCheckbox id="n1" value="#{item.coaNotificacion1}"/>
+                                </p:column>
+                                <p:column headerText="N2" width="20">
+                                    <p:selectBooleanCheckbox id="n2" value="#{item.coaNotificacion2}"/>
+                                </p:column>
+                                <p:column headerText="N3" width="20">
+                                    <p:selectBooleanCheckbox id="n3" value="#{item.coaNotificacion3}"/>
+                                </p:column>
+                                <p:column headerText="Coactiva"  width="40">
+                                    <p:selectBooleanCheckbox id="coa" value="#{item.coaNotificacion}"/>
+                                </p:column>
+                                <p:column  width="30">
+                                    <p:commandButton id="btnCoactiva"
+                                                     icon="fa fa-flag"
+                                                     process="@this,n1,n2,n3,coa"
+                                                     action="#{coactivaControlador.enviarNotificacion(item)}"
+                                                     async="true" global="false"
+                                                     update=":frmCoactiva:msgs"
+                                                     title="Registrar Notificación"
+                                                     />
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+
+
+            </center>
+
+        </ui:define>
+    </ui:composition>
+</html>
+
+
+
+

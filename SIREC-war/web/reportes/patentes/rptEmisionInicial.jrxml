@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptEmisionInicial" language="groovy" pageWidth="1016" pageHeight="595" orientation="Landscape" columnWidth="1016" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="734"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo_gad" class="java.lang.String"/>
+	<parameter name="fecha_inicial" class="java.sql.Timestamp"/>
+	<parameter name="fecha_final" class="java.sql.Timestamp"/>
+	<parameter name="usuario_genera" class="java.lang.String"/>
+	<parameter name="fecha_genera" class="java.lang.String"/>
+	<parameter name="rango_parametros" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,
+p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,
+pv.patval_impuesto as impuestoPatente,pv.patval_tasa_bomb as tasaBomberos,pv.patval_tasa_proc as tasaProcesamiento,
+pv.patval_total as totalPatente,pvmil.pat15val_base_imponible as baseImponible,pvmil.pat15val_impuesto as impuestoxMil,pvmil.pat15val_tasa_proc as tasaProxMil,
+pvmil.pat15val_total as totalValxMil
+from
+sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp,
+sirec.patente pa,sirec.patente_valoracion pv,sirec.patente_15xmil_valoracion pvmil,
+sirec.catalogo_detalle cdp
+where p.pro_ci=pp.pro_ci
+and pp.catpre_codigo=cp.catpre_codigo
+and cp.catpre_codigo=pa.catpre_codigo
+and pa.pat_codigo=pv.pat_codigo
+and pa.pat_codigo=pvmil.pat_codigo
+and cp.catdet_parroquia=cdp.catdet_codigo
+and pa.ultacc_marcatiempo between  $P{fecha_inicial} and  $P{fecha_final}
+and pa.pat_codigo in($P!{rango_parametros})
+order by 1,pv.patval_anio]]>
+	</queryString>
+	<field name="clavepatente" class="java.lang.Integer"/>
+	<field name="nomcontribuente" class="java.lang.String"/>
+	<field name="identificacion" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="parroquia" class="java.lang.String"/>
+	<field name="año" class="java.lang.Integer"/>
+	<field name="patrimonio" class="java.math.BigDecimal"/>
+	<field name="impuestopatente" class="java.math.BigDecimal"/>
+	<field name="tasabomberos" class="java.math.BigDecimal"/>
+	<field name="tasaprocesamiento" class="java.math.BigDecimal"/>
+	<field name="totalpatente" class="java.math.BigDecimal"/>
+	<field name="baseimponible" class="java.math.BigDecimal"/>
+	<field name="impuestoxmil" class="java.math.BigDecimal"/>
+	<field name="tasaproxmil" class="java.math.BigDecimal"/>
+	<field name="totalvalxmil" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch">
+			<image>
+				<reportElement x="9" y="1" width="100" height="50" uuid="ca1e179b-a32a-4a9c-b5ac-2c64853d5ff4"/>
+				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="366" y="2" width="252" height="20" uuid="8bb5b337-e808-477d-9d60-811bb9f8f8d9"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="22" width="251" height="20" uuid="0b68be57-4e73-4152-9a2e-afcf513e9683"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Patentes y 1.5 por mil - Reporte de emisión inicial]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="733" y="1" width="206" height="13" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement x="767" y="14" width="128" height="13" uuid="39968d79-0b5d-4f59-9e90-b726dd8d11b8"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="792" y="27" width="147" height="13" uuid="09200e5b-b04a-48ad-8671-31ce5d3b7f27"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_inicial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="733" y="27" width="59" height="13" uuid="e20637e0-8d0a-48b1-abab-a6e943035b29"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha inicial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="733" y="40" width="59" height="13" uuid="5624cbba-5cc3-4a6b-980a-39d1e6e5a89e"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha inicial:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="791" y="40" width="147" height="13" uuid="ec650cbc-1f18-4891-8d94-beca628385b5"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="733" y="14" width="33" height="13" uuid="428dc2e8-690f-4a6a-8d1d-2ae4eac6eab4"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<rectangle>
+				<reportElement x="9" y="0" width="998" height="18" forecolor="#FFFFFF" backcolor="#CAF4E9" uuid="951ad778-7d0a-4b50-a40d-78844e9bb3a5"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="62" y="2" width="121" height="15" uuid="2fe57de2-c0df-4fe5-baaa-c1732797585b"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Nombre Contribuyente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="2" width="65" height="15" uuid="1e1349bb-8344-42df-9e41-9dcfd2320a15"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Identificación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="248" y="2" width="118" height="15" uuid="0aacc17f-1b82-4912-90a9-0aa1aedbcba1"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Dirección]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="2" width="62" height="15" uuid="b620df85-a945-4da6-a3d1-03a63c275100"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Parroquia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="428" y="2" width="39" height="15" uuid="5d7afb05-7915-45cc-b6f8-c4d81a7752b1"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Año]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="467" y="2" width="76" height="15" uuid="110e0060-be9a-41d5-a5b5-ef76e2af5069"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Patrimonio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="543" y="2" width="58" height="15" uuid="fd24d430-aee0-417b-93ad-f54438d2a53b"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Imp. Patente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="601" y="2" width="72" height="15" uuid="a21c2377-9a08-4b57-9fbd-49a04a9b1a4d"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Tasa. Bomberos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="673" y="2" width="51" height="15" uuid="3d52387c-f2ec-4437-b4ad-ad6292573ae6"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Ts.Proc.Pat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="9" y="2" width="53" height="15" uuid="2abbf1ca-797d-470a-b593-495a7c578e5d"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Patente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="724" y="2" width="51" height="15" uuid="5e42b94b-8977-4476-9d4d-c8db255d3620"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total. Pat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="775" y="2" width="51" height="15" uuid="e7c9a94f-3ea8-4941-937c-53b26a1e8a85"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Base. Imp.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="946" y="2" width="61" height="15" uuid="32fcbf9a-a09a-4fd4-aaba-628737589e37"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total 1.5xmil]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="826" y="2" width="51" height="15" uuid="b2e9a1c2-034f-4f10-8433-ca100b236fc0"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Imp. 1.5xmil]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="877" y="2" width="69" height="15" uuid="9602ca6c-f509-4b17-aea3-ed4c93382294"/>
+				<textElement textAlignment="Justified">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Ts.Proc.1.5xmil]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="9" y="0" width="53" height="15" isPrintWhenDetailOverflows="true" uuid="6c7a810b-9ba6-4519-89ea-7f0292e3c032"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["AE-MPM-"+$F{clavepatente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="62" y="0" width="121" height="15" isPrintWhenDetailOverflows="true" uuid="9f55e93c-1782-46ef-bb93-3865fe5e0141"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomcontribuente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="183" y="0" width="65" height="15" isPrintWhenDetailOverflows="true" uuid="4d7ed7fa-cc5f-4d3e-862b-cc151dc28ed5"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="248" y="0" width="118" height="15" isPrintWhenDetailOverflows="true" uuid="afa0a1f3-90b5-4a19-ba36-65941b442b7d"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="428" y="0" width="39" height="15" isPrintWhenDetailOverflows="true" uuid="fde0b1b4-19f0-4c49-81a7-36ee17276985"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{año}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="601" y="0" width="72" height="15" isPrintWhenDetailOverflows="true" uuid="816921c5-ab5e-45c1-bdf1-d5ee22dc3018"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tasabomberos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="366" y="0" width="62" height="15" isPrintWhenDetailOverflows="true" uuid="7f4f73c3-2ff8-4b4c-a4cb-91786a88fbfe"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parroquia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="467" y="0" width="76" height="15" isPrintWhenDetailOverflows="true" uuid="01a61f88-be60-40b6-939e-f21d3dc1beea"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{patrimonio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="543" y="0" width="58" height="15" isPrintWhenDetailOverflows="true" uuid="b93de323-396d-4d95-9db7-8adf0f8318e7"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impuestopatente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="673" y="0" width="51" height="15" isPrintWhenDetailOverflows="true" uuid="8408bb1e-3964-41d9-99e7-39f75ecfc703"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tasaprocesamiento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="724" y="0" width="51" height="15" isPrintWhenDetailOverflows="true" uuid="95964fea-a08f-441f-8d08-145d0555c0e5"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalpatente}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="775" y="0" width="51" height="15" isPrintWhenDetailOverflows="true" uuid="9bbf082c-a68a-4c31-bbd9-c7611d0ab280"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{baseimponible}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="826" y="0" width="51" height="15" isPrintWhenDetailOverflows="true" uuid="64104d1e-e7f9-499d-97e0-9819704f16c6"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impuestoxmil}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="877" y="0" width="69" height="15" isPrintWhenDetailOverflows="true" uuid="9f2abe10-b1ed-404b-ae42-b63a8050d09d"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impuestoxmil}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="946" y="0" width="61" height="15" isPrintWhenDetailOverflows="true" uuid="119bf87f-c4a8-4a37-b0e6-4d1f1cf7c239"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalvalxmil}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="13">
+			<textField>
+				<reportElement x="445" y="0" width="100" height="13" uuid="3bdc2d80-cede-486f-828d-0f90ce7dcae1"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pág."+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

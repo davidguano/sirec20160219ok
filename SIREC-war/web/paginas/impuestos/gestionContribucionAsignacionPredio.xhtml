@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <center>
+        <h:panelGrid id="panelAsignacion" width="1000" columns="1" >                                                 
+            <p:panel  style="background: #C4D770;" header="Asignación de predio" >   
+                <center>
+                    <h:panelGrid id="panelIng" columns="3">
+
+                        <p:outputLabel value="#{txt.clave_catastral}"/> 
+                        <p:autoComplete id="asigPred" value="#{gestionContribucionControlador.mejoraActual.catpreCodigo}" 
+                                        completeMethod="#{gestionContribucionControlador.obtenerCatastroXCalve}"
+                                        converter="#{catastroPredialConverter}"
+                                        minQueryLength="5" 
+                                        size="100" inputStyle="color:white;font-weight: bold;background: black;"
+                                        var="CC" itemLabel="#{CC.catpreCodNacional}#{CC.catpreCodLocal}" 
+                                        itemValue="#{CC}">
+                            <p:ajax event="itemSelect" listener="#{gestionContribucionControlador.onItemSelectClave}" 
+                                    async="true" global="false"
+                                    process="@this"
+                                    update=""
+                                    onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                        </p:autoComplete>
+                        <p:message  for="asigPred" display="icon"/>
+                        
+                        <p:outputLabel value="Obra:"/>
+                        <p:selectOneMenu id="AsigObra" value="#{gestionContribucionControlador.mejoraActual.obrCodigo}" 
+                                         panelStyle="width:180px" converter="#{obraConverter}" var="t" style="width:220px"
+                                         >
+                            <f:selectItem itemLabel="Seleccione... " itemValue="#{null}" /> 
+                            <f:selectItems var="tipo" 
+                                           value="#{gestionContribucionControlador.listaObraProyecto}" 
+                                           itemLabel="#{tipo.obrDescripcion}" 
+                                           itemValue="#{tipo}"/> 
+                            <p:column width="200" style="white-space: normal">  
+                                <h:outputText escape="false" value="#{t.obrDescripcion}" style="font-size: 10px"/> 
+                            </p:column>                            
+                        </p:selectOneMenu> 
+                        
+
+
+                    </h:panelGrid>    
+                    
+                      <p:commandButton value="#{txt.guardar_btn}" 
+                                     id="AsingGuardar" 
+                                     action="#{gestionContribucionControlador.guardarAsignacionObra()}" 
+                                     icon="ui-icon-disk"  
+                                     process="@this" 
+                                     update=""
+                                     async="true"
+                                     global="false"
+                                     />
+                    
+                </center>
+            </p:panel>                                                                                                                                                                                                        
+        </h:panelGrid>
+    </center>
+</html> 

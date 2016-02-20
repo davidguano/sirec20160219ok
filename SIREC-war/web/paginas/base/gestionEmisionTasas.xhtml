@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+                
+                <center>
+                    <h:panelGrid id="panelEmiTasas" width="1000" columns="1" >                                                 
+
+                        <center>
+                            <p:panel  style="background: #B9AED9;">
+                                <center>
+                                    <h:panelGrid id="panelEmi" columns="3">    
+
+                                        <p:outputLabel value="#{txt.IDENTIFICACIÓN}"/>
+
+                                        <p:selectOneMenu id="emiIden" value="#{gestionTasasControlador.tipoIdentificacion}" style="width:180px;font-weight: bold;background: green;"
+                                                         required="true" requiredMessage="Se nesecita un valor: #{txt.IDENTIFICACIÓN}">
+                                            <f:selectItem itemLabel="Seleccione..." itemValue="" />                        
+                                            <f:selectItem itemLabel="Cédula" itemValue="C" />
+                                            <f:selectItem itemLabel="Ruc" itemValue="R" />
+                                            <f:selectItem itemLabel="Pasaporte" itemValue="R" />                      
+                                        </p:selectOneMenu>
+                                        <p:message  for="emiIden" display="icon"/>                              
+
+                                        <p:outputLabel value="#{txt.CI_RUC}"/>
+
+                                        <p:autoComplete id="amiProp" value="#{gestionTasasControlador.propietarioActual}" 
+                                                        completeMethod="#{gestionTasasControlador.obtenerPropietarioApellido}"
+                                                                converter="#{propietarioConverter}"
+                                                                minQueryLength="5" 
+                                                                size="50" inputStyle="color:white;font-weight: bold;background: black;"
+                                                                var="prop" itemLabel="#{prop.proCi}" 
+                                                                itemValue="#{prop}"
+                                                                required="true" requiredMessage="Se nesecita un valor: #{txt.CI_RUC}">
+                                     <p:ajax event="itemSelect" listener="#{gestionTasasControlador.onItemSelect}" 
+                                                            async="true" global="false"
+                                                            process="@this"                                                            
+                                                            update=":frmTasa:tabTasa:emiCont,emiDir,emiTel"
+                                                            onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                                                </p:autoComplete>
+                             <p:message  for="amiProp" display="icon"/>
+                         
+                                                        
+                            <p:outputLabel value="#{txt.CONTRIBUYENTE}"/>
+                                                                         
+                            <p:inputText id="emiCont" value="#{gestionTasasControlador.propietarioActual.proApellidos} #{gestionTasasControlador.propietarioActual.proNombres}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.CONTRIBUYENTE}"
+                                             style="width:250px ; color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiCont" display="icon"/>
+                            
+                            <p:outputLabel value="#{txt.DIRECCIÓN}"/>
+                            
+                            <p:inputText id="emiDir" value="#{gestionTasasControlador.propietarioActual.proDireccion}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.DIRECCIÓN}"
+                                             style="width:250px ; color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiDir" display="icon"/>
+                                 
+                            <p:outputLabel value="#{txt.TELÉFONO}"/>
+                            
+                            <p:inputText id="emiTel" value="#{gestionTasasControlador.propietarioActual.proTelefono}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.TELÉFONO}"
+                                             style="color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiTel" display="icon"/>
+                            
+                            <p:outputLabel value="#{txt.TASA}"/>    
+                            
+                            <p:selectOneMenu id="emiTasa" value="#{gestionTasasControlador.tasasEmisionActual}" style="width:180px;font-weight: bold;background: green;"
+                                                         converter="#{tasaConverter}" var="t" required="true" requiredMessage="Se nesecita un valor: #{txt.TASA}">
+                                            <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipo" 
+                                                           value="#{gestionTasasControlador.listaTasas}" 
+                                                           itemLabel="#{tipo.tasDescripcion}" 
+                                                           itemValue="#{tipo}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.tasDescripcion}" style="font-size: 10px"/> 
+                                            </p:column>                                                                             
+                                        </p:selectOneMenu> 
+                            <p:message  for="emiTasa" display="icon"/>
+                            
+                            <p:outputLabel value="#{txt.AVALÚO_CONTRATO}"/>
+                            
+                            <p:inputText id="emiAva" value="#{gestionTasasControlador.servicioActual.serValor}"                                                     
+                                             required="true" requiredMessage="Se nesecita un valor: #{txt.AVALÚO_CONTRATO}"
+                                             style="font-family: Arial; font-size: 15px;"/>
+                                 <p:message  for="emiAva" display="icon"/>
+                                 
+                            
+                            <p:commandButton value="#{txt.CALCULAR_btn}" 
+                                                     id="btnCalcularEmiTasa"                                                      
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,panelEmi" 
+                                                     update=":frmTasa:tabTasa:panelCal, :frmTasa:tabTasa:emiIden,amiProp,emiTasa,emiAva :frmTasa:msgs"
+                                                     async="true"
+                                                     global="false"
+                                                     action="#{gestionTasasControlador.calcularEmisionTasa()}" 
+                                                     /> 
+                             <p:outputLabel />
+                              <p:outputLabel />
+                              </h:panelGrid>   
+                                    
+                            <h:panelGrid id="panelCal" columns="3">      
+                              
+                            <p:outputLabel value="#{txt.SUBTOTAL}"/>
+                            
+                            <p:inputText id="emiSub" value="#{gestionTasasControlador.servicioActual.serSubtotal}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.SUBTOTAL}"
+                                             style="color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiSub" display="icon"/>
+                            
+                            
+                            <p:outputLabel value="#{txt.DESCUENTOS}"/>
+                            
+                            <p:inputText id="emiDes" value="#{gestionTasasControlador.servicioActual.serDescuento}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.DESCUENTOS}"
+                                             style="color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiDes" display="icon"/>
+                            
+                            <p:outputLabel value="#{txt.IVA}"/>
+                            
+                            <p:inputText id="emiIva" value="#{gestionTasasControlador.servicioActual.serIva}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.IVA}"
+                                             style="color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiIva" display="icon"/>
+                            
+                            <p:outputLabel value="#{txt.TOTAL}"/>
+                            
+                            <p:inputText id="emiTot" value="#{gestionTasasControlador.servicioActual.serTotal}"                                                     
+                                             readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.TOTAL}"
+                                             style="color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                 <p:message  for="emiTot" display="icon"/>
+                            
+                            
+                        </h:panelGrid>                                                                                                       
+                                
+                                
+                         <p:commandButton value="#{txt.guardar_btn}" 
+                                                     id="btnGuardarEmiTasa" 
+                                                     action="#{gestionTasasControlador.guardarEmisionTasa()}" 
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,panelCal,panelEmi" 
+                                                     update=":frmTasa:tabTasa:panelCal, :frmTasa:tabTasa:panelEmi, :frmTasa:msgs"
+                                                     async="true"
+                                                     global="false"
+                                                     />   
+                         
+                         <p:commandButton value="#{txt.btn_nuevo}" 
+                                                     id="btnNuevoEmiTasa" 
+                                                     action="#{gestionTasasControlador.nuevoEmisionTasa()}" 
+                                                     icon="ui-icon-disk"  
+                                                     process="@this" 
+                                                     update=":frmTasa:tabTasa:panelCal, :frmTasa:tabTasa:panelEmi, :frmTasa:msgs"
+                                                     async="true"
+                                                     global="false"
+                                                     />
+                         
+                          </center>  
+                         </p:panel>
+                            
+                         
+                         
+                       
+                               </center>    
+                       
+                       
+                                                                                                                                        
+                  </h:panelGrid>
+                </center>
+</html>        

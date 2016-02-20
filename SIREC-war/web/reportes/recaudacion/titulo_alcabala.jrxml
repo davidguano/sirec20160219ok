@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="titulo_alcabala" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3420dd38-6d75-442a-98d5-6c766922d25e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="97"/>
+	<parameter name="logo_gad" class="java.lang.String"/>
+	<parameter name="cod_valoracion" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT catprealcval_anio as anio,
+cp.catpre_cod_nacional||cp.catpre_cod_local as clave_catastral,
+'ALCABALA-'||rc.rec_codigo as titulo,
+p.pro_nombres ||' '||p.pro_apellidos as vendedor,
+p.pro_ci as vendedor_ci,
+catprealcval_comprador as comprador,
+concepto.catdet_texto as concepto,
+parr.catdet_texto as parroquia,
+sect.catdet_texto as sector,
+cp.catpre_via_principal ||' '||cp.catpre_numero||' '|| cp.catpre_interseccion as direccion,
+cp.catpre_num_lote as numlote,
+catprealcval_baseimp as baseimponible,
+cxc.cxc_fecha as fecha_emision,
+rc.rec_fecha as fecha_recaudacion,
+catprealcval_impuesto as impuesto,
+catprealcval_consejo_prov as concejo_provincial,
+catprealcval_tasa_proc as procesamiento,
+(select sum(cpalcvalext_valor) from sirec.cp_alcabala_valoracion_extras where catprealcval_codigo=4) as deducciones,
+catprealcval_total as total
+  FROM sirec.catastro_predial_alcabala_valoracion av,
+  sirec.catastro_predial cp, sirec.recaudacion_cab rc, sirec.recaudacion_det rd,
+  sirec.propietario_predio pp, sirec.propietario p, sirec.catalogo_detalle concepto,
+  sirec.catalogo_detalle parr, sirec.catalogo_detalle sect, sirec.cuenta_por_cobrar cxc
+  where p.pro_ci=pp.pro_ci and pp.catpre_codigo=cp.catpre_codigo and
+  cp.catpre_codigo=av.catpre_codigo and
+  parr.catdet_codigo=cp.catdet_parroquia and
+  sect.catdet_codigo=cp.catdet_sector and
+  av.catdet_concepto=concepto.catdet_codigo and
+  rd.recdet_tipo='AL' and rc.rec_codigo=rd.rec_codigo and
+  cxc.cxc_tipo='AL' and cxc.cxc_cod_ref=av.catprealcval_codigo and
+  rd.recdet_codref=4 and
+  av.catprealcval_codigo=4]]>
+	</queryString>
+	<field name="anio" class="java.lang.Integer"/>
+	<field name="clave_catastral" class="java.lang.String"/>
+	<field name="titulo" class="java.lang.String"/>
+	<field name="vendedor" class="java.lang.String"/>
+	<field name="vendedor_ci" class="java.lang.String"/>
+	<field name="comprador" class="java.lang.String"/>
+	<field name="concepto" class="java.lang.String"/>
+	<field name="parroquia" class="java.lang.String"/>
+	<field name="sector" class="java.lang.String"/>
+	<field name="direccion" class="java.lang.String"/>
+	<field name="numlote" class="java.lang.String"/>
+	<field name="baseimponible" class="java.math.BigDecimal"/>
+	<field name="fecha_emision" class="java.sql.Date"/>
+	<field name="fecha_recaudacion" class="java.sql.Date"/>
+	<field name="impuesto" class="java.math.BigDecimal"/>
+	<field name="concejo_provincial" class="java.math.BigDecimal"/>
+	<field name="procesamiento" class="java.math.BigDecimal"/>
+	<field name="deducciones" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="108" splitType="Stretch">
+			<staticText>
+				<reportElement x="255" y="60" width="138" height="20" uuid="63954d5e-e79f-47df-9bcc-b2d8b6f6703a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO DE ALCABALAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="262" y="40" width="127" height="20" uuid="2ff8bf93-b8c2-4645-9fb3-450e39ccae3d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION FINANCIERA]]></text>
+			</staticText>
+			<image>
+				<reportElement x="52" y="24" width="100" height="50" uuid="a57e55b0-215c-4fda-9d40-54d1bd0bd0b1"/>
+				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="206" y="20" width="252" height="20" uuid="4901151f-c060-47ae-93ef-d737a31bdc0d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="476" y="80" width="53" height="20" uuid="5b6522bf-ba36-4fff-8b03-cefee17876cc"/>
+				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="7" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="481" splitType="Stretch">
+			<staticText>
+				<reportElement x="13" y="16" width="86" height="20" uuid="16f03f29-eb35-4db3-86a2-feacb004234a"/>
+				<text><![CDATA[Clave Catastral:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="105" y="16" width="150" height="20" uuid="c7fecde2-1dc9-46e2-ab27-3d17f8c1623e"/>
+				<textFieldExpression><![CDATA[$F{clave_catastral}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="293" y="16" width="100" height="20" uuid="1a14a745-d1d3-4b8e-a469-3a9a15d0f860"/>
+				<text><![CDATA[Titulo de Crédito:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="398" y="16" width="139" height="20" uuid="1ba8e55e-5eeb-43a2-bcc8-97248f12d2f6"/>
+				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="33" y="55" width="100" height="20" uuid="b86c4f0d-211f-4810-bfb6-866c4dea1a92"/>
+				<text><![CDATA[Vendedor:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="133" y="55" width="100" height="20" uuid="826cb7b1-b0d1-4b2f-9833-00ef82da3915"/>
+				<textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="33" y="75" width="100" height="20" uuid="1b60a39f-6e51-4891-a853-26c9c91fb3f5"/>
+				<text><![CDATA[CI/RUC:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="133" y="75" width="100" height="20" uuid="45aac8bb-9d3e-40dc-9169-799344278ef8"/>
+				<textFieldExpression><![CDATA[$F{vendedor_ci}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="33" y="95" width="100" height="20" uuid="50c4bb99-cbcb-407b-8855-87f4ea15ca0f"/>
+				<text><![CDATA[Comprador:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="133" y="95" width="100" height="20" uuid="6c838ea1-a386-45b0-8b05-497d0372a5ef"/>
+				<textFieldExpression><![CDATA[$F{comprador}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="33" y="143" width="100" height="20" uuid="0ffb0221-84e9-46df-b6f2-d9f92b220ad8"/>
+				<text><![CDATA[Concepto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="133" y="143" width="100" height="20" uuid="2e0550ce-89f8-49c5-94e3-380b9143cd56"/>
+				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="375" y="50" width="76" height="20" uuid="ca8d94ec-338c-419a-8cd5-d8934e6e78ee"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[UBICACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="318" y="75" width="100" height="20" uuid="40b5082d-1cb3-4b4d-ae38-fdd5b0fef674"/>
+				<text><![CDATA[Parroquia:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="429" y="75" width="100" height="20" uuid="d30b4203-a17f-4868-a76c-c14a32f5a636"/>
+				<textFieldExpression><![CDATA[$F{parroquia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="319" y="101" width="100" height="20" uuid="a95e17c3-97f5-48d0-8bfa-cc229498d565"/>
+				<text><![CDATA[Sector:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="429" y="101" width="100" height="20" uuid="e37032b7-76ea-4095-88d9-8d4a3f36097a"/>
+				<textFieldExpression><![CDATA[$F{sector}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="319" y="127" width="100" height="20" uuid="a6ddf0ad-3ab7-4548-8d22-4667793e421d"/>
+				<text><![CDATA[Dirección:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="429" y="127" width="100" height="20" uuid="73379b8c-23ba-4f91-a829-c475677d12a7"/>
+				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="320" y="154" width="100" height="20" uuid="7cad1213-553b-493f-adac-f56765100c5e"/>
+				<text><![CDATA[Num Lote:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="429" y="154" width="100" height="20" uuid="ae9cef42-f7c8-42c2-8eb5-5eeac7dc1aa0"/>
+				<textFieldExpression><![CDATA[$F{numlote}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="331" y="196" width="56" height="20" uuid="13f82d56-7149-4042-8ec4-1c0b2961547f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUBROS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="444" y="196" width="62" height="20" uuid="e2f66d29-38a2-46f0-a6e1-532e60ae9a2b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALORES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="119" y="198" width="56" height="20" uuid="cc25bb1a-9e94-4f51-b896-84cde864377f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[AVALÚO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="34" y="227" width="100" height="20" uuid="7000e9ed-33d6-4c76-8f71-c9b1acd35667"/>
+				<text><![CDATA[Base Imponible:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="148" y="227" width="107" height="20" uuid="c1063ea6-808e-4bde-951c-50fc29a4b2d5"/>
+				<textFieldExpression><![CDATA[$F{baseimponible}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="29" y="314" width="100" height="20" uuid="f3488503-90b5-424b-af9b-904bec03d524"/>
+				<text><![CDATA[Fecha Emisión:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="148" y="311" width="100" height="20" uuid="19b39896-906c-4d38-b82d-0f46cdedd782"/>
+				<textFieldExpression><![CDATA[$F{fecha_emision}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="29" y="338" width="100" height="20" uuid="3d47369c-50a0-4acf-a961-8565a0e4071a"/>
+				<text><![CDATA[Fecha Recaudación:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement x="149" y="338" width="100" height="20" uuid="8da36f68-928d-4c2d-bdea-f58e00cdfc17"/>
+				<textFieldExpression><![CDATA[$F{fecha_recaudacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="227" width="100" height="20" uuid="dba3b883-986f-4f16-bca6-55324431cf0a"/>
+				<text><![CDATA[Impuesto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="425" y="228" width="100" height="20" uuid="119d0718-f5d7-4978-b9e0-19d8dfa577f0"/>
+				<textFieldExpression><![CDATA[$F{impuesto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="255" width="100" height="20" uuid="a8685bbd-919f-4d9b-bd1c-f868166e5962"/>
+				<text><![CDATA[Consejo Provincial:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="424" y="256" width="100" height="20" uuid="fdd2da6d-5b14-4fb3-9221-646488fd8b28"/>
+				<textFieldExpression><![CDATA[$F{concejo_provincial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="284" width="100" height="20" uuid="10dd424c-62f2-4647-9fb7-d26d27034ff8"/>
+				<text><![CDATA[Procesamiento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="425" y="285" width="100" height="20" uuid="fa4284a7-1b71-4282-a0ce-4f5a1d4446eb"/>
+				<textFieldExpression><![CDATA[$F{procesamiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="312" width="100" height="20" uuid="3a304c41-7372-4f47-b903-29747578ba4f"/>
+				<text><![CDATA[Deducciones:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="426" y="313" width="100" height="20" uuid="48cc9830-a38f-4263-82ce-25a73a2ccec8"/>
+				<textFieldExpression><![CDATA[$F{deducciones}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="300" y="359" width="100" height="20" uuid="9cd8d159-60a2-4da5-b867-3d1a63a61218"/>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="426" y="359" width="100" height="20" uuid="c68a84b2-7f36-4c5b-b80a-83eb1a3f91bb"/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="163" y="450" width="100" height="1" uuid="bc46740f-6b94-45b2-ae41-9b6539396737"/>
+			</line>
+			<staticText>
+				<reportElement x="16" y="455" width="132" height="20" uuid="1aa1ed2b-0266-4b3c-b068-629f8de572fa"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[DIRECTOR FINANCIERO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="294" y="450" width="100" height="1" uuid="4e6ed45b-c7e6-49fc-85cb-6504b9e0ec27"/>
+			</line>
+			<staticText>
+				<reportElement x="152" y="455" width="132" height="20" uuid="3e788cee-5494-433b-8c1d-8e704c44fcaa"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[JEFE DE RENTAS]]></text>
+			</staticText>
+			<line>
+				<reportElement x="437" y="450" width="100" height="1" uuid="b88dfba0-e074-4d0b-b7e3-19e0e034e6ec"/>
+			</line>
+			<staticText>
+				<reportElement x="432" y="454" width="115" height="20" uuid="b5ebff48-48c5-4071-ae0c-6f08cbcb9862"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[RECAUDADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="293" y="455" width="106" height="20" uuid="31b6f83f-4806-4761-8813-506b244469ec"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[TESORERO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="25" y="450" width="100" height="1" uuid="4074a7b5-418b-42e5-9ed6-b3b8b44c7f48"/>
+			</line>
+			<line>
+				<reportElement x="0" y="4" width="555" height="1" uuid="ab9f6c05-8d90-4a4b-a078-c49029a70dd8"/>
+			</line>
+			<line>
+				<reportElement x="0" y="44" width="555" height="1" uuid="3ae03422-e7fe-4539-a1ec-4f3175447037"/>
+			</line>
+			<line>
+				<reportElement x="275" y="7" width="1" height="383" uuid="587f68ad-163d-4598-8151-5d836585cb26"/>
+			</line>
+			<line>
+				<reportElement x="0" y="390" width="555" height="1" uuid="8947016c-757a-42f4-86c8-841caec159e7"/>
+			</line>
+			<line>
+				<reportElement x="-1" y="188" width="556" height="1" uuid="30568d3c-313e-4442-aab9-2e2e0ed85396"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="5" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="4" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="8" splitType="Stretch"/>
+	</summary>
+</jasperReport>

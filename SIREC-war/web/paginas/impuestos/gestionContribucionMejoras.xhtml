@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <!--FICHA DE contribucion-->
+            <h:form id="frmContribucion">   
+               <p:growl id="msgs"  showSummary="true" showDetail="false" sticky="true"/>
+                <center>
+                    
+                    <p:tabView id="tabContribucion" style="font-size:13px">
+                                             
+                       <p:tab title="INGRESO DE OBRAS O PROYECTOS">                           
+                             <ui:include src="gestionContribucionIngresoObraProyecto.xhtml" />                                                       
+                        </p:tab>                        
+                       <p:tab title="ASIGNACIÓN DE PREDIOS">             
+                             <ui:include src="gestionContribucionAsignacionPredio.xhtml" />                                                       
+                        </p:tab>                        
+                    </p:tabView>
+                    
+                    
+                    
+                    
+                    
+                   
+
+                </center>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
