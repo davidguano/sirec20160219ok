@@ -224,6 +224,7 @@ public class GestionCementeriosControlador extends BaseControlador {
             } else {
                 verSuelo = 1;
                 verNicho = 0;
+                System.err.println("Pruebas");
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
