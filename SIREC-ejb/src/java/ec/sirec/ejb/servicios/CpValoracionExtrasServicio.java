@@ -6,6 +6,7 @@
 package ec.sirec.ejb.servicios;
 
 
+import ec.sirec.ejb.entidades.AdicionalesDeductivos;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
 import ec.sirec.ejb.entidades.CpValoracionExtras;
 import ec.sirec.ejb.facade.CpValoracionExtrasFacade;
@@ -66,7 +67,10 @@ public class CpValoracionExtrasServicio {
         return cpValoracionExtrasDao.obteneValorTipoAdicional(codigoC, codigoCPV, TipoImp, tipo);
     }
     
- 
+     public CpValoracionExtras obtenerValorAdicionalRHipotecaria(CatastroPredialValoracion catastroPredialValoracion, AdicionalesDeductivos adicionalesDeductivos) throws Exception {
+        return cpValoracionExtrasDao.buscarPor2Campos(ENTIDAD_VALORACION_EXTRAS, "catprevalCodigo", catastroPredialValoracion,"adidedCodigo", adicionalesDeductivos);
+    }
+
     
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
