@@ -879,11 +879,16 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                     eVal.setTotalExoneracion(BigDecimal.ZERO);
                 }
                 
-               // eVal.setTotalRegistro(eVal.getTotalRecargos().add(eVal.getTotalDeduciones().add(eVal.getTotalExoneracion().add(new BigDecimal(eVal.getCatpreAreaTotal()).add(new BigDecimal(eVal.getCatpreAreaTotalCons())).add(eVal.getCatastroPredialValoracion().getCatprevalAvaluoTerr()).add(eVal.getCatastroPredialValoracion().getCatprevalAvaluoEdif())))));
-                eVal.setTotalRegistro(eVal.getCatastroPredialValoracion().getCatprevalImpuesto().add(eVal.getCatastroPredialValoracion().getCatprevalBomberos())
+                BigDecimal TOTAL = eVal.getCatastroPredialValoracion().getCatprevalImpuesto().add(eVal.getCatastroPredialValoracion().getCatprevalBomberos())
                         .add(eVal.getCatastroPredialValoracion().getCatprevalSolarNoedificado())
                         .add(eVal.getCatastroPredialValoracion().getCatprevalTasaAdm()).add(eVal.getTotalRecargos()).subtract(eVal.getTotalDeduciones())
-                        .subtract(eVal.getTotalExoneracion()).setScale(2, RoundingMode.HALF_UP));   
+                        .subtract(eVal.getTotalExoneracion()).setScale(2, RoundingMode.HALF_UP);
+                
+                if(TOTAL.signum()==-1){
+                    TOTAL = BigDecimal.ZERO;
+                }
+                               
+                eVal.setTotalRegistro(TOTAL);   
 
                 listaEjecutarValoracion.add(eVal);                
                 totalTotal = totalTotal.add(eVal.getTotalRegistro().setScale(2, RoundingMode.HALF_UP));
