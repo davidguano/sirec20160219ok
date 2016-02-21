@@ -218,12 +218,13 @@ public class GestionCementeriosControlador extends BaseControlador {
         CatalogoDetalle objCatDetAux = new CatalogoDetalle();
         try {
             objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod("NICHO", "N");
-            if (catDetUbicAtaud.getCatdetCodigo() == objCatDetAux.getCatdetCodigo()) {
+            if (catDetUbicAtaud.getCatdetCodigo().intValue() == objCatDetAux.getCatdetCodigo()) {
                 verNicho = 1;
                 verSuelo = 0;
             } else {
                 verSuelo = 1;
                 verNicho = 0;
+                System.err.println("Pruebas");
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);

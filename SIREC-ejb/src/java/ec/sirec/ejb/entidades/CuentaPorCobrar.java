@@ -89,6 +89,9 @@ public class CuentaPorCobrar implements Serializable {
     @NotNull
     @Column(name = "cxc_activo")
     private boolean cxcActivo;
+    @Size(max = 50)
+    @Column(name = "cxc_referencia2")
+    private String cxcReferencia2;
     @JoinColumn(name = "pro_ci", referencedColumnName = "pro_ci")
     @ManyToOne(optional = false)
     private Propietario proCi;
@@ -219,6 +222,16 @@ public class CuentaPorCobrar implements Serializable {
     public void setProCi(Propietario proCi) {
         this.proCi = proCi;
     }
+
+    public String getCxcReferencia2() {
+        return cxcReferencia2;
+    }
+
+    public void setCxcReferencia2(String cxcReferencia2) {
+        this.cxcReferencia2 = cxcReferencia2;
+    }
+    
+    
 
     public boolean getSeleccionado() {
         return seleccionado;

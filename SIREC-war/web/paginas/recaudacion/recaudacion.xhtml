@@ -192,6 +192,9 @@
                                             <h:outputText value="ANULADO" rendered="#{rec.recdetBaja}" style="color:red"/>
                                             </h:panelGrid>
                                         </p:column>
+                                        <p:column headerText="Año">
+                                            <h:outputText value="#{rec.cxcCodigo.cxcAnio}"/>
+                                        </p:column>
                                         <p:column headerText="Valor Inicial">
                                             <h:outputText value="#{rec.recdetValorInicial}"/>
                                         </p:column>
