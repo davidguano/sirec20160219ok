@@ -77,10 +77,32 @@
                                                            itemValue="#{tipo}"/> 
                                             <p:column width="200" style="white-space: normal">  
                                                 <h:outputText escape="false" value="#{t.tasDescripcion}" style="font-size: 10px"/> 
-                                            </p:column>                                                                             
+                                            </p:column> 
+                                             <p:ajax listener="#{gestionTasasControlador.ingresoParametro()}"
+                                        process="@this" async="true" global="false" update=":frmTasa:tabTasa:panelParametro,panel1, :frmTasa:tabTasa:panelParametro2,panel2, :frmTasa:tabTasa:panelParametro3,panel3, :frmTasa:tabTasa:emiAva"/>                                            
                                         </p:selectOneMenu> 
                             <p:message  for="emiTasa" display="icon"/>
                             
+                           <h:panelGrid id="panelParametro" columns="1">                                
+                                 <p:panel rendered="#{gestionTasasControlador.visible}" id="panel1" style="background: #B9AED9;">    
+                                      <p:outputLabel id="eti2" value="#{gestionTasasControlador.etiqueta}" />
+                             </p:panel>                      
+                             </h:panelGrid> 
+                            
+                            <h:panelGrid id="panelParametro2" columns="1">                                                                                            
+                                 <p:panel rendered="#{gestionTasasControlador.visible}" id="panel2" style="background: #B9AED9;">    
+                             <p:inputText id="parametro2" value="#{gestionTasasControlador.servicioActual.serParametro1}"                                                     
+                                             required="true" requiredMessage="Se nesecita un valor:"                                            
+                                             style="font-family: Arial; font-size: 15px;"/>                                                               
+                             </p:panel>                      
+                             </h:panelGrid>
+                            
+                              <h:panelGrid id="panelParametro3" columns="1">          
+                                  <p:panel rendered="#{gestionTasasControlador.visible}" id="panel3" style="background: #B9AED9;">    
+                                 <p:message id="meti3" for="parametro2" display="icon" />                                
+                             </p:panel>                      
+                               </h:panelGrid>
+                       
                             <p:outputLabel value="#{txt.AVALÚO_CONTRATO}"/>
                             
                             <p:inputText id="emiAva" value="#{gestionTasasControlador.servicioActual.serValor}"                                                     
