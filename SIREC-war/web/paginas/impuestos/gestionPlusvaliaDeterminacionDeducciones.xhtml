@@ -73,8 +73,9 @@
                                         <p:inputText id="pAnosTrans" value="#{gestionAlcabalasControlador.catastroPredialPlusvaliaValoracion.catprepluvalAniosTransf}"
                                                       onkeypress="return isNumberKey(event)"
                                                       style="font-family: Arial; font-size: 15px;">
-                                             <p:ajax event="blur" listener="#{gestionAlcabalasControlador.calularValorAniosTranDominio()}"  update=":frmAlcabalas:tabAlcaTodo:tabAlca:pValAnosTrans,pDifFinal,pRebDes,pValRebDes,pBasImp,pImpuesto,pProc"
-                                         process="@this,pDifNeta, pComTT" async="true" global="false"/> 
+                                             <p:ajax event="blur" listener="#{gestionAlcabalasControlador.calularValorAniosTranDominio()}"  
+                                                     update=":frmAlcabalas:tabAlcaTodo:tabAlca:pValAnosTrans,pDifFinal,pRebDes,pValRebDes,pBasImp,pImpuesto,pProc"
+                                         process="@this,pDifNeta, pComTT,fecUlEsc" async="true" global="false"/> 
                                         </p:inputText>
                                         
                                         <p:outputLabel value="VALOR POR AÑOS TRANSCURRIDOS EN TRANSFERENCIA DE DOMINIO"/>
