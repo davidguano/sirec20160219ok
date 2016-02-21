@@ -937,11 +937,18 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
            
              // 1
             CpValoracionExtras cpEx1 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PUA"); 
-                if(cpEx1!=null){                                                                                                 
-                   cpEx1.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
-                   double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx1.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpEx1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
-                   cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx1);
+                if(cpEx1!=null){                             
+                    
+                    BigDecimal rbu25 = new BigDecimal(9150);
+                    if(CPV.getCatprevalValorPropieda().compareTo(rbu25)==-1){
+                        cpEx1.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx1.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
+                    cpEx1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
+                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx1);
+                    }else{
+                         cpEx1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(0)).divide(new BigDecimal(100)));                     
+                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx1);                    
+                    }                                      
             }                                    
             // 2 
             CpValoracionExtras cpR2 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PES"); 
