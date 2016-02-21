@@ -650,6 +650,11 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
              }
                System.out.println("ds>: "+VE.getAdidedCodigo().getAdidedNemonico());
            }
+           
+           
+           
+           
+           
            if(terceraEdad==true){
            
                //catastroPredialServicio.obtenerPropietarioPrincipalPredio(catastroPredialActual.getCatpreCodigo()).getProCi();
@@ -869,7 +874,16 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                 }
                                       
                 if (cpValoracionExtrasServicio.obteneValorTipoAdicional(CP.getCatpreCodigo(), CPV.getCatprevalCodigo(),"PR", "D") != null) {
-                    eVal.setTotalDeduciones(cpValoracionExtrasServicio.obteneValorTipoAdicional(CP.getCatpreCodigo(), CPV.getCatprevalCodigo(), "PR", "D"));
+                   
+                    BigDecimal totalDec = cpValoracionExtrasServicio.obteneValorTipoAdicional(CP.getCatpreCodigo(), CPV.getCatprevalCodigo(), "PR", "D");
+                    BigDecimal Prop50= CPV.getCatprevalValorPropieda().multiply(new BigDecimal(50)).divide(new BigDecimal(100)); 
+                   
+                    if(totalDec.compareTo(Prop50)==-1){
+                         eVal.setTotalDeduciones(totalDec);
+                    }else{
+                    eVal.setTotalDeduciones(BigDecimal.ZERO);
+                    }
+                                                                                                   
                 } else {
                     eVal.setTotalDeduciones(BigDecimal.ZERO);
                 }
