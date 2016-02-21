@@ -63,7 +63,7 @@ public class CatastroPredialPlusvaliaValoracion implements Serializable {
     @Column(name = "catprepluval_dif_final")
     private BigDecimal catprepluvalDifFinal;
     @Column(name = "catprepluval_porc_rebaja")
-    private Integer catprepluvalPorcRebaja;
+    private double catprepluvalPorcRebaja;
     @Column(name = "catprepluval_valor_rebaja")
     private BigDecimal catprepluvalValorRebaja;
     @Column(name = "catprepluval_baseimp")
@@ -174,13 +174,14 @@ public class CatastroPredialPlusvaliaValoracion implements Serializable {
         this.catprepluvalDifFinal = catprepluvalDifFinal;
     }
 
-    public Integer getCatprepluvalPorcRebaja() {
+    public double getCatprepluvalPorcRebaja() {
         return catprepluvalPorcRebaja;
     }
 
-    public void setCatprepluvalPorcRebaja(Integer catprepluvalPorcRebaja) {
+    public void setCatprepluvalPorcRebaja(double catprepluvalPorcRebaja) {
         this.catprepluvalPorcRebaja = catprepluvalPorcRebaja;
     }
+    
 
     public BigDecimal getCatprepluvalValorRebaja() {
         return catprepluvalValorRebaja;
