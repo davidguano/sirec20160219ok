@@ -138,6 +138,7 @@
                                          <p:outputLabel value="Institución de beneficencia o asistencia social : %"/>
                                          <p:inputText id="alBen" value="#{gestionImpuestoPredialControlador.valorBeneficiencia}"                                              
                                              onkeypress="return isDecimalKey(event)"
+                                             required="true" requiredMessage="Se nesecita un valor: Institución de beneficencia o asistencia social"
                                              style="font-family: Arial; font-size: 15px; text-align:right;"/>
                                         <p:message  for="alBen" display="icon"/>
                                     </h:panelGrid>
@@ -145,7 +146,8 @@
                                          <p:outputLabel value="Predio declarado de utilidad pública : %"/>
                                          <p:inputText id="alUtiP" value="#{gestionImpuestoPredialControlador.valorEntidadPublica}"                                              
                                              onkeypress="return isDecimalKey(event)"
-                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                             required="true" requiredMessage="Se nesecita un valor: Predio declarado de utilidad pública"
+                                             style="font-family: Arial; font-size: 15px; text-align:right;"  />
                                         <p:message  for="alUtiP" display="icon"/>
                                     </h:panelGrid>
                                 
