@@ -747,12 +747,12 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
                 EjecutarValoracion eVal = new EjecutarValoracion();
                 CatastroPredial CP = listaCatastroPredialTablaValoracion.get(i);
                 eVal.setCatastroPredial(CP);
-                eVal.setAnio(catDetAnio.getCatdetValor());
+                eVal.setAnio(Integer.parseInt(catDetAnio.getCatdetTexto()));
                 eVal.setCatpreCodigo(CP.getCatpreCodigo());
                 eVal.setCatpreClaveCatastal(CP.getCatpreCodNacional() + CP.getCatpreCodLocal());
                 eVal.setProCi(catastroPredialServicio.obtenerPropietarioPrincipalPredio(CP.getCatpreCodigo())); 
                 
-                CatastroPredialAlcabalaValoracion ALCA = catastroPredialServicio.buscarAlcabalaPorCatastroPredialAnio(CP, catDetAnio.getCatdetValor());                                                                                                               
+                CatastroPredialAlcabalaValoracion ALCA = catastroPredialServicio.buscarAlcabalaPorCatastroPredialAnio(CP, Integer.parseInt(catDetAnio.getCatdetTexto()));                                                                                                               
                 if (ALCA != null) {
                     if (ALCA.getCatprealcvalTotal() == null) {
                         ALCA.setCatprealcvalTotal(BigDecimal.ZERO);
@@ -788,7 +788,7 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
                 
                 eVal.setCatastroPredialAlcabalaValoracion(ALCA); 
                   
-                CatastroPredialPlusvaliaValoracion PLUS = catastroPredialServicio.buscarPlusvaliaPorCatastroPredialAnio(CP,catDetAnio.getCatdetValor());                                                                 
+                CatastroPredialPlusvaliaValoracion PLUS = catastroPredialServicio.buscarPlusvaliaPorCatastroPredialAnio(CP,  Integer.parseInt(catDetAnio.getCatdetTexto()));                                                                 
                 if(PLUS!=null){                    
                     if(PLUS.getCatprepluvalImpuesto()==null){
                         PLUS.setCatprepluvalImpuesto(BigDecimal.ZERO);

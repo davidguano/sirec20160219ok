@@ -268,7 +268,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
      public void listarAlcabalaEmitidas() throws Exception {
          try {
               catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo()); 
-            listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXAño(catDetAnio.getCatdetValor());                               
+            listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXAño(Integer.parseInt(catDetAnio.getCatdetTexto()));                               
              
          }catch(Exception ex){
           LOGGER.log(Level.SEVERE, null, ex);
@@ -280,7 +280,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
          try {
              if (criterio.equals("A")) {
                  catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
-                 listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXAño(catDetAnioPL.getCatdetValor());
+                 listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXAño(Integer.parseInt(catDetAnioPL.getCatdetTexto()));
              } else {
                  if (criterio.equals("F")) {                     
                      listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXTipoTarifa(catDetTipoTarifa);
