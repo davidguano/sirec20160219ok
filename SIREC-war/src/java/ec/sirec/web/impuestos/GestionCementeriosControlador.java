@@ -67,6 +67,7 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     private Cementerio cementerioActual;
     private Propietario propietarioActual;
+    private Propietario propietarioActualOcciso;
     private CatalogoDetalle catDetGenero;
     private CatalogoDetalle catDetUbicAtaud;
     private CatalogoDetalle catDetEstadoDefun;
@@ -88,6 +89,7 @@ public class GestionCementeriosControlador extends BaseControlador {
     private List<Cementerio> listaOccisoInumado;
     private List<Cementerio> listOccisoExumado;
     private List<Cementerio> listaNombreOccisos;
+    private List<Propietario> listaPropietarios;
     private String ciRuc;
     private String observacionesCambioHis;
     private int verBuscaCementerio;
@@ -98,6 +100,8 @@ public class GestionCementeriosControlador extends BaseControlador {
     private int busxOcciso;
     private int verNicho;
     private int verSuelo;
+    private String nombreOcciso;
+    private String nombreRep;
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -107,10 +111,13 @@ public class GestionCementeriosControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            nombreOcciso = "";
+            nombreRep = "";
             verNicho = 0;
             verSuelo = 0;
             cementerioActual = new Cementerio();
             propietarioActual = new Propietario();
+            propietarioActualOcciso = new Propietario();
             numPatente = generaNumPatente();
             catDetGenero = new CatalogoDetalle();
             catDetUbicAtaud = new CatalogoDetalle();
@@ -123,6 +130,7 @@ public class GestionCementeriosControlador extends BaseControlador {
             ciRuc = "";
             observacionesCambioHis = "";
             listaNombreOccisos = new ArrayList<Cementerio>();
+            listaPropietarios = new ArrayList<Propietario>();
             verBuscaCementerio = 0;
             numNicho = "";
             resulBusqueda = 0;
@@ -162,13 +170,16 @@ public class GestionCementeriosControlador extends BaseControlador {
     }
 
     public void guardarCementerios() {
-        System.out.println("Datos" + ciRuc);
-        try {
-            if (habilitaEditar == false) {
-                if (existeRuc()) {
+              try {
+            
+//                if (existeRuc()) {
                     cargaObjetosBitacora();
                     CatalogoDetalle objCatDet = new CatalogoDetalle();
                     cementerioActual.setProCi(propietarioActual);
+                    cementerioActual.setProOccisoCi(propietarioActualOcciso);
+                    cementerioActual.setOccisoCi(propietarioActualOcciso.getProCi());
+                    cementerioActual.setCemNombreOcciso(nombreOcciso);
+                    cementerioActual.setCemRepresentante(nombreRep);
                     cementerioActual.setCatdetParroquia(catDetParroquia);
                     objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetGenero.getCatdetCodigo());
                     cementerioActual.setCemGenero(objCatDet.getCatdetCod());
@@ -191,11 +202,11 @@ public class GestionCementeriosControlador extends BaseControlador {
                     cementerioActual = new Cementerio();
                     limpiarObjetosBitacora();
                     inicializar();
-                } else {
-                    addWarningMessage("Cédula/Ruc no existe en la base de datos");
-                }
-            } else {
-            }
+//                } else {
+//                    addWarningMessage("Cédula/Ruc no existe en la base de datos");
+//                }
+           
+            
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -224,7 +235,6 @@ public class GestionCementeriosControlador extends BaseControlador {
             } else {
                 verSuelo = 1;
                 verNicho = 0;
-                System.err.println("Pruebas");
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -271,12 +281,38 @@ public class GestionCementeriosControlador extends BaseControlador {
         return listNombres;
     }
 
+    public List<Propietario> sugiereCedulaRuc(String cedulaNumero) {
+        propietarioActual.setProCi(ciRuc);
+        List<Propietario> listNombresProp = new ArrayList<Propietario>();
+        try {
+            listaPropietarios = propietarioServicio.listarPropietariosPorCedula(propietarioActual.getProCi());
+            for (Propietario propietario : listaPropietarios) {
+                listNombresProp.add(propietario);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listNombresProp;
+    }
+
     public void onItemSelectCementerio(SelectEvent event) throws Exception {
         Cementerio objCem = (Cementerio) event.getObject();
         cementerioActual = cementerioServicio.buscarCementerioPorId(objCem.getCemCodigo());
         if (cementerioActual == null) {
             resulBusqueda = 1;
         }
+    }
+
+    public void onItemSelectPropietario(SelectEvent event) throws Exception {
+        Propietario objProp = (Propietario) event.getObject();
+        propietarioActual = propietarioServicio.buscarPropietarioPorCedula(objProp.getProCi());
+        nombreRep = propietarioActual.getProApellidos() + " " + propietarioActual.getProNombres();
+    }
+
+    public void onItemSelectPropietarioOcciso(SelectEvent event) throws Exception {
+        Propietario objProp = (Propietario) event.getObject();
+        propietarioActualOcciso = propietarioServicio.buscarPropietarioPorCedula(objProp.getProCi());
+        nombreOcciso = propietarioActualOcciso.getProApellidos() + " " + propietarioActualOcciso.getProNombres();
     }
 
     public void buscaNichoParroquia() {
@@ -315,19 +351,19 @@ public class GestionCementeriosControlador extends BaseControlador {
         }
     }
 
-    public boolean existeRuc() {
-        boolean existe = false;
-        try {
-            propietarioActual = propietarioServicio.buscarPropietario(ciRuc);
-            if (propietarioActual != null) {
-                existe = true;
-            }
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        }
-
-        return existe;
-    }
+//    public boolean existeRuc() {
+//        boolean existe = false;
+//        try {
+//            propietarioActual = propietarioServicio.buscarPropietario(ciRuc);
+//            if (propietarioActual != null) {
+//                existe = true;
+//            }
+//        } catch (Exception ex) {
+//            LOGGER.log(Level.SEVERE, null, ex);
+//        }
+//
+//        return existe;
+//    }
 
     public void onTabChange(TabChangeEvent event) {
 //        if (event.getTab().getId().equals("patDet")) {
@@ -698,6 +734,30 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void setVerSuelo(int verSuelo) {
         this.verSuelo = verSuelo;
+    }
+
+    public Propietario getPropietarioActualOcciso() {
+        return propietarioActualOcciso;
+    }
+
+    public void setPropietarioActualOcciso(Propietario propietarioActualOcciso) {
+        this.propietarioActualOcciso = propietarioActualOcciso;
+    }
+
+    public String getNombreOcciso() {
+        return nombreOcciso;
+    }
+
+    public void setNombreOcciso(String nombreOcciso) {
+        this.nombreOcciso = nombreOcciso;
+    }
+
+    public String getNombreRep() {
+        return nombreRep;
+    }
+
+    public void setNombreRep(String nombreRep) {
+        this.nombreRep = nombreRep;
     }
 
 }

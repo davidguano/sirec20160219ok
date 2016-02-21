@@ -5,12 +5,14 @@
  */
 package ec.sirec.web.impuestos;
 
+import ec.sirec.ejb.entidades.AdicionalesDeductivos;
 import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Patente;
 import ec.sirec.ejb.entidades.Patente15xmilValoracion;
 import ec.sirec.ejb.entidades.Patente15xmilValoracionExtras;
 import ec.sirec.ejb.entidades.PatenteValoracion;
+import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.PatenteServicio;
 import ec.sirec.ejb.servicios.UnoPCinoPorMilServicio;
@@ -33,6 +35,9 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador {
+
+    @EJB
+    private AdicionalesDeductivosServicio adicionalesDeductivosServicio;
 
     @EJB
     private CatalogoDetalleServicio catalogoDetalleServicio;
@@ -65,8 +70,9 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     ArrayList<String> detaleExoDedMulxMil;
     private int verBotDetDeducciones;
     private int verDetDeducciones;
-
-    private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
+    private boolean deducciones;
+    private boolean existeDedPatente;
+        private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -74,6 +80,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     @PostConstruct
     public void inicializar() {
         try {
+            existeDedPatente = false;
+            deducciones = false;
             detaleExoDedMulxMil = new ArrayList<String>();
             verGuardar = 0;
             verActualiza = 0;
@@ -119,6 +127,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
         detaleExoDedMulxMil = null;
         verBotDetDeducciones = 0;
         verDetDeducciones = 0;
+        deducciones = false;
         try {
             patenteActual = patenteServicio.cargarObjPatente(Integer.parseInt(buscNumPat));
             if (patenteActual == null) {
@@ -137,6 +146,14 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                     catDetAnioBalance = objCatDetAux;
                     verActualiza = 1;
                     verGuardar = 0;
+                    //Verifica si tiene deducciones
+                    Patente15xmilValoracionExtras objPatValEx = new Patente15xmilValoracionExtras();
+                    objPatValEx = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patente15milValActual.getPat15valCodigo());
+                    if (objPatValEx != null) {
+                        deducciones = true;
+                    } else {
+                        deducciones = false;
+                    }
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
@@ -237,7 +254,15 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
         valImpuesto15xMil = (valBaseImponible.multiply(BigDecimal.valueOf(1.5))).divide(BigDecimal.valueOf(1000));
         valImpuesto15xMil.setScale(2, RoundingMode.HALF_UP);
         patente15milValActual.setPat15valImpuesto(valImpuesto15xMil);
-        calculaDeducciones();
+
+        if (existeDedPatente) {
+            calculaDeducciones();
+        } else {
+            valRecargos = BigDecimal.ZERO;
+            patente15milValActual.setPat15valRecargos(valRecargos);
+
+        }
+   calculaTotalSubtotal();
     }
 
     public void calculaDeducciones() {
@@ -326,7 +351,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             patente15milValActual.setPat15valRecargos(valRecargos);
             objPat15MilAux = new Patente15xmilValoracion();
             objPat15MilExtAux = new Patente15xmilValoracionExtras();
-            calculaTotalSubtotal();
+         
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -370,11 +395,90 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
                 patente15milValActual.setPat15valAnioDecla(Integer.parseInt(objCatDetAux.getCatdetTexto()));
                 patente15milValActual.setPatCodigo(patenteActual);
+                unoPCinoPorMilServicio.crearPatenteValoracion15xMil(patente15milValActual);
+                guardaPatExoDedMul15xMilValorCero();
                 unoPCinoPorMilServicio.editarPatenteValoracion15xMil(patente15milValActual);
                 addSuccessMessage("Guardado Exitosamente", "Patente 1.5 Mil Valoración Guardado");
                 patente15milValActual = new Patente15xmilValoracion();
                 inicializar();
             }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void actualizaPatenteDet15xMil() {
+        try {
+            if (habilitaEdicion == false) {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioBalance.getCatdetCodigo());
+                patente15milValActual.setPat15valAnioBalance(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+                patente15milValActual.setPat15valAnioDecla(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                patente15milValActual.setPatCodigo(patenteActual);
+                unoPCinoPorMilServicio.editarPatenteValoracion15xMil(patente15milValActual);
+                addSuccessMessage("Guardado Exitosamente", "Patente 1.5 Mil Valoración Guardado");
+                patente15milValActual = new Patente15xmilValoracion();
+                inicializar();
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void guardaPatenteDet15xMilValorCero() {
+        try {
+            patente15milValActual.setPatCodigo(patenteActual);
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioBalance.getCatdetCodigo());
+            patente15milValActual.setPat15valAnioBalance(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+            objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+            patente15milValActual.setPat15valAnioDecla(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+            patente15milValActual.setPat15valNumSucursales(0);
+            // patente15milValActual.setPat15valAnioBalance(0);
+            patente15milValActual.setPat15valIngresoAnual(BigDecimal.ZERO);
+            patente15milValActual.setPat15valActivos(BigDecimal.ZERO);
+            patente15milValActual.setPat15valPasivosCorriente(BigDecimal.ZERO);
+            patente15milValActual.setPat15valPasivosConting(BigDecimal.ZERO);
+            patente15milValActual.setPat15valOtrasDeducciones(BigDecimal.ZERO);
+            patente15milValActual.setPat15valBaseImponible(BigDecimal.ZERO);
+            patente15milValActual.setPat15valTasaProc(BigDecimal.ZERO);
+            patente15milValActual.setPat15valImpuesto(BigDecimal.ZERO);
+            patente15milValActual.setPat15valSubtotal(BigDecimal.ZERO);
+            patente15milValActual.setPat15valRecargos(BigDecimal.ZERO);
+            patente15milValActual.setPat15valTotal(BigDecimal.ZERO);
+            patente15milValActual.setPat15valActivo(false);
+            unoPCinoPorMilServicio.crearPatenteValoracion15xMil(patente15milValActual);
+            guardaPatExoDedMul15xMilValorCero();
+            addSuccessMessage("Guardado Exitosamente", "Patente 1.5 Mil Valoración Guardado");
+            inicializar();
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void guardaPatExoDedMul15xMilValorCero() {
+        try {
+            Patente15xmilValoracionExtras objPat15Extra = new Patente15xmilValoracionExtras();
+            objPat15Extra.setPat15valCodigo(patente15milValActual);
+            AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
+            objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
+            objPat15Extra.setAdidedCodigo(objAdiDec);
+            objPat15Extra.setPat15valextBase(BigDecimal.ZERO);
+            objPat15Extra.setPat15valextValor(BigDecimal.ZERO);
+            objPat15Extra.setPat15valextEntiPub(false);
+            objPat15Extra.setPat15valextFunBenEdu(false);
+            objPat15Extra.setPat15valextLeyFomArtes(false);
+            objPat15Extra.setPat15valextActAgro(false);
+            objPat15Extra.setPat15valextCoop(false);
+            objPat15Extra.setPat15valextMultiNac(false);
+            objPat15Extra.setPat15valNumMesesIncum(0);
+            objPat15Extra.setPat15valEvaluaDatFalsos(0);
+            objPat15Extra.setPat15valProcesoLiquidacion(0);
+            unoPCinoPorMilServicio.crearPatenteValoracion15xMilExtra(objPat15Extra);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -539,5 +643,19 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     public void setVerDetDeducciones(int verDetDeducciones) {
         this.verDetDeducciones = verDetDeducciones;
     }
+
+    public boolean isDeducciones() {
+        return deducciones;
+    }
+
+    public boolean isExisteDedPatente() {
+        return existeDedPatente;
+    }
+
+    public void setExisteDedPatente(boolean existeDedPatente) {
+        this.existeDedPatente = existeDedPatente;
+    }
+
+    
 
 }

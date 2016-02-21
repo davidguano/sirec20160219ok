@@ -113,6 +113,7 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual = new Patente();
             propietarioActual = new Propietario();
             numPatente = generaNumPatente();
+            catDetParroquia=new CatalogoDetalle();
             catDetEstablecimientoActual = new CatalogoDetalle();
             catDetTipoEmpresActual = new CatalogoDetalle();
             catDetTipoLocalActual = new CatalogoDetalle();
@@ -173,13 +174,13 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual = patenteServicio.cargarObjPatente(Integer.parseInt(buscNumPat));
             if (patenteActual == null) {
                 numPatente = null;
-                patenteActual=new Patente();
+                patenteActual = new Patente();
                 System.out.println("No encontro el objeto");
                 verguarda = 1;
                 verActualiza = 0;
             } else {
                 System.out.println("Si encontro el objeto");
-                numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
+                numPatente = numPatenteBusqueda(); //"AE-MPM-" + patenteActual.getPatCodigo();
                 verguarda = 0;
                 verActualiza = 1;
                 catDetEstablecimientoActual = patenteActual.getCatdetTipoEst();
@@ -198,9 +199,10 @@ public class GestionPatenteControlador extends BaseControlador {
                 fecActividadEconomica = patenteActual.getPatInicioActEco();
                 artesCalificado = patenteActual.getPatArtesanoCalificado();
                 llevaConta = patenteActual.getPatObligadoCont();
-                catastroPredBusca = patenteActual.getCatpreCodigo().getCatpreCodLocal() + patenteActual.getCatpreCodigo().getCatpreCodNacional();
+                catastroPredBusca = patenteActual.getCatpreCodigo().getCatpreCodNacional() + patenteActual.getCatpreCodigo().getCatpreCodLocal();
                 propietarioActual = propietarioServicio.buscarPropietarioPorCatastro(patenteActual.getCatpreCodigo().getCatpreCodigo());
                 catDetParroquia = catalogoDetalleServicio.buscarPorCodigoCatDet(propietarioActual.getCatdetCiudad().getCatdetCodigo());
+                catastroPredialActual = catastroPredialServicio.buscarCatastroPorCodigoCatastro(patenteActual.getCatpreCodigo().getCatpreCodigo());
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -267,44 +269,48 @@ public class GestionPatenteControlador extends BaseControlador {
 
     public void actualizaPatente() {
         try {
-            if (habilitaEditar == false) {
-                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetIdentEstadoActual.getCatdetCodigo());
-                patenteActual.setPatEstado(objCatDetAux.getCatdetCod());
-                patenteActual.setCatpreCodigo(catastroPredialActual);
-                patenteActual.setPatFuncLunes(d1);
-                patenteActual.setPatFuncMartes(d2);
-                patenteActual.setPatFuncMiercoles(d3);
-                patenteActual.setPatFuncJueves(d4);
-                patenteActual.setPatFuncViernes(d5);
-                patenteActual.setPatFuncSabado(d6);
-                patenteActual.setPatFuncDomingo(d7);
-                patenteActual.setCatdetTipoEst(catDetEstablecimientoActual);
-                patenteActual.setCatdetTipoEmpresa(catDetTipoEmpresActual);
-                patenteActual.setCatdetTipoLocal(catDetTipoLocalActual);
-                patenteActual.setCatdetTipoActEco(catDetTipActEcoActual);
-                patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
-                patenteActual.setCatdetHorarioFunc(catDetHorFuncionaActual);
-                patenteActual.setPatArtesanoCalificado(artesCalificado);
-                patenteActual.setPatObligadoCont(llevaConta);
-                patenteActual.setPatHorarioDesde(horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
-                patenteActual.setPatHorarioHasta(horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
-                System.out.println("Horario desde: " + horarioDesde);
-                patenteActual.setPatInicioActEco(fecActividadEconomica);
-                cargaObjetosBitacora();
-                patenteActual.setUsuIdentificacion(usuarioActual);
-                patenteActual.setUltaccDetalle(datoGlobalActual.getDatgloDescripcion());
-                patenteActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
-                patenteServicio.editarPatente(patenteActual);
+
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetIdentEstadoActual.getCatdetCodigo());
+            patenteActual.setPatEstado(objCatDetAux.getCatdetCod());
+            patenteActual.setCatpreCodigo(catastroPredialActual);
+            patenteActual.setPatFuncLunes(d1);
+            patenteActual.setPatFuncMartes(d2);
+            patenteActual.setPatFuncMiercoles(d3);
+            patenteActual.setPatFuncJueves(d4);
+            patenteActual.setPatFuncViernes(d5);
+            patenteActual.setPatFuncSabado(d6);
+            patenteActual.setPatFuncDomingo(d7);
+            patenteActual.setCatdetTipoEst(catDetEstablecimientoActual);
+            patenteActual.setCatdetTipoEmpresa(catDetTipoEmpresActual);
+            patenteActual.setCatdetTipoLocal(catDetTipoLocalActual);
+            patenteActual.setCatdetTipoActEco(catDetTipActEcoActual);
+            patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
+            patenteActual.setCatdetHorarioFunc(catDetHorFuncionaActual);
+            patenteActual.setPatArtesanoCalificado(artesCalificado);
+            patenteActual.setPatObligadoCont(llevaConta);
+            patenteActual.setPatHorarioDesde(horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
+            patenteActual.setPatHorarioHasta(horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
+            System.out.println("Horario desde: " + horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
+            System.out.println("Horario desde: " + horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
+            patenteActual.setPatInicioActEco(fecActividadEconomica);
+            cargaObjetosBitacora();
+            patenteActual.setUsuIdentificacion(usuarioActual);
+            patenteActual.setUltaccDetalle(datoGlobalActual.getDatgloDescripcion());
+            patenteActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
+            patenteServicio.editarPatente(patenteActual);
+            if (!listaFiles.isEmpty()) {
                 guardarArchivos();
-                getSession().setAttribute("patente", patenteActual);
-                addSuccessMessage("Actualizado Exitosamente", "Patente Guardado");
-                patenteActual = new Patente();
-                limpiarObjetosBitacora();
-                objCatDetAux = null;
-                inicializar();
-            } else {
             }
+            getSession().setAttribute("patente", patenteActual);
+            addSuccessMessage("Actualizado Exitosamente", "Patente Guardado");
+            patenteActual = new Patente();
+            limpiarObjetosBitacora();
+            objCatDetAux = null;
+            horarioDesde=null;
+            horarioHasta=null;
+            inicializar();
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -348,6 +354,25 @@ public class GestionPatenteControlador extends BaseControlador {
             Patente objPatente = new Patente();
             objPatente = patenteServicio.cargarMaxObjPatente();
             int valorRetornado = objPatente.getPatCodigo() + 1;
+            StringBuffer numSecuencial = new StringBuffer(valorRetornado + "");
+            int valRequerido = 6;
+            int valRetorno = numSecuencial.length();
+            int valNecesita = valRequerido - valRetorno;
+            StringBuffer sb = new StringBuffer(valNecesita);
+            for (int i = 0; i < valNecesita; i++) {
+                sb.append("0");
+            }
+            numeroPatente = "AE-MPM-" + sb.toString() + valorRetornado;
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return numeroPatente;
+    }
+
+    public String numPatenteBusqueda() { //Genera numero de patente aleatorio
+        String numeroPatente = "";
+        try {
+            int valorRetornado = patenteActual.getPatCodigo();
             StringBuffer numSecuencial = new StringBuffer(valorRetornado + "");
             int valRequerido = 6;
             int valRetorno = numSecuencial.length();
@@ -420,10 +445,10 @@ public class GestionPatenteControlador extends BaseControlador {
 
     public void actualizaDatosPropietario() {
         try {
-
             propietarioActual.setCatdetCiudad(catDetParroquia);
             propietarioServicio.editarPropietario(propietarioActual);
-            propietarioActual = propietarioServicio.buscarPropietarioPorCatastro(catastroPredialActual.getCatpreCodigo());
+            propietarioActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
+//            propietarioActual = propietarioServicio.buscarPropietarioPorCatastro(catastroPredialActual.getCatpreCodigo());
             addSuccessMessage("Registro Actualizado", "");
             habilitaCamposPropietario = true;
         } catch (Exception ex) {
