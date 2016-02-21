@@ -17,6 +17,7 @@ import ec.sirec.ejb.entidades.ObraProyecto;
 import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.PropietarioPredio;
+import ec.sirec.ejb.entidades.RebajaDesvalorizacion;
 import ec.sirec.ejb.entidades.RecaudacionCab;
 import ec.sirec.ejb.entidades.RecaudacionDet;
 import ec.sirec.ejb.entidades.SegUsuario;
@@ -30,6 +31,7 @@ import ec.sirec.ejb.servicios.CpAlcabalaValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.DatoGlobalServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
+import ec.sirec.ejb.servicios.RebajaDesvalorizacionServicio;
 import ec.sirec.ejb.servicios.RecaudacionCabServicio;
 import ec.sirec.ejb.servicios.RecaudacionDetServicio;
 import ec.sirec.web.base.BaseControlador;
@@ -39,6 +41,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -151,7 +154,10 @@ public class GestionAlcabalasControlador extends BaseControlador {
     @EJB
     private CatastroPredialPlusvaliaValoracionServicio catastroPredialPlusvaliaValoracionServicio;
     
-    
+    @EJB
+    private RebajaDesvalorizacionServicio rebajaDesvalorizacionServicio;
+   
+    private RebajaDesvalorizacion rebajaDesvalorizacion;
 
     @PostConstruct
     public void inicializar() {
@@ -656,7 +662,10 @@ public class GestionAlcabalasControlador extends BaseControlador {
     }
     
     public void calularValorAniosTranDominio() {        
-        try {                                  
+        try {
+            
+         
+            
             catastroPredialPlusvaliaValoracion.setCatprepluvalAniosTransfVal(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransf()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().multiply(new BigDecimal(0.05))).setScale(2, RoundingMode.HALF_UP));            
             catastroPredialPlusvaliaValoracion.setCatprepluvalDifFinal(catastroPredialPlusvaliaValoracion.getCatprepluvalDifNeta().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalAniosTransfVal()).setScale(2, RoundingMode.HALF_UP));                         
             calularRebajaDesvalorizacionBaseImpImpuesto();
@@ -669,7 +678,16 @@ public class GestionAlcabalasControlador extends BaseControlador {
 public void calularRebajaDesvalorizacionBaseImpImpuesto() {        
         try {                                  
             // valor quemado porcentaje rebaja
-            catastroPredialPlusvaliaValoracion.setCatprepluvalPorcRebaja(0); 
+             Calendar cal = Calendar.getInstance();
+            cal.setTime(catastroPredialPlusvaliaValoracion.getCatprepluvalFechaUltescr());
+            int anioEscritura = cal.get(Calendar.YEAR);  
+              rebajaDesvalorizacion = rebajaDesvalorizacionServicio.obtenerRebajaDesvalorizacion(anioEscritura);
+            if(rebajaDesvalorizacion!=null){                              
+              catastroPredialPlusvaliaValoracion.setCatprepluvalPorcRebaja(rebajaDesvalorizacion.getPorcentajeRebaja());                 
+            }else{
+                catastroPredialPlusvaliaValoracion.setCatprepluvalPorcRebaja(0); 
+            }
+                                                    
             catastroPredialPlusvaliaValoracion.setCatprepluvalValorRebaja(new BigDecimal(catastroPredialPlusvaliaValoracion.getCatprepluvalPorcRebaja()).multiply(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal()).setScale(2, RoundingMode.HALF_UP));
             catastroPredialPlusvaliaValoracion.setCatprepluvalBaseimp(catastroPredialPlusvaliaValoracion.getCatprepluvalDifFinal().subtract(catastroPredialPlusvaliaValoracion.getCatprepluvalValorRebaja()).setScale(2, RoundingMode.HALF_UP));                                                           
 //            System.out.println("ss: "+catastroPredialServicio.cargarObjetoCatalogoDetalle(catastroPredialPlusvaliaValoracion.getCatdetTipoTarifa().getCatdetCodigo()).getCatdetValorDecimal()); 
