@@ -60,7 +60,8 @@ public class CpValoracionExtrasFacade extends AbstractFacade<CpValoracionExtras>
                 + " v.catprevalCodigo=e.catprevalCodigo and "
                 + " d.adidedCodigo=e.adidedCodigo and "
                 + " d.adidedTipoImpuesto=:vvalor2 and "
-                + " d.adidedTipo=:vvalor3 and "                        
+                + " d.adidedTipo=:vvalor3 and "
+                + " d.adidedNemonico<>'R_INE' and "
                 + " v.catprevalCodigo=:vvalor4";                        
         Query q = getEntityManager().createQuery(sql);
         q.setParameter("vvalor1", vvalor1);
@@ -71,11 +72,12 @@ public class CpValoracionExtrasFacade extends AbstractFacade<CpValoracionExtras>
     } 
 //    SELECT  sum(e.cpvalext_valor)
 //  FROM sirec.catastro_predial c, sirec.catastro_predial_valoracion v, sirec.cp_valoracion_extras e, sirec.adicionales_deductivos d
-//  where c.catpre_codigo=21 and 
+//  where c.catpre_codigo=24 and 
 //  c.catpre_codigo=v.catpre_codigo and 
 //  v.catpreval_codigo=e.catpreval_codigo and 
 //  d.adided_codigo=e.adided_codigo and
 //  d.adided_tipo_impuesto='PR' and
 //  d.adided_tipo='R' and
-//     v.catpreval_codigo=5;;
+//  d.adided_nemonico<>'R_INE' and
+//  v.catpreval_codigo=57;
 }
