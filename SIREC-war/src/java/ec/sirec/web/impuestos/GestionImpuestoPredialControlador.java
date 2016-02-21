@@ -1185,7 +1185,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
         try {
             visibleBeneficiencia = "";
             visibleEntidadPublica = "";
-                        
+            
             for (int i = 0; i < listaAdicionalesDeductivosExoneracionesSeleccion.size(); i++) {
                 adicionalesDeductivosActual = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(Integer.parseInt(listaAdicionalesDeductivosExoneracionesSeleccion.get(i)));
 
@@ -1193,6 +1193,11 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                     visibleBeneficiencia = adicionalesDeductivosActual.getAdidedNemonico(); 
                     valorBeneficiencia = cpValoracionExtrasServicio.obtenerValorAdicionalRHipotecaria(catastroPredialValoracionActual, adicionalesDeductivosActual).getCpvalextPorcentajeAdicional();
                 }
+            }
+            
+            for (int i = 0; i < listaAdicionalesDeductivosExoneracionesSeleccion.size(); i++) {
+                adicionalesDeductivosActual = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(Integer.parseInt(listaAdicionalesDeductivosExoneracionesSeleccion.get(i)));
+
                 if (adicionalesDeductivosActual.getAdidedNemonico().equals("E_PDP")) { 
                     visibleEntidadPublica = adicionalesDeductivosActual.getAdidedNemonico();                    
                     valorEntidadPublica = cpValoracionExtrasServicio.obtenerValorAdicionalRHipotecaria(catastroPredialValoracionActual, adicionalesDeductivosActual).getCpvalextPorcentajeAdicional();
