@@ -205,6 +205,29 @@ public class GestionAlcabalasControlador extends BaseControlador {
     public GestionAlcabalasControlador() {
     }
 
+     public List<CatastroPredial> obtenerCatastroXCalve(String clave) {
+        List<CatastroPredial> lstPP = new ArrayList<CatastroPredial>();
+        try {
+            lstPP = catastroPredialServicio.listarCatastrosPorClaveContieneContiene(clave);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return lstPP;
+    }
+    
+    public void onItemSelectClave(SelectEvent event) {
+        try {
+            CatastroPredial pp = (CatastroPredial) event.getObject();
+            
+             propietarioPredioBusqueda = new PropietarioPredio();
+             propietarioPredioBusqueda = catastroPredialServicio.buscarPropietarioPredioPorCatastro(pp.getCatpreCodigo());            
+            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());            
+             //limpiar();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void listarCatastroPredial() {
         try {
             listaCatastroPredial = new ArrayList<CatastroPredial>();
