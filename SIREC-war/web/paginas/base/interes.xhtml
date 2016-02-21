@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <center>
+                <h:form id="frmInteres" style="font-size: 12px;">         
+                    <p:growl id="msgs" showDetail="true"/>
+                    <p:panel  header="Interes">
+                        <h:panelGrid columns="3" id="pnlInteres">
+                            <p:outputLabel value="Tipo Interes:"/>
+                            <p:selectOneMenu id="tipo" value="#{interesControlador.interesActual.intTipo}">
+                                <f:selectItem itemLabel="Anual" itemValue="A"/>
+                                <f:selectItem itemLabel="Mensual" itemValue="M"/>
+                            </p:selectOneMenu> 
+                            <p:message for="tipo"/>
+                            <p:outputLabel value="Año:"/>
+                            <p:inputText id="anio" value="#{interesControlador.interesActual.intAnio}"
+                                         size="10" maxlength="4"/>
+                            <p:message for="anio"/>
+                            <p:outputLabel value="Mes:"/>
+                            <p:inputText id="mes" value="#{interesControlador.interesActual.intMes}"
+                                         size="10" maxlength="4"/>
+                            <p:message for="mes"/>
+                            <p:outputLabel value="Valor Interes:"/>
+                            <p:inputText id="valor" value="#{interesControlador.interesActual.intValor}"
+                                         size="10" maxlength="6"/>
+                            <p:message for="valor"/>
+                        </h:panelGrid>
+                        
+                        <h:panelGrid columns="2">
+                            <p:commandButton id="btnGuardar"
+                                             value="Guardar"
+                                             action="#{interesControlador.guardarInteres}"
+                                             async="true" global="false"
+                                             update="@form"
+                                             process="@this,pnlInteres"
+                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                            <p:commandButton id="btnNuevo"
+                                             value="Nuevo"
+                                             action="#{interesControlador.inicializar}"
+                                             async="true" global="false"
+                                             update="@form"
+                                             process="@this"/>
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel>
+                        <h:panelGrid width="50%" id="pnlListaInteres">
+                            <p:dataTable id="lstInteres" value="#{interesControlador.listaInteres}" var="item">
+                               <p:column headerText="Tipo">
+                                   <h:outputText value="Anual" rendered="#{item.intTipo=='A'}"/>
+                                   <h:outputText value="Mensual" rendered="#{item.intTipo=='M'}"/>
+                                </p:column>
+                                <p:column headerText="Año">
+                                   <h:outputText value="#{item.intAnio}"/>
+                                </p:column>
+                                <p:column headerText="Mes">
+                                    <h:outputText value="#{item.intMes}"/>
+                                </p:column>
+                                <p:column headerText="Valor">
+                                    <h:outputText value="#{item.intValor}"/>
+                                </p:column>
+                                <p:column >
+                                    <p:commandButton icon="fa fa-edit"
+                                                     action="#{interesControlador.seleccionarItem(item)}"
+                                                     async="true" global="false"
+                                                     process="@this" update=":frmInteres:pnlInteres"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                    </p:panel>
+                </h:form>
+
+
+            </center>
+
+        </ui:define>
+    </ui:composition>
+</html>

@@ -9,8 +9,188 @@
     <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
         <ui:define name="contenido">
             <center>
-                <h:form id="frmRec" style="font-size: 12px;">         
+                <h:form id="frmConvenio" style="font-size: 12px;">         
                     <p:growl id="msgs" showDetail="true"/>
+
+                    <p:panel header="Convenios de Pago">
+                        <p:panel header="Búsqueda de Contribuyente">
+                            <h:panelGrid columns="3" width="400">
+                                <h:outputLabel value="Por CI/RUC:" for="recProCi" />
+                                <p:autoComplete id="recProCi" value="#{convenioPagoControlador.propietarioBusqueda}" 
+                                                completeMethod="#{convenioPagoControlador.obtenerPropietarioPorCedula}" 
+                                                converter="#{propietarioConverter}"
+                                                size="25"
+                                                minQueryLength="5" inputStyle="color:white;font-weight: bold;background: black;"
+                                                var="pro" itemLabel="#{pro.proCi}" itemValue="#{pro}">
+                                    <p:column>
+                                        <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                    </p:column>
+                                    <p:ajax event="itemSelect"
+                                            process="@this"
+                                            listener="#{convenioPagoControlador.seleccionarPropietario}"
+                                            update="recProApe,pnlListas,pnlListasConvenio"
+                                            async="true" global="false"/>
+                                </p:autoComplete>
+                                <p:message for="recProCi"/>
+
+                                <h:outputLabel value="Por Apellidos:" for="recProApe" />
+                                <p:autoComplete id="recProApe" value="#{convenioPagoControlador.propietarioBusqueda}" 
+                                                completeMethod="#{convenioPagoControlador.obtenerPropietarioPorApellidos}" 
+                                                converter="#{propietarioConverter}"
+                                                minQueryLength="5" inputStyle="color:white;font-weight: bold;background: black;"
+                                                size="25"
+                                                var="pro" itemLabel="#{pro.proApellidos}" itemValue="#{pro}"  forceSelection="true">
+                                    <p:column>
+                                        <h:outputText value="#{pro.proCi} #{pro.proApellidos} #{pro.proNombres}" />
+                                    </p:column>
+                                    <p:ajax event="itemSelect"
+                                            process="@this"
+                                            listener="#{convenioPagoControlador.seleccionarPropietario}"
+                                            update="recProCi,pnlListas,pnlListasConvenio"
+                                            async="true" global="false"/>
+                                </p:autoComplete>
+                                <p:message for="recProApe"/>
+                            </h:panelGrid>
+                        </p:panel>
+                        <p:panel header="Datos del Convenio">
+                        <h:panelGrid id="pnlListas" width="800">
+                            <p:dataTable id="lstPendientes" value="#{convenioPagoControlador.listaCuentasPendientes}"
+                                         var="item">
+                                <f:facet name="header">
+                                    Deudas pendientes
+                                </f:facet>
+                                <p:column width="20">
+                                    <p:selectBooleanCheckbox value="#{item.seleccionado}">
+                                        <p:ajax async="true" global="false"
+                                                process="@this,lstPendientes"
+                                                listener="#{convenioPagoControlador.totalizar}"
+                                                update=":frmConvenio:pnlDatosConvenio"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <p:column headerText="Contribuyente">
+                                    <h:panelGrid>
+                                        <h:outputText value="#{item.proCi.proCi}"/>
+                                        <h:outputText value="#{item.proCi.proApellidos} #{item.proCi.proNombres}"/>
+                                    </h:panelGrid>
+                                </p:column>
+                                <p:column headerText="Rubro">
+                                    <h:outputText value="Predial" rendered="#{item.cxcTipo=='PR'}"/>
+                                    <h:outputText value="Patente" rendered="#{item.cxcTipo=='PA'}"/>
+                                    <h:outputText value="Patente 1.5x1000" rendered="#{item.cxcTipo=='PM'}"/>
+                                </p:column>
+                                <p:column headerText="Referencia" width="150">
+                                    <h:outputText value="#{item.cxcReferencia}"/>
+                                </p:column>
+                                <p:column headerText="Valor Total">
+                                    <h:outputText value="#{item.cxcValorTotal}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGrid>
+                        <h:panelGrid id="pnlDatosConvenio" columns="3">
+                            <p:outputLabel value="Fecha"/>
+                            <p:calendar id="fecha"
+                                        value="#{convenioPagoControlador.convenioActual.conpagFecha}"
+                                        required="true"/>
+                            <p:message for="fecha"/>
+                            <p:outputLabel value="Total:"/>
+                            <p:inputText id="total"
+                                         value="#{convenioPagoControlador.convenioActual.conpagTotal}"
+                                         readonly="true"
+                                         required="true"
+                                         />
+                            <p:message for="total"/>
+
+                            <p:outputLabel value="Porcentaje de Convenio:"/>
+                            <p:inputText id="porcConv"
+                                         value="#{convenioPagoControlador.convenioActual.conpagPorcentaje}"
+                                         maxlength="2"
+                                         required="true"
+                                         >
+                                <p:ajax event="blur"
+                                        listener="#{convenioPagoControlador.obtenerSaldo}"
+                                        process="@this,total"
+                                        async="true" global="false"
+                                        update="saldo"/>
+                            </p:inputText>
+                            <p:message for="porcConv"/>
+                            <p:outputLabel value="Saldo:"/>
+                            <p:inputText id="saldo"
+                                         value="#{convenioPagoControlador.convenioActual.conpagSaldo}"
+                                         readonly="true"
+                                         required="true"
+                                         />
+                            <p:message for="saldo"/>
+
+                            <p:outputLabel value="N cuotas:"/>
+                            <p:inputText id="numCuo"
+                                         value="#{convenioPagoControlador.convenioActual.conpagNumCuotas}"
+                                         maxlength="2"
+                                         required="true"
+                                         />
+                            <p:message for="numCuo"/>
+                            <f:verbatim/>
+                            <p:commandButton id="btnGuardarConvenio" value="Guardar" 
+                                             action="#{convenioPagoControlador.guardarConvenio}" async="true" global="false" 
+                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();" 
+                                             process="@this,pnlDatosConvenio" update="msgs,pnlListasConvenio"/> 
+                        </h:panelGrid>
+                        </p:panel>
+                        <p:panel header="Detalles del Convenio">
+                            <h:panelGrid id="pnlListasConvenio">
+                                <p:dataTable id="lstConvenios"
+                                             value="#{convenioPagoControlador.listaConvenioPago}"
+                                             var="item1">
+                                    <p:column>
+                                        <h:outputText value="CON-#{item1.conpagCodigo}"/>
+                                    </p:column>
+                                    <p:column headerText="Fecha">
+                                        <h:outputText value="#{item1.conpagFecha}"/>
+                                    </p:column>
+                                    <p:column headerText="Valor">
+                                        <h:outputText value="#{item1.conpagTotal}"/>
+                                    </p:column>
+                                    <p:column headerText="Porcentaje Convenio">
+                                        <h:outputText value="#{item1.conpagPorcentaje}"/>
+                                    </p:column>
+                                    <p:column headerText="Saldo">
+                                        <h:outputText value="#{item1.conpagSaldo}"/>
+                                    </p:column>
+                                    <p:column headerText="N cuotas">
+                                        <h:outputText value="#{item1.conpagNumCuotas}"/>
+                                    </p:column>
+                                    <p:column>
+                                            <p:commandButton icon="fa fa-search"
+                                                             action="#{convenioPagoControlador.verDetallesDeConvenio(item1)}"
+                                                             async="true" global="false"
+                                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                             process="@this" update=":frmConvenio:pnlListasConvenio"/>
+                                        </p:column>
+                                </p:dataTable>
+                                <p:dataTable id="lstConveniosDet"
+                                             value="#{convenioPagoControlador.listaConvenioPagoDetalle}"
+                                             var="item">
+                                    <p:column headerText="Fecha">
+                                        <h:outputText value="#{item.conpagdetFechaPago}"/>
+                                    </p:column>
+                                    <p:column headerText="Periodo">
+                                        <h:outputText value="#{item.conpagdetNumCuota}"/>
+                                    </p:column>
+                                    <p:column headerText="Tasa Interes">
+                                        <h:outputText value="#{item.conpagdetTasaInteres}"/>
+                                    </p:column>
+                                    <p:column headerText="Valor Interes">
+                                        <h:outputText value="#{item.conpagdetValorInteres}"/>
+                                    </p:column>
+                                    <p:column headerText="Capital">
+                                        <h:outputText value="#{item.conpagdetValorCuota}"/>
+                                    </p:column>
+                                    <p:column headerText="Cuota">
+                                        <h:outputText value="#{item.conpagdetValor}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:panel>
                 </h:form>
 
 

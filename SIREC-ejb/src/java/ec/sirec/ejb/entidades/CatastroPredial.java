@@ -6,6 +6,7 @@
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -186,6 +187,8 @@ public class CatastroPredial implements Serializable {
     @Size(max = 10)
     @Column(name = "catpre_bloque_nuevoampl")
     private String catpreBloqueNuevoampl;
+    @Column(name = "catpre_avaluo_terreno")
+    private BigDecimal catpreAvaluoTerreno;
     @JoinColumn(name = "usu_identificacion", referencedColumnName = "usu_identificacion")
     @ManyToOne(optional = false)
     private SegUsuario usuIdentificacion;
@@ -1012,6 +1015,16 @@ public class CatastroPredial implements Serializable {
     public void setCatpreBloqueNuevoampl(String catpreBloqueNuevoampl) {
         this.catpreBloqueNuevoampl = catpreBloqueNuevoampl;
     }
+
+    public BigDecimal getCatpreAvaluoTerreno() {
+        return catpreAvaluoTerreno;
+    }
+
+    public void setCatpreAvaluoTerreno(BigDecimal catpreAvaluoTerreno) {
+        this.catpreAvaluoTerreno = catpreAvaluoTerreno;
+    }
+    
+    
 
     
     

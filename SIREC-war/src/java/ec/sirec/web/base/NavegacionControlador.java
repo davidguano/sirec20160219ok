@@ -153,6 +153,11 @@ public class NavegacionControlador extends BaseControlador {
             itemCatDet.setIcon("ui-icon-person");
             itemCatDet.setCommand("#{navegacionControlador.redireccionarAPagina('base','catalogo_detalle')}");
             subMenuAdmin.addElement(itemCatDet);
+            
+            DefaultMenuItem itemInteres = new DefaultMenuItem("Parametrizacion de Interes");
+            itemInteres.setIcon("ui-icon-person");
+            itemInteres.setCommand("#{navegacionControlador.redireccionarAPagina('base','interes')}");
+            subMenuAdmin.addElement(itemInteres);
 
             menu.addElement(subMenuAdmin);
 
