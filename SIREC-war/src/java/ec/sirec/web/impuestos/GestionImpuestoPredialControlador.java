@@ -904,11 +904,10 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
         try {
             CpValoracionExtras cpR1 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "D_RHI"); 
             if(cpR1!=null){                                                                                                 
-                   cpR1.setCpvalextBase(CPV.getCatprevalBaseImponible());
-                   cpR1.setCpvalextValor(CPV.getCatprevalBaseImponible().subtract(cpR1.getCpvalextValorAdicional()));
+                   cpR1.setCpvalextBase(CPV.getCatprevalValorPropieda());
+                   cpR1.setCpvalextValor(CPV.getCatprevalValorPropieda().subtract(cpR1.getCpvalextValorAdicional()));
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpR1);
-            }
-            
+            }            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -920,16 +919,16 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
             // solar no edificado, se calcula anteriormente            
              CpValoracionExtras cpR1 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "R_INZ"); 
                 if(cpR1!=null){                                                                                                 
-                   cpR1.setCpvalextBase(CPV.getCatprevalBaseImponible());
-                   cpR1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpR1.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje())));                    
+                   cpR1.setCpvalextBase(CPV.getCatprevalAvaluoTerr());
+                   cpR1.setCpvalextValor(CPV.getCatprevalAvaluoTerr().multiply(new BigDecimal(adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpR1.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje())));                    
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpR1);
                 }
                 
                 CpValoracionExtras cpR2 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "R_IOB"); 
                 if(cpR2!=null){                                                                                                 
-                   cpR2.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpR2.setCpvalextBase(CPV.getCatprevalAvaluoTerr());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpR2.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpR2.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)));                    
+                   cpR2.setCpvalextValor(CPV.getCatprevalAvaluoTerr().multiply(new BigDecimal(porcen)));                    
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpR2);
                 }
         } catch (Exception ex) {
@@ -946,33 +945,33 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                     
                     BigDecimal rbu25 = new BigDecimal(9150);
                     if(CPV.getCatprevalValorPropieda().compareTo(rbu25)==-1){
-                        cpEx1.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                        cpEx1.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                     double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx1.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                    cpEx1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
+                    cpEx1.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
                     cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx1);
                     }else{
-                         cpEx1.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(0)).divide(new BigDecimal(100)));                     
+                         cpEx1.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(0)).divide(new BigDecimal(100)));                     
                     cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx1);                    
                     }                                      
             }                                    
             // 2 
             CpValoracionExtras cpR2 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PES"); 
                 if(cpR2!=null){                                                                                                 
-                   cpR2.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpR2.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpR2.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpR2.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                  
+                   cpR2.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                  
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpR2);
             }
                  // 3
             CpValoracionExtras cpEx3 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_IBE"); 
                 if(cpEx3!=null){                                                                                                 
-                   cpEx3.setCpvalextBase(CPV.getCatprevalBaseImponible());    
+                   cpEx3.setCpvalextBase(CPV.getCatprevalImpuesto());    
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx3.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
                    if(porcen == cpEx3.getCpvalextPorcentajeAdicional()){
-                       cpEx3.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
+                       cpEx3.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
                     } else {
                       porcen = porcen - cpEx3.getCpvalextPorcentajeAdicional();
-                       cpEx3.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
+                       cpEx3.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
                        
                 }                                                        
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx3);
@@ -980,22 +979,22 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                 // 4
               CpValoracionExtras cpEx4 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_ORG"); 
                 if(cpEx4!=null){                                                                                                 
-                   cpEx4.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpEx4.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx4.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpEx4.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                  
+                   cpEx4.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                  
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx4);
             }   
                 
                 // 5
             CpValoracionExtras cpEx5 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PDP"); 
                 if(cpEx5!=null){                                                                                                 
-                   cpEx5.setCpvalextBase(CPV.getCatprevalBaseImponible());    
+                   cpEx5.setCpvalextBase(CPV.getCatprevalImpuesto());    
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx5.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
                    if(porcen == cpEx5.getCpvalextPorcentajeAdicional()){
-                       cpEx5.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
+                       cpEx5.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                  
                     } else {
                       porcen = porcen - cpEx5.getCpvalextPorcentajeAdicional();
-                       cpEx5.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                                         
+                       cpEx5.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                                                         
                 }                                                                           
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx5);
             }
@@ -1003,52 +1002,52 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                     // 6
             CpValoracionExtras cpEx6 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PAF"); 
                  if(cpEx6!=null){                                                                                                 
-                   cpEx6.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpEx6.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx6.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpEx6.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
+                   cpEx6.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx6);
             }
                  
                      // 7
             CpValoracionExtras cpEx7 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_PIE"); 
                  if(cpEx7!=null){                                                                                                 
-                   cpEx7.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpEx7.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx7.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpEx7.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
+                   cpEx7.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx7);
             }
                  
                           // 8
             CpValoracionExtras cpEx8 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_EVH"); 
                  if(cpEx8!=null){                                                                                                 
-                   cpEx8.setCpvalextBase(CPV.getCatprevalBaseImponible());                   
+                   cpEx8.setCpvalextBase(CPV.getCatprevalImpuesto());                   
                    double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx8.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();                              
-                   cpEx8.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
+                   cpEx8.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));                     
                    cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx8);
             }
             // 9
             CpValoracionExtras cpEx9 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_CVN");
             if (cpEx9 != null) {
-                cpEx9.setCpvalextBase(CPV.getCatprevalBaseImponible());
+                cpEx9.setCpvalextBase(CPV.getCatprevalImpuesto());
                 double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx9.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();
-                cpEx9.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
+                cpEx9.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
                 cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx9);
             }
             // 10
             CpValoracionExtras cpEx10 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_FFI");
             if (cpEx10 != null) {
-                cpEx10.setCpvalextBase(CPV.getCatprevalBaseImponible());
+                cpEx10.setCpvalextBase(CPV.getCatprevalImpuesto());
                 double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx10.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();
-                cpEx10.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
+                cpEx10.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
                 cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx10);
             }
             
             // 10
             CpValoracionExtras cpEx11 = cpValoracionExtrasServicio.buscarValoresRecargos(CPV, "E_ERH");
             if (cpEx11 != null) {
-                cpEx11.setCpvalextBase(CPV.getCatprevalBaseImponible());
+                cpEx11.setCpvalextBase(CPV.getCatprevalImpuesto());
                 double porcen = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(cpEx11.getAdidedCodigo().getAdidedCodigo()).getAdidedPorcentaje();
-                cpEx11.setCpvalextValor(CPV.getCatprevalBaseImponible().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
+                cpEx11.setCpvalextValor(CPV.getCatprevalImpuesto().multiply(new BigDecimal(porcen)).divide(new BigDecimal(100)));
                 cpValoracionExtrasServicio.editarCpValoracionExtras(cpEx11);
             }
             
