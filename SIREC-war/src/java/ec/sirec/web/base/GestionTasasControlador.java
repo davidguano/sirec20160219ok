@@ -116,6 +116,41 @@ public class GestionTasasControlador extends BaseControlador {
         }
     }
     
+    String etiqueta;
+    boolean visible = false;
+    
+    public void ingresoParametro() {
+        try {
+            visible = false;
+           tasasEmisionActual = tasaServicio.cargarObjetoTasa(tasasEmisionActual.getTasCodigo());                                   
+            if (tasasEmisionActual.getCatdetTipoValor().getCatdetCod().equals("%RBU/DIAS")) {
+                etiqueta = "Número de Días:";
+                visible = true;
+                System.out.println("sad > : "+tasasEmisionActual.getCatdetTipoValor().getCatdetCod());
+            } else {
+                if (tasasEmisionActual.getCatdetTipoValor().getCatdetCod().equals("%RBU/MES")) {
+                    etiqueta = "Número de Meses:";
+                    visible = true;
+                } else {
+                    if (tasasEmisionActual.getCatdetTipoValor().getCatdetCod().equals("%RBU/AÑO")) {
+                        etiqueta = "Número de Años";
+                        visible = true;
+                    }else{
+                    if (tasasEmisionActual.getCatdetTipoValor().getCatdetCod().equals("%RBU/VIAJE")) {
+                        etiqueta = "Número de Viajes";
+                        visible = true;
+                    }                    
+                    }
+                }
+            }
+           servicioActual.setSerValor(tasasEmisionActual.getTasValor());
+                        
+        } catch (Exception ex) {
+            tipoSigno="";
+          //  LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public void guardarIngresoTasa() {
         try {
             if(opcionBoton.equals("N")){
@@ -204,36 +239,46 @@ public class GestionTasasControlador extends BaseControlador {
         }
     }
      
-     public void calcularEmisionTasa() {
+    public void calcularEmisionTasa() {
         try {
-           tasasEmisionActual = tasaServicio.cargarObjetoTasa(tasasEmisionActual.getTasCodigo());
-           
-           if(tasasEmisionActual.getCatdetDepartamento().getCatdetTexto().equals("CENTRO DE REHABILITACION")){            
-               if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")){            
-                servicioActual.setSerDescuento(tasasEmisionActual.getTasValor());             
+            tasasEmisionActual = tasaServicio.cargarObjetoTasa(tasasEmisionActual.getTasCodigo());
+
+            if (tasasEmisionActual.getCatdetDepartamento().getCatdetTexto().equals("CENTRO DE REHABILITACION")) {
+                if (tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")) {
+                    servicioActual.setSerDescuento(tasasEmisionActual.getTasValor());
+                }
+                servicioActual.setSerSubtotal(servicioActual.getSerValor());
+
+            } else {
+                if (tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")) {
+                    servicioActual.setSerSubtotal(servicioActual.getSerValor().add(tasasEmisionActual.getTasValor()));
+                } else {
+                    if (tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Porcentaje RBU")) {
+                        BigDecimal porce = servicioActual.getSerValor().multiply(tasasEmisionActual.getTasValor()).divide(new BigDecimal(100));
+                        servicioActual.setSerSubtotal(servicioActual.getSerValor().add(porce));
+                    }else{
+                        if ( tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("RBU Dias") 
+                            || tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("RBU Meses") 
+                                || tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("RBU Años")
+                                || tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("RBU Viajes")
+                                || tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("RBU Metros Cuadrado") ){
+                         BigDecimal valor = tasasEmisionActual.getTasValor().multiply(new BigDecimal(servicioActual.getSerParametro1()));
+                          servicioActual.setSerSubtotal(valor);
+                        }
+                    
+                    }
+                }
+                servicioActual.setSerDescuento(BigDecimal.ZERO);
             }
-               servicioActual.setSerSubtotal(servicioActual.getSerValor()); 
-            
-            }else{           
-            if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Valor Fijo")){            
-                servicioActual.setSerSubtotal(servicioActual.getSerValor().add(tasasEmisionActual.getTasValor()));             
-            }else{
-                 if(tasasEmisionActual.getCatdetTipoValor().getCatdetTexto().equals("Porcentaje RBU")){
-                    BigDecimal porce = servicioActual.getSerValor().multiply(tasasEmisionActual.getTasValor()).divide(new BigDecimal(100));                                         
-                    servicioActual.setSerSubtotal(servicioActual.getSerValor().add(porce));
-                 }                            
-            }
-            servicioActual.setSerDescuento(BigDecimal.ZERO);                         
-           }
-                                                
-            if(tasasEmisionActual.getTasConIva()==true){   
-                servicioActual.setSerIva(servicioActual.getSerSubtotal().multiply(new BigDecimal(12)).divide(new BigDecimal(100)));            
-            }else{
+
+            if (tasasEmisionActual.getTasConIva() == true) {
+                servicioActual.setSerIva(servicioActual.getSerSubtotal().multiply(new BigDecimal(12)).divide(new BigDecimal(100)));
+            } else {
                 servicioActual.setSerIva(BigDecimal.ZERO);
             }
-            
+
             servicioActual.setSerTotal(servicioActual.getSerSubtotal().add(servicioActual.getSerIva()).subtract(servicioActual.getSerDescuento()));
-                                   
+
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -355,6 +400,22 @@ public class GestionTasasControlador extends BaseControlador {
 
     public void setServicioActual(Servicios servicioActual) {
         this.servicioActual = servicioActual;
+    }
+
+    public String getEtiqueta() {
+        return etiqueta;
+    }
+
+    public void setEtiqueta(String etiqueta) {
+        this.etiqueta = etiqueta;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     
