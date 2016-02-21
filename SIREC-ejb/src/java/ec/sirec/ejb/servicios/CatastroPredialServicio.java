@@ -101,6 +101,10 @@ public class CatastroPredialServicio {
         return propietarioServicio.buscarPropietarioPredioPorCatastro(vcodCatastro);
     }
 
+    public CatastroPredial buscarCatastroPorCodigoCatastro(int codigoCatastro) throws Exception {
+        return catastroPredialDao.buscarPorCampo(ENTIDAD_CATASTRO, "catpreCodigo", codigoCatastro);
+    }
+
     public List<CatastroPredial> listarCatastroPorCedulaPropietario(String vcedula) throws Exception {
         List<CatastroPredial> lstC = new ArrayList<CatastroPredial>();
         List<PropietarioPredio> lstPP = propietarioServicio.listarPropietariosPredioPorCedulaPropietario(vcedula);
@@ -137,14 +141,15 @@ public class CatastroPredialServicio {
             }
         }
     }
+
     public CatastroPredialValoracion obtenerValoracionPredio(CatastroPredial vcatastro) throws Exception {
         CatastroPredialValoracion val = valoracionPredioServicio.buscarPorCatastroPredial(vcatastro);
         if (val == null) {
             return new CatastroPredialValoracion();
         } else {
-            
-                return val;
-            
+
+            return val;
+
         }
     }
 
@@ -538,57 +543,54 @@ public class CatastroPredialServicio {
             }
         }
     }
-    
+
     public void crearRegistrosEdificacionesPorArea(CatastroPredial vcatastro, CatastroPredialAreas area) throws Exception {
 
-        if (area!=null) {
+        if (area != null) {
             // 1 (4 items)
 
             for (int i = 1; i <= 4; i++) {
-                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                    edif.setCatpreCodigo(vcatastro);
-                    edif.setCatpreediGrupo("1");
-                    edif.setCatpreediSubgrupo(String.valueOf(i));
-                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                    catastroPredialEdificacionDao.crear(edif);
-                
+                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                edif.setCatpreCodigo(vcatastro);
+                edif.setCatpreediGrupo("1");
+                edif.setCatpreediSubgrupo(String.valueOf(i));
+                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                catastroPredialEdificacionDao.crear(edif);
+
             }
             // 2 (6 items)
             for (int i = 1; i <= 6; i++) {
-                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                    edif.setCatpreCodigo(vcatastro);
-                    edif.setCatpreediGrupo("2");
-                    edif.setCatpreediSubgrupo(String.valueOf(i));
-                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                    catastroPredialEdificacionDao.crear(edif);
-                
+                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                edif.setCatpreCodigo(vcatastro);
+                edif.setCatpreediGrupo("2");
+                edif.setCatpreediSubgrupo(String.valueOf(i));
+                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                catastroPredialEdificacionDao.crear(edif);
 
             }
             // 3 (10 items)
             for (int i = 1; i <= 10; i++) {
-                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                    edif.setCatpreCodigo(vcatastro);
-                    edif.setCatpreediGrupo("3");
-                    edif.setCatpreediSubgrupo(String.valueOf(i));
-                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                    catastroPredialEdificacionDao.crear(edif);
+                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                edif.setCatpreCodigo(vcatastro);
+                edif.setCatpreediGrupo("3");
+                edif.setCatpreediSubgrupo(String.valueOf(i));
+                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                catastroPredialEdificacionDao.crear(edif);
 
-                
             }
             // 4 (3 items)
             for (int i = 1; i <= 3; i++) {
-                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                    edif.setCatpreCodigo(vcatastro);
-                    edif.setCatpreediGrupo("4");
-                    edif.setCatpreediSubgrupo(String.valueOf(i));
-                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                    catastroPredialEdificacionDao.crear(edif);
+                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                edif.setCatpreCodigo(vcatastro);
+                edif.setCatpreediGrupo("4");
+                edif.setCatpreediSubgrupo(String.valueOf(i));
+                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                catastroPredialEdificacionDao.crear(edif);
 
-                
             }
             // 5 (9 items) sin bloques y pisos
             for (int i = 1; i <= 9; i++) {
