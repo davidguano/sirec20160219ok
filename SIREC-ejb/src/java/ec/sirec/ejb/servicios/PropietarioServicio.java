@@ -100,6 +100,10 @@ public class PropietarioServicio {
         return propietarioDao.retornaObjPropietarioPorCatastroPred(codCatastro);
     }
 
+    public Propietario buscarPropietarioPorCedula(String cedula) throws Exception {
+        return propietarioDao.buscarPorCampo(ENTIDAD_PROPIETARIO, "proCi", cedula);
+    }
+
     public List<PropietarioPredio> listarPropietariosPredio(Integer idCatastroPre) throws Exception {
         return propietarioPredioDao.listarPorCampoOrdenada("PropietarioPredio", "catpreCodigo.catpreCodigo", idCatastroPre, "propreCodigo", "asc");
     }
@@ -129,6 +133,7 @@ public class PropietarioServicio {
     public void guardarPropietarioPredio(PropietarioPredio vPP) throws Exception {
         propietarioPredioDao.crear(vPP);
     }
+
     public void editarPropietarioPredio(PropietarioPredio vPP) throws Exception {
         propietarioPredioDao.editar(vPP);
     }
@@ -136,6 +141,7 @@ public class PropietarioServicio {
     public PropietarioPredio buscarPropietarioPredioPorCodigo(Integer vPPcod) throws Exception {
         return propietarioPredioDao.buscarPorCampo("PropietarioPredio", "propreCodigo", vPPcod);
     }
+
     public PropietarioPredio buscarPropietarioPredioPorCatastro(Integer vcodCatastro) throws Exception {
         return propietarioPredioDao.buscarPorCampo("PropietarioPredio", "catpreCodigo.catpreCodigo", vcodCatastro);
     }
@@ -155,12 +161,12 @@ public class PropietarioServicio {
             c = vcedula;
         }
         if (existePropietarioPorCedula(c)) {
-            if(flagEditar){
+            if (flagEditar) {
                 return "valida";
-            }else{
+            } else {
                 return "Ya existe esta cedula";
             }
-            
+
         } else {
             if (Utilitarios.validarCedula(c)) {
                 return "valida";
@@ -201,10 +207,17 @@ public class PropietarioServicio {
     public List<Propietario> listarPorNombresContiene(String vNombres) throws Exception {
         return propietarioDao.listarPorCamposContieneOrdenada(ENTIDAD_PROPIETARIO, "proNombres", vNombres.toUpperCase(), "proApellidos", "asc");
     }
-    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception{
+
+    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception {
         return propietarioDao.listarPropietariosPorClaveCatastralContiene(vclave);
     }
-    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception{
+
+    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception {
         return propietarioDao.listarPropietariosPorClavePatenteContiene(vclave);
     }
+
+    public List<Propietario> listarPropietariosPorCedula(String cedula) throws Exception {
+        return propietarioDao.listarPropietariosPorClavePatenteContiene(cedula);
+    }
+
 }
