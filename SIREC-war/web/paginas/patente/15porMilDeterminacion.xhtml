@@ -24,9 +24,10 @@
                                     <p:commandButton value="#{txt.btn_aceptar}" 
                                                      id="btn15xMilDeterBuscaPatente" 
                                                      action="#{gestionDetPatenteUnoCincoporMilControlador.cagarPatenteActual()}" 
-                                                     icon="ui-icon-disk"  
+                                                     icon="ui-icon-extlink"  
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      process="@this,pnl15xMiDeterBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil"
+                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnlConAvisoDedPatxMil"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -36,7 +37,7 @@
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btn15xMilDeterBusPat" 
                                                  action="#{gestionDetPatenteUnoCincoporMilControlador.buscarPatente()}" 
-                                                 icon="ui-icon-disk"  
+                                                 icon="ui-icon-search"  
                                                  process="@this,pnl15xMiDeterBuscaPatente" 
                                                  update=":frmPat,pnl15xMiDeterBuscaPatente"
                                                  async="true"
@@ -45,7 +46,7 @@
                                 <p:commandButton value="#{txt.btn_nuevo}" 
                                                  id="btnNue15xMilDeter" 
                                                  action="#{gestionDetPatenteUnoCincoporMilControlador.inicializar()}" 
-                                                 icon="ui-icon-disk"  
+                                                 icon="ui-icon-document"  
                                                  process="@this,pnl15xMiDeterBuscaPatente" 
                                                  update=":frmPat,pnl15xMiDeterBuscaPatente"
                                                  async="true"
@@ -58,7 +59,6 @@
                 <h:panelGrid columns="2">
                     <p:panel header="#{txt.lbl_header_det_pat_por_mil}">
                         <h:panelGrid columns="2">
-                            <p:commandButton process="@this" action="#{gestionDetPatenteUnoCincoporMilControlador.cargarNumPatente()}" value="Ver N° Patente:" update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat"/>
                             <p:panel>
                                 <h:panelGrid columns="4" id="pnlCon15xMilDetMulNumPat">
                                     <p:outputLabel style="font-size: #{txt.font_size};" value="#{txt.lbl_num_patente}"/>
@@ -72,11 +72,17 @@
                                 </h:panelGrid>
                             </p:panel>
                         </h:panelGrid>
+                           <h:panelGrid id="pnlConAvisoDedPatxMil">
+                                <p:panel rendered="#{gestionDetPatenteUnoCincoporMilControlador.deducciones==false}">
+                                    <p:outputLabel style="font-size: #{txt.font_size}" id="preExistexMil" value="Existe exoneración, multa o deducción que aplicar a la patente ? "/>                                                                                       
+                                    <p:selectBooleanButton required="true" requiredMessage="Existe exoneración, multa o deducción que aplicar a la patente ? Se necesita un valor" id="preExisteChkxMil" value="#{gestionDetPatenteUnoCincoporMilControlador.existeDedPatente}" onLabel="Si" offLabel="No" style="width:60px" />
+                                    <p:message for="preExisteChkxMil"/> 
+                                </p:panel>  
+                            </h:panelGrid>
                         <h:panelGrid columns="3" id="pnlBotAniLimVerxMil">
                             <p:commandButton value="#{txt.btn_anadir_periodo}" 
                                              id="btnAnPeriodoPag4" 
                                              action="#{gestionDetPatenteUnoCincoporMilControlador.activaPanelDetalleImpuestos()}" 
-                                             icon="ui-icon-disk"  
                                              process="@this,pnlConPatPorMil" 
                                              update=":frmPat:tabPrin:pnlConPatPorMil"
                                              async="true"
@@ -85,13 +91,12 @@
                             <p:commandButton value="#{txt.btn_limpiar}" 
                                              id="btnLimpiarPat15PorMilDet" 
                                              action="#{gestionDetPatenteUnoCincoporMilControlador.limpiaPanelDetalleImpuestos()}" 
-                                             icon="ui-icon-disk"  
                                              process="@this" 
                                              update=":frmPat:tabPrin:pnlConDetImp15PorMil1,:frmPat:tabPrin:pnlConDetImp15PorMil2,:frmPat:tabPrin:pnlConDetImp15PorMil3,:frmPat:tabPrin:pnlConDetImp15PorMil4,:frmPat:tabPrin:pnlConCalculos15xMilDet,:frmPat:tabPrin:pnlConCalculos15xMilDet1,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnlContDetDedporMil"
                                              async="true"
                                              global="false"
                                              />
-                                 <p:commandButton rendered="#{gestionDetPatenteUnoCincoporMilControlador.verBotDetDeducciones==1}" value="Ver Det. Deducciones" 
+                            <p:commandButton rendered="#{gestionDetPatenteUnoCincoporMilControlador.verBotDetDeducciones==1}" value="Ver Det. Deducciones" 
                                              id="btnDetallePat15PorMilDet" 
                                              action="#{gestionDetPatenteUnoCincoporMilControlador.verPanelDetalleDeducciones()}" 
                                              icon="ui-icon-disk"  
@@ -183,12 +188,21 @@
                                     <p:commandButton value="#{txt.btn_calcula}" 
                                                      id="btnCalculaPag4" 
                                                      action="#{gestionDetPatenteUnoCincoporMilControlador.calcularBaseImponible()}" 
-                                                     icon="ui-icon-disk"  
                                                      process="@this,pnlConPatPorMil" 
                                                      update=":frmPat:tabPrin:pnlConPatPorMil,:frmPat:tabPrin:pnlConCalculos15xMilDet,pnlConCalculos15xMilDet1"
                                                      async="true"
                                                      global="false"
                                                      />
+                                    <p:commandButton   value="Guardar Valores en 0" 
+                                                       id="btnGuardaValCero" 
+                                                       rendered="#{gestionDetPatenteUnoCincoporMilControlador.verGuardar==1}"
+                                                       action="#{gestionDetPatenteUnoCincoporMilControlador.guardaPatenteDet15xMilValorCero()}" 
+                                                       icon="ui-icon-disk"  
+                                                       process="@this,pnlConPatPorMil" 
+                                                       update=":frmPat:tabPrin:pnlConPatPorMil,frmPat:msgs"
+                                                       async="true"
+                                                       global="false"
+                                                       />
                                 </h:panelGrid>
 
                                 <h:panelGrid columns="6" id="pnlConCalculos15xMilDet">
@@ -236,8 +250,8 @@
                                                      />
                                     <p:commandButton rendered="#{gestionDetPatenteUnoCincoporMilControlador.verActualiza==1}" value="#{txt.btn_actualizar}" 
                                                      id="btnActualizaPag4" 
-                                                     action="#{gestionDetPatenteUnoCincoporMilControlador.guardaPatenteDet15xMil()}" 
-                                                     icon="ui-icon-disk"  
+                                                     action="#{gestionDetPatenteUnoCincoporMilControlador.actualizaPatenteDet15xMil()}" 
+                                                     icon="ui-icon-arrowrefresh-1-w"  
                                                      process="@this,pnlConPatPorMil" 
                                                      update=":frmPat:tabPrin:pnlConPatPorMil,frmPat:msgs"
                                                      async="true"

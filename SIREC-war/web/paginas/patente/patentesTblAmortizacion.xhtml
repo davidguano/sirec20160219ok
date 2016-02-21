@@ -25,6 +25,7 @@
                                                      id="btnTblBusPatente" 
                                                      action="#{gestionTblAmortizaControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
+                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      process="@this,TblAmortizaBuscaPatente" 
                                                      update=":frmPat:tabPrin:pnlPatTblNumero,:frmPat:tabPrin:pnlTblFechas,pnlTblTxtDeuda,:frmPat:tabPrin:tblLisArchAmortizaCargados"
                                                      async="true"

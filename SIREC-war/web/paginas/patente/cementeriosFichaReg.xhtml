@@ -56,7 +56,8 @@
                                                                              style="font-size: 12px"
                                                                              id="btnBuscaNicho" 
                                                                              action="#{gestionCementeriosControlador.buscaNichoParroquia()}" 
-                                                                             icon="ui-icon-disk"  
+                                                                             icon="ui-icon-disk" 
+                                                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                                              process="@this,pnlBuscaPorNicho" 
                                                                              update="pnlDatosCementerio"
                                                                              async="true"
@@ -74,7 +75,7 @@
                                                             <p:outputLabel value="Ingrese el nombre del occiso: "  style="font-size: 12px" />
                                                             <p:autoComplete  
                                                                 value="#{gestionCementeriosControlador.cementerioActual}"
-                                                                onkeyup="value = value.toUpperCase()"
+                                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
                                                                 completeMethod="#{gestionCementeriosControlador.sugiereNombreOcciso}"
                                                                 var="player"
                                                                 itemLabel="#{player.cemNombreOcciso}"
@@ -147,24 +148,48 @@
                                         <p:message for="cmbPropParroquia" display="icon"/>                                      
                                     </h:panelGrid>   
 
-                                    <h:panelGrid columns="6">
-                                        <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ced_occico}"/>
-                                        <p:inputText  requiredMessage="#{txt.lbl_ced_occico} Se necesita un valor" id="compPnl1_7_1"  value="#{gestionCementeriosControlador.cementerioActual.occisoCi}" 
-                                                      size="40"/>
-                                        <p:message for="compPnl1_7" display="icon"/>
+                                    <h:panelGrid columns="6" id="pnlConCedOcciso">
+                                        <h:panelGrid columns="4" id="pnlBuscaCedOcciso">
+                                            <p:outputLabel value="Ingrese la Cédula/Ruc Occiso:"  style="font-size: 12px" />
+                                            <p:autoComplete  
+                                                value="#{gestionCementeriosControlador.propietarioActualOcciso}"
+                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                completeMethod="#{gestionCementeriosControlador.sugiereCedulaRuc(cedulaNumero)}"
+                                                var="player"
+                                                itemLabel="#{player.proCi}"
+                                                itemValue="#{player}"
+                                                size="50"
+                                                converter="#{propietarioConverter}" >
+                                                <p:ajax event="itemSelect" process="@this,pnlBuscaCedOcciso" listener="#{gestionCementeriosControlador.onItemSelectPropietarioOcciso}" update="pnlConCedOcciso" />
+                                            </p:autoComplete>                                            
+                                        </h:panelGrid>
+                                        <p:column/>
+                                        <p:column/>
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_occioso}"/>
-                                        <p:inputText  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.cementerioActual.cemNombreOcciso}" 
+                                        <p:inputText  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.nombreOcciso}" 
                                                       size="40"/>
                                         <p:message for="compPnl1_7" display="icon"/>
                                     </h:panelGrid> 
 
-                                    <h:panelGrid columns="6">
-                                        <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_ced_rep}"/>
-                                        <p:inputText requiredMessage="#{txt.lbl_ced_rep} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionCementeriosControlador.ciRuc}" 
-                                                     maxlength="50" size="40"/>
-                                        <p:message for="compPnl1_10" display="icon"/>
+                                    <h:panelGrid columns="6" id="pnlConCedRep">
+                                        <h:panelGrid columns="4" id="pnlBuscaCedRep">
+                                            <p:outputLabel value="Ingrese la Cédula/Ruc del Rep:"  style="font-size: 12px" />
+                                            <p:autoComplete  
+                                                value="#{gestionCementeriosControlador.propietarioActual}"
+                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                completeMethod="#{gestionCementeriosControlador.sugiereCedulaRuc(cedulaNumero)}"
+                                                var="player"
+                                                itemLabel="#{player.proCi}"
+                                                itemValue="#{player}"
+                                                size="50"
+                                                converter="#{propietarioConverter}" >
+                                                <p:ajax event="itemSelect" process="@this,pnlBuscaCedRep" listener="#{gestionCementeriosControlador.onItemSelectPropietario}" update="pnlConCedRep" />
+                                            </p:autoComplete>                                            
+                                        </h:panelGrid>
+                                        <p:column/>
+                                        <p:column/>
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_representante}"/>
-                                        <p:inputText   requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.cementerioActual.cemRepresentante}" 
+                                        <p:inputText   requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.nombreRep}" 
                                                        size="40"/>
                                         <p:message for="compPnl1_8" display="icon"/>                                   
                                     </h:panelGrid> 

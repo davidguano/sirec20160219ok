@@ -25,6 +25,7 @@
                                                      action="#{gestionExoDedMulUnoCincoPorMil.cagarPatenteActual()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this,pnl15xMilExoBuscaPatente" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      update=":frmPat:tabPrin:pnlCon15xMilExoDedMulNumPat,pnlConValExuDedMul15PorMil,:frmPat:tabPrin:pnl15xMilExoBtnGuAct"
                                                      async="true"
                                                      global="false"
@@ -264,7 +265,7 @@
                                         </p:commandButton>
                                     </center>
                                 </p:column>
-                                
+
                                 <p:column headerText="#{txt.lbl_eliminar}" style="width:50px;text-align: center;font-size:12px;" >
                                     <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
                                                      actionListener="#{gestionExoDedMulUnoCincoPorMil.confirmaEliminarArchivoCargado(archivoColumna)}" 
@@ -273,7 +274,7 @@
                                         <p:confirm header="Confirmación" message="¿Está seguro de eliminar el registro?" icon="ui-icon-alert" />
                                     </p:commandButton>
                                 </p:column>
-                                
+
                             </p:dataTable>     
                         </p:panel>
                     </h:panelGrid>
