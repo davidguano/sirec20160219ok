@@ -29,9 +29,24 @@
                                      <p:ajax event="itemSelect" listener="#{gestionAlcabalasControlador.onItemSelect}" 
                                                             async="true" global="false"
                                                             process="@this"
-                                                            update=":frmAlcabalas:tabAlcaTodo:tabAlca:alPred"
+                                                            update=":frmAlcabalas:tabAlcaTodo:tabAlca:alPred, :frmAlcabalas:tabAlcaTodo:alCC"
                                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
-                                                </p:autoComplete>  
+                                                </p:autoComplete>
+                                 
+                                   <p:outputLabel value="#{txt.clave_catastral}"/> 
+                                 <p:autoComplete id="alCC" value="#{gestionAlcabalasControlador.catastroPredialActual}" 
+                                                                completeMethod="#{gestionAlcabalasControlador.obtenerCatastroXCalve}"
+                                                                converter="#{catastroPredialConverter}"
+                                                                minQueryLength="5" 
+                                                                size="100" inputStyle="color:white;font-weight: bold;background: black;"
+                                                                var="CC" itemLabel="#{CC.catpreCodNacional}#{CC.catpreCodLocal}" 
+                                                                itemValue="#{CC}">
+                                     <p:ajax event="itemSelect" listener="#{gestionAlcabalasControlador.onItemSelectClave}" 
+                                                            async="true" global="false"
+                                                            process="@this"
+                                                            update=":frmAlcabalas:tabAlcaTodo:apeProp"
+                                                            onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                                                </p:autoComplete>
                                  
                                   <p:outputLabel value="#{txt.anio}"/>                                  
                                 <p:selectOneMenu id="catTip" style="width:152px" value="#{gestionAlcabalasControlador.anio}"
@@ -46,7 +61,9 @@
                                                    :frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArch, 
                                                    :frmAlcabalas:tabAlcaTodo:tabAlca:pnllstArchPL, 
                                                    :frmAlcabalas:tabAlcaTodo:tabAlca:panelContieneAplicacion2"                                                    
-                                                    process="@this" async="true" global="false"/>
+                                                    process="@this" async="true" global="false"
+                                                    onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                    />
                                         </p:selectOneMenu>                                                                  
                             </h:panelGrid>
                             

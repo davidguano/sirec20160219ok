@@ -128,8 +128,27 @@
                                                value="#{gestionImpuestoPredialControlador.listaAdicionalesDeductivosExoneraciones}" 
                                                 itemLabel="#{tipo.adidedDescripcion}" 
                                                itemValue="#{tipo.adidedCodigo}"/> 
-                                
+                                <p:ajax event="change" listener="#{gestionImpuestoPredialControlador.muestraBeneficienciaEntPublica()}"                                        
+                                                    update=":frmImpPredial:tabImpPred:pnlExo"
+                                                    process="@this" 
+                                                    async="true" global="false"/>
                             </p:selectManyCheckbox>
+                                
+                                <h:panelGrid id="pnlBENE" columns="3" rendered="#{gestionImpuestoPredialControlador.visibleBeneficiencia=='E_IBE'}">                                        
+                                         <p:outputLabel value="Institución de beneficencia o asistencia social : %"/>
+                                         <p:inputText id="alBen" value="#{gestionImpuestoPredialControlador.valorBeneficiencia}"                                              
+                                             onkeypress="return isDecimalKey(event)"
+                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                        <p:message  for="alBen" display="icon"/>
+                                    </h:panelGrid>
+                                <h:panelGrid id="pnlUTIPUB" columns="3" rendered="#{gestionImpuestoPredialControlador.visibleEntidadPublica=='E_PDP'}">                                        
+                                         <p:outputLabel value="Predio declarado de utilidad pública : %"/>
+                                         <p:inputText id="alUtiP" value="#{gestionImpuestoPredialControlador.valorEntidadPublica}"                                              
+                                             onkeypress="return isDecimalKey(event)"
+                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                        <p:message  for="alUtiP" display="icon"/>
+                                    </h:panelGrid>
+                                
                                 
                                 </p:panel>
                            
