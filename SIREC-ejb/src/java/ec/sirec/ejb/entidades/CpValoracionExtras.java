@@ -45,6 +45,10 @@ public class CpValoracionExtras implements Serializable {
     @JoinColumn(name = "adided_codigo", referencedColumnName = "adided_codigo")
     @ManyToOne(optional = false)
     private AdicionalesDeductivos adidedCodigo;
+     @Column(name = "cpvalext_valor_adicional")
+    private BigDecimal cpvalextValorAdicional;
+    @Column(name = "cpvalext_porcentaje_adicional")
+    private Double cpvalextPorcentajeAdicional;
 
     public CpValoracionExtras() {
     }
@@ -93,6 +97,22 @@ public class CpValoracionExtras implements Serializable {
         this.adidedCodigo = adidedCodigo;
     }
 
+     public BigDecimal getCpvalextValorAdicional() {
+        return cpvalextValorAdicional;
+    }
+
+    public void setCpvalextValorAdicional(BigDecimal cpvalextValorAdicional) {
+        this.cpvalextValorAdicional = cpvalextValorAdicional;
+    }
+
+    public Double getCpvalextPorcentajeAdicional() {
+        return cpvalextPorcentajeAdicional;
+    }
+
+    public void setCpvalextPorcentajeAdicional(Double cpvalextPorcentajeAdicional) {
+        this.cpvalextPorcentajeAdicional = cpvalextPorcentajeAdicional;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
