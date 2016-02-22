@@ -24,11 +24,18 @@
                             <p:ajax event="itemSelect" listener="#{gestionContribucionControlador.onItemSelectClave}" 
                                     async="true" global="false"
                                     process="@this"
-                                    update=""
+                                    update=":frmContribucion:tabContribucion:asigProd"
                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
                         </p:autoComplete>
                         <p:message  for="asigPred" display="icon"/>
-                        
+                         
+                          <p:outputLabel value="PROPIETARIO:"/>
+                          <p:inputText id="asigProd" value="#{gestionContribucionControlador.propietario.proNombres} #{gestionContribucionControlador.propietario.proApellidos}"
+                                            readonly="true" required="true" requiredMessage="Se nesecita un valor: #{txt.vendedor}"
+                                            style="width:300px ; color:white ; font-family: Arial; font-size: 15px; background: #2C8C19;"/>
+                                  <p:message  for="asigProd" display="icon"/>
+                            
+                         
                         <p:outputLabel value="Obra:"/>
                         <p:selectOneMenu id="AsigObra" value="#{gestionContribucionControlador.mejoraActual.obrCodigo}" 
                                          panelStyle="width:180px" converter="#{obraConverter}" var="t" style="width:220px"
