@@ -113,7 +113,7 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual = new Patente();
             propietarioActual = new Propietario();
             numPatente = generaNumPatente();
-            catDetParroquia=new CatalogoDetalle();
+            catDetParroquia = new CatalogoDetalle();
             catDetEstablecimientoActual = new CatalogoDetalle();
             catDetTipoEmpresActual = new CatalogoDetalle();
             catDetTipoLocalActual = new CatalogoDetalle();
@@ -240,7 +240,13 @@ public class GestionPatenteControlador extends BaseControlador {
                 patenteActual.setCatdetTipoEmpresa(catDetTipoEmpresActual);
                 patenteActual.setCatdetTipoLocal(catDetTipoLocalActual);
                 patenteActual.setCatdetTipoActEco(catDetTipActEcoActual);
-                patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
+                if (catDetEspTurisActual == null) {
+                    CatalogoDetalle objCatalogoDetAux = new CatalogoDetalle();
+                    objCatalogoDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(0);
+                    patenteActual.setCatdetEspecialidad(objCatalogoDetAux);
+                } else {
+                    patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
+                }
                 patenteActual.setCatdetHorarioFunc(catDetHorFuncionaActual);
                 patenteActual.setPatArtesanoCalificado(artesCalificado);
                 patenteActual.setPatObligadoCont(llevaConta);
@@ -281,6 +287,13 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual.setPatFuncViernes(d5);
             patenteActual.setPatFuncSabado(d6);
             patenteActual.setPatFuncDomingo(d7);
+            if (catDetEspTurisActual == null) {
+                CatalogoDetalle objCatalogoDetAux = new CatalogoDetalle();
+                objCatalogoDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(0);
+                patenteActual.setCatdetEspecialidad(objCatalogoDetAux);
+            } else {
+                patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
+            }
             patenteActual.setCatdetTipoEst(catDetEstablecimientoActual);
             patenteActual.setCatdetTipoEmpresa(catDetTipoEmpresActual);
             patenteActual.setCatdetTipoLocal(catDetTipoLocalActual);
@@ -289,10 +302,15 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual.setCatdetHorarioFunc(catDetHorFuncionaActual);
             patenteActual.setPatArtesanoCalificado(artesCalificado);
             patenteActual.setPatObligadoCont(llevaConta);
-            patenteActual.setPatHorarioDesde(horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
-            patenteActual.setPatHorarioHasta(horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
-            System.out.println("Horario desde: " + horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
-            System.out.println("Horario desde: " + horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
+            if (horarioDesde == null || horarioHasta == null) {
+                patenteActual.setPatHorarioDesde(patenteActual.getPatHorarioDesde());
+                patenteActual.setPatHorarioHasta(patenteActual.getPatHorarioHasta());
+            } else {
+                patenteActual.setPatHorarioDesde(horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
+                patenteActual.setPatHorarioHasta(horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
+            }
+//            System.out.println("Horario desde: " + horarioDesde.getHours() + ":" + horarioDesde.getMinutes());
+//            System.out.println("Horario desde: " + horarioHasta.getHours() + ":" + horarioHasta.getMinutes());
             patenteActual.setPatInicioActEco(fecActividadEconomica);
             cargaObjetosBitacora();
             patenteActual.setUsuIdentificacion(usuarioActual);
@@ -306,9 +324,8 @@ public class GestionPatenteControlador extends BaseControlador {
             addSuccessMessage("Actualizado Exitosamente", "Patente Guardado");
             patenteActual = new Patente();
             limpiarObjetosBitacora();
-            objCatDetAux = null;
-            horarioDesde=null;
-            horarioHasta=null;
+            horarioDesde = null;
+            horarioHasta = null;
             inicializar();
 
         } catch (Exception e) {

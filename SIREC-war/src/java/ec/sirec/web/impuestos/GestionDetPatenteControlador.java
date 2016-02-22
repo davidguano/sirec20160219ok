@@ -184,23 +184,23 @@ public class GestionDetPatenteControlador extends BaseControlador {
         //***************Validacion del impuesto de patente segun tabla 1 Art.18*************
         if (valPatrimonio.doubleValue() >= 0 && valPatrimonio.doubleValue() <= 50000) {
             impFracBasica = BigDecimal.valueOf(10);
-            impExcede = BigDecimal.valueOf((0.25 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(50000)));
+            impExcede = BigDecimal.valueOf((0.25 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(0)));
             System.err.println("Opcion Rango 1");
         }
         if (valPatrimonio.doubleValue() >= 50000.01 && valPatrimonio.doubleValue() <= 100000) {
             impFracBasica = BigDecimal.valueOf(135);
-            impExcede = BigDecimal.valueOf((0.50 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(100000)));;
+            impExcede = BigDecimal.valueOf((0.50 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(50000.001)));;
             System.err.println("Opcion Rango 2");
         }
         if (valPatrimonio.doubleValue() >= 100000.01 && valPatrimonio.doubleValue() <= 250000) {
             impFracBasica = BigDecimal.valueOf(385);
-            impExcede = BigDecimal.valueOf((double) 1 / 100).multiply(valPatrimonio.subtract(BigDecimal.valueOf(250000)));
+            impExcede = BigDecimal.valueOf((double) 1 / 100).multiply(valPatrimonio.subtract(BigDecimal.valueOf(100000.001)));
             System.err.println("Opcion Rango 3");
 
         }
         if (valPatrimonio.doubleValue() >= 250000.01) {
             impFracBasica = BigDecimal.valueOf(1885);
-            impExcede = BigDecimal.valueOf((1.30 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(250000)));;
+            impExcede = BigDecimal.valueOf((1.30 / 100)).multiply(valPatrimonio.subtract(BigDecimal.valueOf(250000.001)));;
             System.err.println("Opcion Rango 4");
         }
         valImpPatente = impFracBasica.add(impExcede);
@@ -615,8 +615,10 @@ public class GestionDetPatenteControlador extends BaseControlador {
                     objPatValEx = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
                     if (objPatValEx != null) {
                         deducciones = true;
+                        existeDedPatente=true;
                     } else {
                         deducciones = false;
+                        existeDedPatente=false;
                     }
                 } else {
                     System.out.println("No encontro el objeto");
