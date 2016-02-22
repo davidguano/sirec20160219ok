@@ -20,10 +20,12 @@
 
                                         <p:panel style="background: #CCCCFF;" header="Clave Catastral">
                                             <h:panelGrid id="pnlBusqueda"
-                                                         columns="6" style="text-align: center !important;" >
+                                                         columns="8" style="text-align: center !important;" >
                                                 <p:outputLabel value="Clave Catastral" for="codN"/>
                                                 <f:verbatim/>
                                                 <p:outputLabel value="Cedula/RUC" for="cedRuc"/>
+                                                <f:verbatim/>
+                                                <p:outputLabel value="Codigo Anterior" for="codAnt"/>
                                                 <f:verbatim/>
                                                 <p:outputLabel value="Apellidos del Propietario" for="apeProp"/>
                                                 <f:verbatim/>
@@ -49,25 +51,50 @@
                                                                  update="lstBusqueda"
                                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                                  icon="fa fa-search"/>
+
+                                                <p:inputText id="codAnt" value="#{catastroControlador.claveAnteriorBusqueda}"
+                                                             maxlength="20" size="15"
+                                                             style="color:white;font-weight: bold;background: black;"
+                                                             onkeypress="return isNumberKey(event);"/>
+                                                <p:commandButton id="btnBuscarPorClaveAnterior"
+                                                                 value="Buscar" async="true" global="false"
+                                                                 action="#{catastroControlador.listarCatastrosPorCodigoAnterior}"
+                                                                 process="@this,codAnt"
+                                                                 update="lstBusqueda2"
+                                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                                 icon="fa fa-search"/>
                                                 <p:autoComplete id="apeProp" value="#{catastroControlador.propietarioPredioBusqueda}" 
                                                                 completeMethod="#{catastroControlador.obtenerPropietarioPredioPorApellidoProp}"
                                                                 converter="#{propietarioPredioConverter}"
                                                                 minQueryLength="5" 
-                                                                size="50" inputStyle="color:white;font-weight: bold;background: black;"
+                                                                size="30" inputStyle="color:white;font-weight: bold;background: black;"
                                                                 var="prop" itemLabel="#{prop.proCi.proApellidos}#{prop.proCi.proNombres}#{prop.catpreCodigo.claveCatastral}" 
                                                                 itemValue="#{prop}">
                                                     <p:ajax event="itemSelect" listener="#{catastroControlador.onItemSelect}" 
                                                             async="true" global="false"
                                                             process="@this,apeProp"
-                                                                 update="@form"
-                                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                                                            update="@form"
+                                                            onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
                                                 </p:autoComplete>
-                                                
+
                                                 <p:commandButton id="btnNuevo" value="Nuevo" action="#{catastroControlador.inicializar}"
                                                                  async="true" global="false" process="@this"
                                                                  update="@form"/>
 
-                                                <p:outputLabel value="Precio Base" for="precBase"/>
+                                                <h:panelGrid columns="2">
+                                                    <p:outputLabel value="Precio Base" for="precBase"/>
+                                                    <p:commandButton value="V" type="button" onclick="PF('dlg1').show();" />
+                                                    <p:dialog header="Valoracion del Predio" widgetVar="dlg1" minHeight="40">
+                                                        <h:panelGrid columns="2">
+                                                        <h:outputText value="Avaluo Terreno:" />
+                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTerr}" />
+                                                        <h:outputText value="Avaluo Edificacion:" />
+                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoEdif}" />
+                                                        <h:outputText value="Avaluo Total:" />
+                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTot}" />
+                                                        </h:panelGrid>
+                                                    </p:dialog>
+                                                </h:panelGrid>
                                                 <p:inputText id="precBase" value="#{catastroControlador.precioBaseActual}"
                                                              disabled="true" size="10"/>
                                                 <f:verbatim/>
@@ -82,6 +109,19 @@
                                                                          onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
                                                     </p:column>
                                                 </p:dataTable>
+                                                <f:verbatim/>
+                                                <p:dataTable id="lstBusqueda2" value="#{catastroControlador.listaCatastrosDeCodigoAnterior}" var="pre2"
+                                                             emptyMessage="" style="width: 150px;">
+                                                    <p:column width="50"><h:outputText value="#{pre2.claveCatastral}" style="font-size: 10px;"/></p:column>
+                                                    <p:column width="20">
+                                                        <p:commandButton id="btnSelPredio2"
+                                                                         action="#{catastroControlador.iraCatastroDesdeBusqueda(pre2)}"
+                                                                         process="@this" async="true" global="false"
+                                                                         icon="fa fa-search"  update="@form"
+                                                                         onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
+                                                    </p:column>
+                                                </p:dataTable>
+
                                                 <f:verbatim/>
                                                 <p:commandButton id="btnReporteFicha" value="Imprimir"
                                                                  action="#{catastroControlador.generarReporteFichaCatastral()}"

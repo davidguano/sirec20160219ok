@@ -77,12 +77,15 @@ public class CatastroControlador extends BaseControlador {
 
     private CatastroPredial catastroPredialActual;
     private String cedulaPropietarioBusqueda;
+    private String claveAnteriorBusqueda;
     private String claveCatastralBusqueda;
     private List<CatastroPredial> listaCatastrosDePropietario;
+    private List<CatastroPredial> listaCatastrosDeCodigoAnterior;
     private PropietarioPredio propietarioPredioBusqueda;
 
     private Propietario propietarioActual;
     private BigDecimal precioBaseActual;
+    private CatastroPredialValoracion valoracionActual;
     private CatastroPredialAreas catastroAreaActual;
     private List<CatastroPredialAreas> listaCatastroPredialAreasBloque;
 
@@ -209,7 +212,7 @@ public class CatastroControlador extends BaseControlador {
             listaCatastrosDePropietario = new ArrayList<CatastroPredial>();
             catastroAreaActual = new CatastroPredialAreas();
             listaCatastroPredialAreasBloque = new ArrayList<CatastroPredialAreas>();
-
+            valoracionActual = new CatastroPredialValoracion();
             listaGruposUsoSuelo = new ArrayList<SelectItem>();
             OpcionesUsoSuelo ou = new OpcionesUsoSuelo();
             listaGruposUsoSuelo = ou.getListaGrupos();
@@ -240,6 +243,16 @@ public class CatastroControlador extends BaseControlador {
         try {
             if (cedulaPropietarioBusqueda.length() == 10 || cedulaPropietarioBusqueda.length() == 13) {
                 listaCatastrosDePropietario = catastroServicio.listarCatastroPorCedulaPropietario(cedulaPropietarioBusqueda);
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void listarCatastrosPorCodigoAnterior() {
+        try {
+            if (claveAnteriorBusqueda.length() > 10) {
+                listaCatastrosDeCodigoAnterior = catastroServicio.listarCatastroPorCodigoAnterior(claveAnteriorBusqueda);
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -479,8 +492,10 @@ public class CatastroControlador extends BaseControlador {
         try {
             if (catastroPredialActual.getCatpreCodigo() != null) {
                 catastroServicio.guardarAreaBloque(catastroPredialActual, catastroAreaActual);
-                catastroServicio.crearRegistrosEdificacionesPorArea(catastroPredialActual, catastroAreaActual);
-                listaCatastroPredialAreasBloque = catastroServicio.listarAreasPorCatastro(catastroPredialActual.getCatpreCodigo());
+                if (catastroAreaActual.getCatpreareCodigo() != null) {
+                    catastroServicio.crearRegistrosEdificacionesPorArea(catastroPredialActual, catastroAreaActual);
+                    listaCatastroPredialAreasBloque = catastroServicio.listarAreasPorCatastro(catastroPredialActual.getCatpreCodigo());
+                }
                 catastroAreaActual = new CatastroPredialAreas();
             }
         } catch (Exception ex) {
@@ -595,6 +610,7 @@ public class CatastroControlador extends BaseControlador {
                     listaUsuSuelo = catastroServicio.listarRegistrosUsuSueloPorCatastroySubgrupo(catastroPredialActual, "11");
                     recuperarDatosdeEdificaciones();
                     precioBaseActual = catastroServicio.obtenerValorPrecioBasePredio(catastroPredialActual);
+                    valoracionActual = catastroServicio.obtenerValoracionPredio(catastroPredialActual);
                     listarArchivos();
                     listarArchivosFoto();
                 } else {
@@ -1000,7 +1016,7 @@ public class CatastroControlador extends BaseControlador {
             }
 
         } catch (Exception ex) {
-             LOGGER.log(Level.INFO,"No existe foto con este codigo");
+            LOGGER.log(Level.INFO, "No existe foto con este codigo");
         }
     }
 
@@ -1525,8 +1541,6 @@ public class CatastroControlador extends BaseControlador {
         this.precioBaseActual = precioBaseActual;
     }
 
-    
-
     public List<CatalogoDetalle> getListaOpcEdifGrupo2_1() {
         return listaOpcEdifGrupo2_1;
     }
@@ -1829,6 +1843,30 @@ public class CatastroControlador extends BaseControlador {
 
     public void setFotoActual(StreamedContent fotoActual) {
         this.fotoActual = fotoActual;
+    }
+
+    public String getClaveAnteriorBusqueda() {
+        return claveAnteriorBusqueda;
+    }
+
+    public void setClaveAnteriorBusqueda(String claveAnteriorBusqueda) {
+        this.claveAnteriorBusqueda = claveAnteriorBusqueda;
+    }
+
+    public List<CatastroPredial> getListaCatastrosDeCodigoAnterior() {
+        return listaCatastrosDeCodigoAnterior;
+    }
+
+    public void setListaCatastrosDeCodigoAnterior(List<CatastroPredial> listaCatastrosDeCodigoAnterior) {
+        this.listaCatastrosDeCodigoAnterior = listaCatastrosDeCodigoAnterior;
+    }
+
+    public CatastroPredialValoracion getValoracionActual() {
+        return valoracionActual;
+    }
+
+    public void setValoracionActual(CatastroPredialValoracion valoracionActual) {
+        this.valoracionActual = valoracionActual;
     }
 
 }

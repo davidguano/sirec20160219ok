@@ -162,17 +162,21 @@ public class RecaudacionControlador extends BaseControlador{
         }
     }
      
+     public void totalizar(){
+         try{
+            recaudacionCabeceraActual.setRecTotal(recaudacionServicio.obtenerTotalRecaudacion(listaRecaudacionDetalleActual));
+        }catch(Exception ex){
+            LOGGER.log(Level.SEVERE,null,ex);
+        }
+     }
      public void guardarRecaudacion(){
           try {
            if(recaudacionCabeceraActual.getRecCodigo()==null){
                recaudacionCabeceraActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
-               recaudacionServicio.guardarRecaudacion(recaudacionCabeceraActual, listaRecaudacionDetalleActual);
-               addSuccessMessage("Recaudacion creada correctamente");
+               addSuccessMessage(recaudacionServicio.guardarRecaudacion(recaudacionCabeceraActual, listaRecaudacionDetalleActual));
                listarRubrosARecaudar();
            }else{
-               recaudacionCabeceraActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
-               recaudacionServicio.editarRecaudacion(recaudacionCabeceraActual, listaRecaudacionDetalleActual);
-               addSuccessMessage("Recaudacion editada correctamente");
+               addWarningMessage("No puede editar recaudacion");
            }
 
         } catch (Exception ex) {

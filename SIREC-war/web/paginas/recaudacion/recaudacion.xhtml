@@ -170,13 +170,18 @@
                                     </p:dataTable>
                                 </h:panelGrid>
                             </h:panelGrid>
-                            <h:panelGrid width="600">
+                            <h:panelGrid width="700">
                                 <h:panelGrid id="pnlListaRecaudacionDetalle">
                                     <p:dataTable id="lstRecaudacionDetalle" value="#{recaudacionControlador.listaRecaudacionDetalleActual}"
                                                  var="rec"
                                                  emptyMessage="No existen valores a recaudar.">
                                         <p:column width="20">
-                                            <p:selectBooleanCheckbox value="#{rec.activo}" rendered="#{rec.recdetCodigo ==null}"/>
+                                            <p:selectBooleanCheckbox value="#{rec.activo}" rendered="#{rec.recdetCodigo ==null}">
+                                            <p:ajax async="true" global="false"
+                                                process="@this,lstRecaudacionDetalle"
+                                                listener="#{recaudacionControlador.totalizar}"
+                                                update=":frmRec:pnlTotales"/>
+                                            </p:selectBooleanCheckbox>
                                         </p:column>
                                         <p:column headerText="Rubro">
                                             <h:outputText value="Predial" rendered="#{rec.recdetTipo=='PR'}"/>
@@ -185,6 +190,9 @@
                                             <h:outputText value="Alcabala" rendered="#{rec.recdetTipo=='AL'}"/>
                                             <h:outputText value="Plusvalia" rendered="#{rec.recdetTipo=='PL'}"/>
                                             <h:outputText value="Servicio" rendered="#{rec.recdetTipo=='SE'}"/>
+                                        </p:column>
+                                        <p:column headerText="Sector" width="100">
+                                            <h:outputText value="#{rec.cxcCodigo.cxcReferencia2}"/>
                                         </p:column>
                                         <p:column headerText="Referencia" width="150">
                                             <h:panelGrid border="0">
@@ -215,11 +223,16 @@
                                         </p:column>
                                     </p:dataTable>
                                 </h:panelGrid>
+                                <h:panelGrid id="pnlTotales" columns="2">
+                                    <h:outputText value="Total a Recaudar:"/>
+                                    <h:outputText value="#{recaudacionControlador.recaudacionCabeceraActual.recTotal}"
+                                                  style="font-size: 14px;color:red;"/>
+                                </h:panelGrid>
                                 <p:commandButton id="btnGuardarRec" value="Guardar Recaudación"
                                                  action="#{recaudacionControlador.guardarRecaudacion}"
                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                  async="true" global="false" process="@this,pnlListaRecaudacionDetalle" 
-                                                 update=":frmRec:msgs,pnlListaRecaudacionDetalle,pnlListaRecaudaciones">
+                                                 update=":frmRec:msgs,pnlListaRecaudacionDetalle,pnlListaRecaudaciones,pnlTotales">
                                      <p:confirm header="Confirmación" message="¿Está seguro de registrar esta recaudación?" icon="ui-icon-alert" />
                                 </p:commandButton>
 
