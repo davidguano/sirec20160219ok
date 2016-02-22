@@ -500,12 +500,14 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                 if (adicionalesDeductivosActual.getAdidedNemonico().equals("D_RHI")) {
                     visibleRebHipotecaria = adicionalesDeductivosActual.getAdidedNemonico();
                     rebHipotecaria = cpValoracionExtrasServicio.obtenerValorAdicionalRHipotecaria(catastroPredialValoracionActual, adicionalesDeductivosActual).getCpvalextValorAdicional();
+                    if(rebHipotecaria==null)
+                        rebHipotecaria = BigDecimal.ZERO;
                     i = listaAdicionalesDeductivosDeduccionesSeleccion.size();
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
+            //LOGGER.log(Level.SEVERE, null, ex);
         }
     }
     
