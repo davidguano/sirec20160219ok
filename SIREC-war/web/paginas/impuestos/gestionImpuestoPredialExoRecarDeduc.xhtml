@@ -96,7 +96,10 @@
                                      <p:inputText id="alRH" value="#{gestionImpuestoPredialControlador.rebHipotecaria}" 
                                              required="true" requiredMessage="Se nesecita un valor: Rebaja Hipotecaria"
                                              onkeypress="return isDecimalKey(event)"
-                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                             style="font-family: Arial; font-size: 15px; text-align:right;">
+                                      <f:validateDoubleRange minimum="0.1" maximum="1000000000" />
+                                     
+                                     </p:inputText>
                                         <p:message  for="alRH" display="icon"/>
                                     </h:panelGrid>
                                 
@@ -137,9 +140,11 @@
                                 <h:panelGrid id="pnlBENE" columns="3" rendered="#{gestionImpuestoPredialControlador.visibleBeneficiencia=='E_IBE'}">                                        
                                          <p:outputLabel value="Institución de beneficencia o asistencia social : %"/>
                                          <p:inputText id="alBen" value="#{gestionImpuestoPredialControlador.valorBeneficiencia}"                                              
-                                             onkeypress="return isDecimalKey(event)"
+                                                      onkeypress="return isDecimalKey(event)" 
                                              required="true" requiredMessage="Se nesecita un valor: Institución de beneficencia o asistencia social"
-                                             style="font-family: Arial; font-size: 15px; text-align:right;"/>
+                                             style="font-family: Arial; font-size: 15px; text-align:right;">
+                                             <f:validateDoubleRange minimum="0.1" maximum="100" />
+                                         </p:inputText>
                                         <p:message  for="alBen" display="icon"/>
                                     </h:panelGrid>
                                 <h:panelGrid id="pnlUTIPUB" columns="3" rendered="#{gestionImpuestoPredialControlador.visibleEntidadPublica=='E_PDP'}">                                        
@@ -147,7 +152,9 @@
                                          <p:inputText id="alUtiP" value="#{gestionImpuestoPredialControlador.valorEntidadPublica}"                                              
                                              onkeypress="return isDecimalKey(event)"
                                              required="true" requiredMessage="Se nesecita un valor: Predio declarado de utilidad pública"
-                                             style="font-family: Arial; font-size: 15px; text-align:right;"  />
+                                             style="font-family: Arial; font-size: 15px; text-align:right;"  >
+                                         <f:validateDoubleRange minimum="0.1" maximum="100" />
+                                         </p:inputText>
                                         <p:message  for="alUtiP" display="icon"/>
                                     </h:panelGrid>
                                 
