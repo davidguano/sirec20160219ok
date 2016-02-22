@@ -43,5 +43,9 @@ public class ObraProyectoServicio {
     public List<ObraProyecto> listarObrasProyectos() throws Exception {
         return obraProyectoDao.listarTodos();
     }
+    
+    public List<ObraProyecto> listarObrasProyectosLocales() throws Exception {
+        return obraProyectoDao.listarLocales();
+    }
          
 }
