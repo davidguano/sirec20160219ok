@@ -32,6 +32,7 @@ import ec.sirec.ejb.servicios.ConstructoraServicio;
 import ec.sirec.ejb.servicios.CpAlcabalaValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.CpValoracionExtrasServicio;
 import ec.sirec.ejb.servicios.DatoGlobalServicio;
+import ec.sirec.ejb.servicios.MejoraServicio;
 import ec.sirec.ejb.servicios.ObraProyectoServicio;
 import ec.sirec.ejb.servicios.PredioArchivoServicio;
 import ec.sirec.ejb.servicios.RecaudacionCabServicio;
@@ -64,30 +65,9 @@ public class GestionContribucionControlador extends BaseControlador {
     private static final Logger LOGGER = Logger.getLogger(GestionContribucionControlador.class.getName());
     // VARIABLES Y ATRIBUTOS
 
-//    private SegUsuario usuarioActual;
-//    private CatastroPredial catastroPredialActual;
-//    private CatastroPredialAlcabalaValoracion catastroPredialAlcabalaValoracion;
-//    private CatalogoDetalle catalogoDetalleConcepto;
-//
-//    private List<CatastroPredial> listaCatastroPredial;
-//    private List<CatalogoDetalle> listaCatalogoDetalleConcepto;
-//    private CatastroPredialValoracion catastroPredialValoracionActual;
-//
-//    private List<AdicionalesDeductivos> listaAdicionalesDeductivosDeducciones;
-//    private List<String> listaAdicionalesDeductivosDeduccionesSeleccion;
-//    private List<AdicionalesDeductivos> listaAdicionalesDeductivosExcenciones;
-//    private List<String> listaAdicionalesDeductivosExcencionesSeleccion;
-//
-//    private AdicionalesDeductivos adicionalesDeductivosActual;
-//    private CpAlcabalaValoracionExtras cpAlcabalaValoracionExtrasActual;
-//    private StreamedContent archivo;
-//    private Propietario propietario;
-//    private List<PredioArchivo> listaAlcabalasArchivo;
-//    private PredioArchivo predioArchivo;
-//    private PropietarioPredio propietarioPredioBusqueda;
-//    private int anio;
+
     
-    /// ATRIBUTOS PLUSVALIA
+    
     
     private List<CatalogoDetalle> listaTipoDeTarifa;
     private CatastroPredialPlusvaliaValoracion catastroPredialPlusvaliaValoracion;
@@ -141,9 +121,12 @@ public class GestionContribucionControlador extends BaseControlador {
     private String codEje;
     private String etiquedaEje;
     private List<ObraProyecto> listaObraProyecto;
+    private List<ObraProyecto> listaObraProyectoLocales;
+    private List<Mejora> listaMejoras;
     private Mejora mejoraActual;
     private Propietario propietario;
-    
+    @EJB
+    private MejoraServicio mejoraServicio;
     
     //  ASIGNACIOM DE PREDIO
     
@@ -160,7 +143,31 @@ public class GestionContribucionControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            inicializar1();                        
+            inicializar2();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
 
+    public void inicializar2() {
+        try {
+            listaObraProyectoLocales = new ArrayList<ObraProyecto>();
+            catastroPredialActual = new CatastroPredial();
+            mejoraActual = new Mejora();
+            listarObraProyectosLocales();
+            listarMejoras();
+            
+            
+            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+     public void inicializar1() {
+        try {
+          listaObraProyectoLocales = new ArrayList<ObraProyecto>();
             obraProyectoActual = new ObraProyecto();
             listaParroquias = new ArrayList<CatalogoDetalle>();
             listaEstado = new ArrayList<CatalogoDetalle>();
@@ -183,27 +190,11 @@ public class GestionContribucionControlador extends BaseControlador {
             listarObraProyectos();
             listarTipoObra();
             
-            inicializar2();
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void inicializar2() {
-        try {
-            catastroPredialActual = new CatastroPredial();
-            mejoraActual = new Mejora();
-            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
     
-//    public void obtenerUsuario() {
-//        usuarioActual = new SegUsuario();
-//        usuarioActual = (SegUsuario) getSession().getAttribute("usuario");
-//        //System.out.println(usuarioActual.getUsuIdentificacion());         
-//    }
 
     public GestionContribucionControlador() {
     }
@@ -235,6 +226,14 @@ public class GestionContribucionControlador extends BaseControlador {
     public void listarTipoObra() {
         try {
             listaTipoObra = catastroPredialServicio.listaCatTipoObra();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+      public void listarMejoras() {
+        try {
+            listaMejoras = mejoraServicio.listarMejoras();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -274,8 +273,9 @@ public class GestionContribucionControlador extends BaseControlador {
             String mensaje = obraProyectoServicio.crearObraProyecto(obraProyectoActual);
             addSuccessMessage(mensaje, mensaje);
 
-            inicializar();
-            listarObraProyectos();
+            
+            inicializar1();
+            listarObraProyectos();           
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -286,6 +286,15 @@ public class GestionContribucionControlador extends BaseControlador {
         try {
             listaObraProyecto = new ArrayList<ObraProyecto>();
             listaObraProyecto = obraProyectoServicio.listarObrasProyectos();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void listarObraProyectosLocales() {
+        try {
+            listaObraProyectoLocales = new ArrayList<ObraProyecto>();
+            listaObraProyectoLocales = obraProyectoServicio.listarObrasProyectosLocales();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -302,8 +311,10 @@ public class GestionContribucionControlador extends BaseControlador {
     public void aceptarDeterminacion() {
         try {
             obraProyectoServicio.editarObraProyecto(obraProyectoActual);
-            listarObraProyectos();
-            inicializar();
+            inicializar1();
+            listarObraProyectos();            
+            listarObraProyectosLocales();
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -333,12 +344,10 @@ public class GestionContribucionControlador extends BaseControlador {
     
      public void guardarAsignacionObra() {
         try {
-//            String mensaje = obraProyectoServicio.crearObraProyecto(obraProyectoActual);
-//            addSuccessMessage(mensaje, mensaje);
-//
-//            inicializar();
-//            listarObraProyectos();
-
+            
+            mejoraServicio.crearMejora(mejoraActual);
+            listarMejoras();
+             inicializar2();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -446,6 +455,22 @@ public class GestionContribucionControlador extends BaseControlador {
 
     public void setPropietario(Propietario propietario) {
         this.propietario = propietario;
+    }
+
+    public List<Mejora> getListaMejoras() {
+        return listaMejoras;
+    }
+
+    public void setListaMejoras(List<Mejora> listaMejoras) {
+        this.listaMejoras = listaMejoras;
+    }
+
+    public List<ObraProyecto> getListaObraProyectoLocales() {
+        return listaObraProyectoLocales;
+    }
+
+    public void setListaObraProyectoLocales(List<ObraProyecto> listaObraProyectoLocales) {
+        this.listaObraProyectoLocales = listaObraProyectoLocales;
     }
     
     
