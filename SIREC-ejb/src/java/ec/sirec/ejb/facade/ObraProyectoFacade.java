@@ -52,4 +52,21 @@ public class ObraProyectoFacade extends AbstractFacade<ObraProyecto> {
 //  m.obr_codigo= p.obr_codigo;       
     }
     
+  public List <ObraProyecto> listarLocales() throws Exception {
+        String sql = "SELECT p " +
+"  FROM ObraProyecto p, CatalogoDetalle d " +
+"  where p.catdetTipoObra=d.catdetCodigo and " +
+"  d.catdetCod='L'";
+        Query q = em.createQuery(sql);       
+        if (q.getResultList().isEmpty()) {
+            return null;
+        } else {
+            return q.getResultList();
+        }
+    }
+  
+//  SELECT obr_codigo, con_codigo, obr_descripcion, catdet_tipo_obra, obr_num_decreto
+//  FROM sirec.obra_proyecto p, sirec.catalogo_detalle d
+//  where p.catdet_tipo_obra=d.catdet_codigo and
+//  d.catdet_cod='L';
 }
