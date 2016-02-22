@@ -36,19 +36,19 @@
                                     <h:panelGrid columns="6">
                                         <p:outputLabel style="font-size: #{txt.font_size};" value="#{txt.lbl_nom_razon_social}"/>
                                         <p:inputText style="background: lightgreen;color:black;font-weight: bold" disabled="true" id="txtRazonSocial" value="#{gestionDecTributariaControlador.propietarioActual.proRazonSocial}"  
-                                                      size="40"/>
+                                                     size="40"/>
                                         <p:message for="txtRazonSocial" display="icon"/>
 
                                         <p:outputLabel style="font-size: #{txt.font_size};" value="#{txt.lbl_ruc}"/>
                                         <p:inputText style="background: lightgreen;color:black;font-weight: bold"  disabled="true" id="txtRuc" value="#{gestionDecTributariaControlador.propietarioActual.proCi}"  
-                                                      size="40"/>
+                                                     size="40"/>
                                         <p:message for="txtRuc" display="icon"/>
                                     </h:panelGrid>
 
                                     <h:panelGrid columns="3">
                                         <p:outputLabel style="font-size: #{txt.font_size};" value="#{txt.lbl_inic_act_economica}"/>
                                         <p:inputText style="background: lightgreen;color:black;font-weight: bold"  disabled="true" id="txtIniActEcon" value="#{gestionDecTributariaControlador.patenteActual.patInicioActEco}"  
-                                                      size="40"/>
+                                                     size="40"/>
                                         <p:message for="txtIniActEcon" display="icon"/>
 
                                         <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_obl_lleva_contab}"/>
@@ -58,8 +58,8 @@
                                     <h:panelGrid>
                                         <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_tipo_declara}"/>
                                         <p:selectOneMenu requiredMessage="#{txt.lbl_tipo_declara} Se nesecita un valor"   required="true" id="cmbTipoDeclara" 
-                                                           value="#{gestionDecTributariaControlador.catDeTipoDeclaracion}" style="width:250px"
-                                                           converter="#{catalogoDetalleConverter}" var="t">
+                                                         value="#{gestionDecTributariaControlador.catDeTipoDeclaracion}" style="width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
                                             <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
                                             <f:selectItems var="cmbTipoDeclara"  
                                                            value="#{gestionDecTributariaControlador.lisCatDeTipoDeclara}" 
