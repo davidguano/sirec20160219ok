@@ -42,7 +42,7 @@
                                          >
                             <f:selectItem itemLabel="Seleccione... " itemValue="#{null}" /> 
                             <f:selectItems var="tipo" 
-                                           value="#{gestionContribucionControlador.listaObraProyecto}" 
+                                           value="#{gestionContribucionControlador.listaObraProyectoLocales}" 
                                            itemLabel="#{tipo.obrDescripcion}" 
                                            itemValue="#{tipo}"/> 
                             <p:column width="200" style="white-space: normal">  
@@ -58,12 +58,44 @@
                                      id="AsingGuardar" 
                                      action="#{gestionContribucionControlador.guardarAsignacionObra()}" 
                                      icon="ui-icon-disk"  
-                                     process="@this" 
-                                     update=""
+                                     process="@this,panelIng" 
+                                     update=":frmContribucion:tabContribucion:panelLstMejora, panelIng"
                                      async="true"
                                      global="false"
                                      />
                     
+                       <h:panelGrid id="panelLstMejora" columns="1">
+
+                           <p:dataTable id="lstMejora" value="#{gestionContribucionControlador.listaMejoras}"  var="obra"
+                                        selectionMode="single"  rowKey="#{obra.mejCodigo}" 
+                                     rows="7"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     emptyMessage="No se han encontrado registros"                                                 
+                                     styleClass="pdataTable_font"
+                                     currentPageReportTemplate="{currentPage} de {totalPages}"> 
+                            <f:facet name="header">
+                                <p:outputLabel value="Lista de Asignacion de Mejoras" style="font-size:12px;"/>
+                            </f:facet>
+                            <p:column headerText="Clave Catastral" width="80" filterBy="#{obra.catpreCodigo.catpreCodNacional}#{obra.catpreCodigo.catpreCodLocal}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.catpreCodigo.catpreCodNacional}#{obra.catpreCodigo.catpreCodLocal}"  style="font-size:12px;" />
+                            </p:column>
+
+                            <p:column headerText="Obra" width="30" filterBy="#{obra.obrCodigo.obrDescripcion}" filterMatchMode="contains">
+                                <h:outputText value="#{obra.obrCodigo.obrDescripcion}" style="font-size:12px;" />
+                            </p:column>
+
+                           
+
+                            
+                        </p:dataTable>
+
+                       
+
+
+                    </h:panelGrid>  
+                      
+                      
                 </center>
             </p:panel>                                                                                                                                                                                                        
         </h:panelGrid>
