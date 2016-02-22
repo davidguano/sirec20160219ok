@@ -23,7 +23,7 @@
                                     <p:commandButton value="#{txt.btn_aceptar}" 
                                                      id="btn15xMilExoBuscaPatente" 
                                                      action="#{gestionExoDedMulUnoCincoPorMil.cagarPatenteActual()}" 
-                                                     icon="ui-icon-disk"  
+                                                     icon="ui-icon-extlink"  
                                                      process="@this,pnl15xMilExoBuscaPatente" 
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      update=":frmPat:tabPrin:pnlCon15xMilExoDedMulNumPat,pnlConValExuDedMul15PorMil,:frmPat:tabPrin:pnl15xMilExoBtnGuAct"
@@ -36,7 +36,7 @@
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btn15xMilExoBusPat" 
                                                  action="#{gestionExoDedMulUnoCincoPorMil.buscarPatente()}" 
-                                                 icon="ui-icon-disk"  
+                                                 icon="ui-icon-search"  
                                                  process="@this,pnl15xMilExoBuscaPatente" 
                                                  update=":frmPat,pnl15xMilExoBuscaPatente"
                                                  async="true"
@@ -45,7 +45,7 @@
                                 <p:commandButton value="#{txt.btn_nuevo}" 
                                                  id="bt15xMilNuePat" 
                                                  action="#{gestionExoDedMulUnoCincoPorMil.inicializar()}" 
-                                                 icon="ui-icon-disk"  
+                                                 icon="ui-icon-document"  
                                                  process="@this,pnl15xMilExoBuscaPatente" 
                                                  update=":frmPat,pnl15xMilExoBuscaPatente,pnlConValExuDedMul15PorMil"
                                                  async="true"
@@ -67,8 +67,6 @@
                                 <psirec:panelInformativo  rendered="#{gestionExoDedMulUnoCincoPorMil.numPatente==null}" id="inf15xMilExoDedMulResult" background="#042B69" ancho="220" icono="fa-exclamation-triangle"
                                                           titulo="#{txt.lbl_head_error_patente}" tamanioTitulo="15" colorTitulo="white"
                                                           texto="#{txt.lbl_sin_resultados}" tamanioTexto="12" colorTexto="white"/>
-
-
                             </h:panelGrid>
                         </p:panel>
                     </h:panelGrid>
@@ -149,7 +147,7 @@
                         <p:commandButton value="#{txt.btn_ver_documentos}" 
                                          id="btnVerDocuExoxMil" 
                                          action="#{gestionExoDedMulUnoCincoPorMil.activaPanerVerArchivos()}" 
-                                         icon="ui-icon-disk"  
+                                         icon="ui-icon-search"  
                                          process="@this,pnlConBot15xMilExoDedMul" 
                                          update=":frmPat:tabPrin:pnlCargarFile15PorMil,:frmPat:msgs"
                                          async="true"
@@ -158,7 +156,7 @@
                         <p:commandButton value="#{txt.btn_cargar_documentos}" 
                                          id="btnCargaDocuExoxMil" 
                                          action="#{gestionExoDedMulUnoCincoPorMil.activPanelCargrArchivos()}" 
-                                         icon="ui-icon-disk"  
+                                         icon="ui-icon-newwin"  
                                          process="@this,pnlConBot15xMilExoDedMul" 
                                          update=":frmPat:tabPrin:pnlCargarFile15PorMil"
                                          async="true"
@@ -292,7 +290,7 @@
                     <p:commandButton rendered="#{gestionExoDedMulUnoCincoPorMil.verActualiza==1}" value="#{txt.btn_actualizar}" 
                                      id="btnActualizar15xMilExoDed" 
                                      action="#{gestionExoDedMulUnoCincoPorMil.actualizaPatente15xMilValExtra()}" 
-                                     icon="ui-icon-disk"  
+                                     icon="ui-icon-arrowrefresh-1-w"  
                                      process="@this,pnlCon15xMilExuDedMul" 
                                      update=":frmPat,pnlCon15xMilExuDedMul,frmPat:msgs"
                                      async="true"

@@ -72,7 +72,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     private int verDetDeducciones;
     private boolean deducciones;
     private boolean existeDedPatente;
-        private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -151,8 +151,10 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                     objPatValEx = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patente15milValActual.getPat15valCodigo());
                     if (objPatValEx != null) {
                         deducciones = true;
+                        existeDedPatente = true;
                     } else {
                         deducciones = false;
+                        existeDedPatente = false;
                     }
                 } else {
                     System.out.println("No encontro el objeto");
@@ -239,8 +241,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             valBaseImponible = patente15milValActual.getPat15valActivos().subtract(patente15milValActual.getPat15valPasivosCorriente()).subtract(patente15milValActual.getPat15valPasivosConting()).subtract(patente15milValActual.getPat15valOtrasDeducciones());
             valBaseImponible.setScale(2, RoundingMode.HALF_UP);
             patente15milValActual.setPat15valBaseImponible(valBaseImponible);
-            datoGlobalActal = unoPCinoPorMilServicio.buscaMensajeTransaccion("Val_tasa_procesamiento");
-            valTasaProc = BigDecimal.valueOf(Double.parseDouble(datoGlobalActal.getDatgloValor()));
+//            datoGlobalActal = unoPCinoPorMilServicio.buscaMensajeTransaccion("Val_tasa_procesamiento");
+            valTasaProc = BigDecimal.ZERO;
             patente15milValActual.setPat15valTasaProc(valTasaProc);
             calculaValorImpuesto15xMil();
 
@@ -262,7 +264,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             patente15milValActual.setPat15valRecargos(valRecargos);
 
         }
-   calculaTotalSubtotal();
+        calculaTotalSubtotal();
     }
 
     public void calculaDeducciones() {
@@ -351,7 +353,6 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             patente15milValActual.setPat15valRecargos(valRecargos);
             objPat15MilAux = new Patente15xmilValoracion();
             objPat15MilExtAux = new Patente15xmilValoracionExtras();
-         
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -655,7 +656,5 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     public void setExisteDedPatente(boolean existeDedPatente) {
         this.existeDedPatente = existeDedPatente;
     }
-
-    
 
 }
