@@ -74,7 +74,7 @@
                                                           texto="#{txt.lbl_sin_resultados}" tamanioTexto="12" colorTexto="white"/>
 
                             </h:panelGrid>
-                            <h:panelGrid columns="6"> 
+                            <h:panelGrid columns="7"> 
                                 <h:panelGrid id="pnlBuscaProPatente" columns="2">
                                     <p:column>
                                         <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_clave_catastrat}"/>
@@ -107,6 +107,9 @@
                                     </p:column> 
                                 </p:selectOneMenu>                               
                                 <p:message for="cmbIdentEstado" display="icon"/>
+                                <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='A'}" value="Estado Actual: ACTIVO"/> 
+                                <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='I'}" value="Estado Actual: INACTIVO"/>
+                                <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='P'}" value="Estado Actual: PRE - INSCRITO"/>
                             </h:panelGrid>
                             <h:panelGrid columns="6" id="pnlConContrasenia">
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_comercial}"/>
@@ -523,6 +526,7 @@
                                  action="#{gestionPatenteControlador.guardarPatente()}" 
                                  icon="ui-icon-disk"  
                                  process="@this,pnlContienePatente" 
+                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                  update=":frmPat:tabPrin:pnlContienePatente,:frmPat:msgs"
                                  async="true"
                                  global="false"
@@ -533,6 +537,7 @@
                                  action="#{gestionPatenteControlador.actualizaPatente()}" 
                                  icon="ui-icon-arrowrefresh-1-w"  
                                  process="@this,pnlContienePatente" 
+                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                  update=":frmPat:tabPrin:pnlContienePatente,:frmPat:msgs"
                                  async="true"
                                  global="false"
@@ -543,6 +548,7 @@
                                  action="#{gestionPatenteControlador.inicializar()}" 
                                  icon="ui-icon-document"  
                                  process="@this,pnlContienePatente" 
+                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                  update=":frmPat:tabPrin:pnlContienePatente"
                                  async="true"
                                  global="false"
