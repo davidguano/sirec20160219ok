@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,7 +26,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author DAVID GUAN
+ * @author new
  */
 @Entity
 @Table(name = "sirec.obra_proyecto")
@@ -67,9 +63,17 @@ public class ObraProyecto implements Serializable {
     private BigDecimal obrDesecacionRellenos;
     @Column(name = "obr_total")
     private BigDecimal obrTotal;
+    @Column(name = "obr_num_contrato")
+    private Integer obrNumContrato;
+    @Size(max = 20)
+    @Column(name = "obr_num_decreto")
+    private String obrNumDecreto;
     @JoinColumn(name = "con_codigo", referencedColumnName = "con_codigo")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Constructora conCodigo;
+    @JoinColumn(name = "catdet_tipo_obra", referencedColumnName = "catdet_codigo")
+    @ManyToOne
+    private CatalogoDetalle catdetTipoObra;
     @JoinColumn(name = "catdet_estado", referencedColumnName = "catdet_codigo")
     @ManyToOne(optional = false)
     private CatalogoDetalle catdetEstado;
@@ -79,17 +83,7 @@ public class ObraProyecto implements Serializable {
     @JoinColumn(name = "catdet_parroquia", referencedColumnName = "catdet_codigo")
     @ManyToOne(optional = false)
     private CatalogoDetalle catdetParroquia;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "obrCodigo")
-    private List<Mejora> mejoraList;
-    @Column(name = "obr_num_contrato")
-    private Integer obrNumContrato;
-    @JoinColumn(name = "catdet_tipo_obra", referencedColumnName = "catdet_codigo")
-    @ManyToOne(optional = false)
-    private CatalogoDetalle catdetTipoObra;
-    @Size(max = 20)
-    @Column(name = "obr_num_decreto")
-    private String obrNumDecreto;
-    
+
     public ObraProyecto() {
     }
 
@@ -182,12 +176,36 @@ public class ObraProyecto implements Serializable {
         this.obrTotal = obrTotal;
     }
 
+    public Integer getObrNumContrato() {
+        return obrNumContrato;
+    }
+
+    public void setObrNumContrato(Integer obrNumContrato) {
+        this.obrNumContrato = obrNumContrato;
+    }
+
+    public String getObrNumDecreto() {
+        return obrNumDecreto;
+    }
+
+    public void setObrNumDecreto(String obrNumDecreto) {
+        this.obrNumDecreto = obrNumDecreto;
+    }
+
     public Constructora getConCodigo() {
         return conCodigo;
     }
 
     public void setConCodigo(Constructora conCodigo) {
         this.conCodigo = conCodigo;
+    }
+
+    public CatalogoDetalle getCatdetTipoObra() {
+        return catdetTipoObra;
+    }
+
+    public void setCatdetTipoObra(CatalogoDetalle catdetTipoObra) {
+        this.catdetTipoObra = catdetTipoObra;
     }
 
     public CatalogoDetalle getCatdetEstado() {
@@ -214,40 +232,6 @@ public class ObraProyecto implements Serializable {
         this.catdetParroquia = catdetParroquia;
     }
 
-    public List<Mejora> getMejoraList() {
-        return mejoraList;
-    }
-
-    public void setMejoraList(List<Mejora> mejoraList) {
-        this.mejoraList = mejoraList;
-    }
-
-    public Integer getObrNumContrato() {
-        return obrNumContrato;
-    }
-
-    public void setObrNumContrato(Integer obrNumContrato) {
-        this.obrNumContrato = obrNumContrato;
-    }
-
-    public CatalogoDetalle getCatdetTipoObra() {
-        return catdetTipoObra;
-    }
-
-    public void setCatdetTipoObra(CatalogoDetalle catdetTipoObra) {
-        this.catdetTipoObra = catdetTipoObra;
-    }
-
-    public String getObrNumDecreto() {
-        return obrNumDecreto;
-    }
-
-    public void setObrNumDecreto(String obrNumDecreto) {
-        this.obrNumDecreto = obrNumDecreto;
-    }
-
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
