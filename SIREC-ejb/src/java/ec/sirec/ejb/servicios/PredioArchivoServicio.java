@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.PredioArchivo;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.facade.PredioArchivoFacade;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -60,6 +61,12 @@ public class PredioArchivoServicio {
     
     public List<PredioArchivo> listarArchivosXImpuesto(CatastroPredial catastro, String tipoImp, Integer anio) throws Exception {
         return predioArchivoDao.listarPor3CamposOrdenada(ENTIDAD_PREDIO_ARCHIVO, "catpreCodigo", catastro, "prearcTipo", tipoImp, "prearcAnio", anio, "ultaccMarcatiempo", "asc");
+    }
+    
+    public boolean existenArchivosDePredioEnFecha(CatastroPredial  cp) throws Exception{
+        
+        //return predioArchivoDao.existePor2Campos(ENTIDAD_PREDIO_ARCHIVO, "catpreCodigo", cp, "ultaccMarcatiempo", java.util.Calendar.getInstance().getTime());
+        return true;
     }
 
 //    public boolean existeAplicacion(Integer vApli) throws Exception {

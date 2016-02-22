@@ -22,14 +22,16 @@
                         <f:selectItem itemLabel="#{txt.sector}" itemValue="S" />
                         <f:selectItem itemLabel="#{txt.Manzana}" itemValue="M" />
                         <f:selectItem itemLabel="#{txt.Todo}" itemValue="T" />
-                        <p:ajax event="change" process="@this" update="frmImpPredial:tabImpPred:panelIngreso" async="true" global="false"/>  
+                        <p:ajax event="change" process="@this" update="frmImpPredial:tabImpPred:panelIngreso" async="true" global="false"
+                                onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                />  
                     </p:selectOneMenu>
 
                     
                     <br></br>
                     <br></br>
 
-                    <p:selectOneMenu id="PorCalve" value="#{gestionImpuestoPredialControlador.catastroPredialActual}" converter="#{catastroPredialConverter}" panelStyle="width:200px"
+                    <p:selectOneMenu id="PorCalve" value="#{gestionImpuestoPredialControlador.catastroPredialActualEmision}" converter="#{catastroPredialConverter}" panelStyle="width:200px"
                                      effect="fade" var="t" style="width:220px" filter="true" filterMatchMode="startsWith"
                                      rendered="#{gestionImpuestoPredialControlador.criterio=='C'}"
                                      >

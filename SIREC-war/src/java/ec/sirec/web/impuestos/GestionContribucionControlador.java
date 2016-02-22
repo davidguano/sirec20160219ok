@@ -142,6 +142,7 @@ public class GestionContribucionControlador extends BaseControlador {
     private String etiquedaEje;
     private List<ObraProyecto> listaObraProyecto;
     private Mejora mejoraActual;
+    private Propietario propietario;
     
     
     //  ASIGNACIOM DE PREDIO
@@ -322,11 +323,9 @@ public class GestionContribucionControlador extends BaseControlador {
      
      public void onItemSelectClave(SelectEvent event) {
         try {
-            CatastroPredial pp = (CatastroPredial) event.getObject();            
-             propietarioPredioBusqueda = new PropietarioPredio();
-             propietarioPredioBusqueda = catastroPredialServicio.buscarPropietarioPredioPorCatastro(pp.getCatpreCodigo());            
-            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());            
-             //limpiar();
+            CatastroPredial pp = (CatastroPredial) event.getObject();              
+            propietario = new Propietario();
+            propietario = catastroPredialServicio.obtenerPropietarioPrincipalPredio(pp.getCatpreCodigo()); 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -439,6 +438,14 @@ public class GestionContribucionControlador extends BaseControlador {
 
     public void setMejoraActual(Mejora mejoraActual) {
         this.mejoraActual = mejoraActual;
+    }
+
+    public Propietario getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(Propietario propietario) {
+        this.propietario = propietario;
     }
     
     

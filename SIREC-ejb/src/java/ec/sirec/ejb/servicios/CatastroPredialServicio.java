@@ -70,6 +70,10 @@ public class CatastroPredialServicio {
     private MejoraFacade mejoraDao;
     @EJB
     private ObraProyectoFacade obraProyectoDao;
+    @EJB
+    private PredioArchivoServicio archivoServicio;
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
 
     private final String ENTIDAD_CATASTRO = "CatastroPredial";
 
@@ -116,6 +120,17 @@ public class CatastroPredialServicio {
         return lstC;
     }
 
+    public List<CatastroPredial> listarCatastroPorCodigoAnterior(String codigoAnterior) throws Exception {
+        List<CatastroPredial> lstC = new ArrayList<CatastroPredial>();
+        List<CatastroPredialInfAnt> lstIA = informacionAnteriorDao.listarPor2CamposOrdenada("CatastroPredialInfAnt", "catpreinfaValor", codigoAnterior, "catpreinfaTipo", "C", "catpreinfaCodigo", "asc");
+        if (!lstIA.isEmpty()) {
+            for (CatastroPredialInfAnt ia : lstIA) {
+                lstC.add(ia.getCatpreCodigo());
+            }
+        }
+        return lstC;
+    }
+
     public boolean existeCatastroPorCodigosClave(String vcodigoNacional, String vcodigoLocal) throws Exception {
         return catastroPredialDao.existePor2Campos(ENTIDAD_CATASTRO, "catpreCodNacional", vcodigoNacional, "catpreCodLocal", vcodigoLocal);
     }
@@ -130,11 +145,13 @@ public class CatastroPredialServicio {
     }
 
     public BigDecimal obtenerValorPrecioBasePredio(CatastroPredial vcatastro) throws Exception {
+        //se debe modificar para que busque la ultima valoracion existente
+        
         CatastroPredialValoracion val = valoracionPredioServicio.buscarPorCatastroPredial(vcatastro);
         if (val == null) {
             return new BigDecimal("0");
         } else {
-            if (vcatastro.getCatpreAreaTotal() != null) {
+            if (vcatastro.getCatpreAreaTotal() != null && val.getCatprevalAvaluoTerr()!=null) {
                 return val.getCatprevalAvaluoTerr().divide(new BigDecimal(String.valueOf(vcatastro.getCatpreAreaTotal())));
             } else {
                 return new BigDecimal("0");
@@ -143,6 +160,7 @@ public class CatastroPredialServicio {
     }
 
     public CatastroPredialValoracion obtenerValoracionPredio(CatastroPredial vcatastro) throws Exception {
+        //se debe modificar para que busque la ultima valoracion existente
         CatastroPredialValoracion val = valoracionPredioServicio.buscarPorCatastroPredial(vcatastro);
         if (val == null) {
             return new CatastroPredialValoracion();
@@ -290,13 +308,22 @@ public class CatastroPredialServicio {
             propietarioServicio.guardarPropietarioPredio(vPP);
             return "Se ha guardado un propietario";
         } else {
-            PropietarioPredio pp = propietarioServicio.buscarPropietarioPredioPorCatastro(vPP.getCatpreCodigo().getCatpreCodigo());
-            if (!vPP.equals(pp)) {
-                pp.setProCi(vPP.getProCi());
-                propietarioServicio.editarPropietarioPredio(pp);
-                return "Se ha reemplazado el propietario";
+            //archivo
+            if (archivoServicio.existenArchivosDePredioEnFecha(vPP.getCatpreCodigo())) {
+                if (!cxcServicio.existenPendientesPorPredio(vPP.getCatpreCodigo())) {
+                    PropietarioPredio pp = propietarioServicio.buscarPropietarioPredioPorCatastro(vPP.getCatpreCodigo().getCatpreCodigo());
+                    if (!vPP.equals(pp)) {
+                        pp.setProCi(vPP.getProCi());
+                        propietarioServicio.editarPropietarioPredio(pp);
+                        return "Se ha reemplazado el propietario";
+                    } else {
+                        return "Propietario valido.";
+                    }
+                } else {
+                    return "Existen deudas pendientes de este predio";
+                }
             } else {
-                return "Propietario valido.";
+                return "No existen archivos cargados para guardar el propietario.";
             }
 
         }
@@ -424,7 +451,11 @@ public class CatastroPredialServicio {
     //AREAS BLOQUE
     public void guardarAreaBloque(CatastroPredial vcatastro, CatastroPredialAreas vcatPreArea) throws Exception {
         vcatPreArea.setCatpreCodigo(vcatastro);
-        catastroPredialAreasDao.crear(vcatPreArea);
+        if (catastroPredialAreasDao.existePor3Campos("CatastroPredialAreas", "catpreCodigo", vcatastro, "catpreareBloque", vcatPreArea.getCatpreareBloque(), "catprearePiso", vcatPreArea.getCatprearePiso())) {
+            //no se permiten crear pisos repetidos
+        } else {
+            catastroPredialAreasDao.crear(vcatPreArea);
+        }
     }
     /*metodo deshabilitado
      public void crearAreasDeCatastro(CatastroPredial vcatastro) throws Exception {
@@ -545,63 +576,69 @@ public class CatastroPredialServicio {
     }
 
     public void crearRegistrosEdificacionesPorArea(CatastroPredial vcatastro, CatastroPredialAreas area) throws Exception {
+        if (!catastroPredialAreasDao.existePor3Campos("CatastroPredialAreas", "catpreCodigo", vcatastro, "catpreareBloque", area.getCatpreareBloque(), "catprearePiso", area.getCatprearePiso())) {
 
-        if (area != null) {
-            // 1 (4 items)
+            if (area != null) {
+                // 1 (4 items)
 
-            for (int i = 1; i <= 4; i++) {
-                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                edif.setCatpreCodigo(vcatastro);
-                edif.setCatpreediGrupo("1");
-                edif.setCatpreediSubgrupo(String.valueOf(i));
-                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                catastroPredialEdificacionDao.crear(edif);
+                for (int i = 1; i <= 4; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("1");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
 
+                }
+                // 2 (6 items)
+                for (int i = 1; i <= 6; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("2");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+
+                }
+                // 3 (10 items)
+                for (int i = 1; i <= 10; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("3");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+
+                }
+                // 4 (3 items)
+                for (int i = 1; i <= 3; i++) {
+                    CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                    edif.setCatpreCodigo(vcatastro);
+                    edif.setCatpreediGrupo("4");
+                    edif.setCatpreediSubgrupo(String.valueOf(i));
+                    edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
+                    edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
+                    catastroPredialEdificacionDao.crear(edif);
+
+                }
+                if (area.getCatpreareBloque() == 1 && area.getCatprearePiso() == 1) {
+                    // 5 (9 items) sin bloques y pisos
+                    for (int i = 1; i <= 9; i++) {
+                        CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
+                        edif.setCatpreCodigo(vcatastro);
+                        edif.setCatpreediGrupo("5");
+                        edif.setCatpreediSubgrupo(String.valueOf(i));
+                        edif.setCatpreediBloque("0");
+                        edif.setCatpreediPiso("0");
+                        catastroPredialEdificacionDao.crear(edif);
+                    }
+                }
             }
-            // 2 (6 items)
-            for (int i = 1; i <= 6; i++) {
-                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                edif.setCatpreCodigo(vcatastro);
-                edif.setCatpreediGrupo("2");
-                edif.setCatpreediSubgrupo(String.valueOf(i));
-                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                catastroPredialEdificacionDao.crear(edif);
-
-            }
-            // 3 (10 items)
-            for (int i = 1; i <= 10; i++) {
-                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                edif.setCatpreCodigo(vcatastro);
-                edif.setCatpreediGrupo("3");
-                edif.setCatpreediSubgrupo(String.valueOf(i));
-                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                catastroPredialEdificacionDao.crear(edif);
-
-            }
-            // 4 (3 items)
-            for (int i = 1; i <= 3; i++) {
-                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                edif.setCatpreCodigo(vcatastro);
-                edif.setCatpreediGrupo("4");
-                edif.setCatpreediSubgrupo(String.valueOf(i));
-                edif.setCatpreediBloque(String.valueOf(area.getCatpreareBloque()));
-                edif.setCatpreediPiso(String.valueOf(area.getCatprearePiso()));
-                catastroPredialEdificacionDao.crear(edif);
-
-            }
-            // 5 (9 items) sin bloques y pisos
-            for (int i = 1; i <= 9; i++) {
-                CatastroPredialEdificacion edif = new CatastroPredialEdificacion();
-                edif.setCatpreCodigo(vcatastro);
-                edif.setCatpreediGrupo("5");
-                edif.setCatpreediSubgrupo(String.valueOf(i));
-                edif.setCatpreediBloque("0");
-                edif.setCatpreediPiso("0");
-                catastroPredialEdificacionDao.crear(edif);
-            }
+        } else {
+            //ya existen areas con el mismo bloque y piso.
         }
     }
 

@@ -76,7 +76,8 @@ public class RecaudacionServicio {
         return t;
     }
 
-    public void guardarRecaudacion(RecaudacionCab vcabecera, List<RecaudacionDet> lstDets) throws Exception {
+    public String guardarRecaudacion(RecaudacionCab vcabecera, List<RecaudacionDet> lstDets) throws Exception {
+        String s="";
         vcabecera.setRecTotal(obtenerTotalRecaudacion(lstDets));
         vcabecera.setRecFecha(java.util.Calendar.getInstance().getTime());
         vcabecera.setRecEstado("R");
@@ -96,8 +97,12 @@ public class RecaudacionServicio {
                     }
                 }
                 recDetalleDao.actualizarCuentasPorCobrar(lstActivos);
+                s="Recaudacion correcta";
+            }else{
+                s="Nada para recaudar.";
             }
         }
+        return s;
     }
 
     public void editarRecaudacion(RecaudacionCab vcabecera, List<RecaudacionDet> lstDets) throws Exception {

@@ -5,6 +5,7 @@
  */
 package ec.sirec.ejb.servicios;
 
+import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
@@ -16,7 +17,9 @@ import ec.sirec.ejb.facade.CuentaPorCobrarFacade;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -271,6 +274,22 @@ public class CuentaPorCobrarServicio {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date date = formatter.parse("12/31/"+anio);
         return date;
+    }
+    
+    public boolean existenPendientesPorPredio(CatastroPredial cp) throws Exception{
+        boolean b=false;
+        List<CuentaPorCobrar> lstCxc=new ArrayList<CuentaPorCobrar>();
+        lstCxc=cxcDao.listarPor2CamposOrdenada("CuentaPorCobrar", "cxcTipo", "PR", "cxcReferencia", cp.getClaveCatastral(), "cxcReferencia", "asc");
+        if(lstCxc.isEmpty()){
+            
+        }else{
+            for(CuentaPorCobrar cxc:lstCxc){
+                if(cxc.getCxcEstado().equals("P")){
+                    b=true;
+                }
+            }
+        }
+        return b;
     }
 }
 
