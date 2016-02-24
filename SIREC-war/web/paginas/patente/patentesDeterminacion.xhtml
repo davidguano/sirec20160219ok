@@ -15,11 +15,34 @@
                     <center>
                         <h:panelGrid id="DedPatBuscaPatente" columns="1">
                             <p:panel rendered="#{gestionDetPatenteControlador.verBuscaPatente==1}" header="Búsqueda de Patente:">
-                                <h:panelGrid columns="4">
+                                <h:panelGrid columns="9">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_ingre_valor_busca} AE-MPM-"/>
                                     <p:inputText  id="txtDedBusPatente"  value="#{gestionDetPatenteControlador.buscNumPat}" 
-                                                  maxlength="20" size="40"/>
+                                                  maxlength="20" size="20"/>
                                     <p:message for="txtDedBusPatente" display="icon"/>
+
+                                    <h:outputLabel rendered="#{gestionDetPatenteControlador.verCrear==0}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio}"/>
+                                    <h:panelGrid rendered="#{gestionDetPatenteControlador.verCrear==0}" columns="1">    
+                                        <p:selectOneMenu  id="cmbPatDetAnio" 
+                                                         value="#{gestionDetPatenteControlador.catDetAnio}" style="width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionDetPatenteControlador.listAnios}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>                               
+                                        <p:message for="cmbPatDetAnio" display="icon"/>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel rendered="#{gestionDetPatenteControlador.verCrear==1}" style="font-size: #{txt.font_size}" value="Ingrese el año:"/>
+                                    <p:inputText  rendered="#{gestionDetPatenteControlador.verCrear==1}" id="txtDedBusPatenteAnio"  value="#{gestionDetPatenteControlador.buscAnioPat}" 
+                                                  maxlength="20" size="20"/>
+                                    <p:message rendered="#{gestionDetPatenteControlador.verCrear==1}"  for="txtDedBusPatenteAnio" display="icon"/>
+
 
                                     <p:commandButton value="#{txt.btn_aceptar}" 
                                                      id="btnDedBusPatente" 
@@ -27,13 +50,22 @@
                                                      icon="ui-icon-extlink"  
                                                      process="@this,DedPatBuscaPatente" 
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat:tabPrin:detPatenBtnGuAct,:frmPat:tabPrin:pnlBotAniLimVerDet,:frmPat:tabPrin:pnlConDetalleDeducDet,frmPat:tabPrin:pnlConAvisoDedPat"
+                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat:tabPrin:detPatenBtnGuAct,:frmPat:tabPrin:pnlBotAniLimVerDet,:frmPat:tabPrin:pnlConDetalleDeducDet,frmPat:tabPrin:pnlConAvisoDedPat,frmPat:tabPrin:DedPatBuscaPatente"
                                                      async="true"
                                                      global="false"
                                                      />            
                                 </h:panelGrid>
                             </p:panel>
-                            <h:panelGrid columns="2">
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Crear" 
+                                                 id="btnDedCrearPat" 
+                                                 action="#{gestionDetPatenteControlador.crearPatente()}" 
+                                                 icon="ui-icon-contact"  
+                                                 process="@this,DedPatBuscaPatente" 
+                                                 update=":frmPat,DedPatBuscaPatente"
+                                                 async="true"
+                                                 global="false"
+                                                 /> 
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btnDedBusPat" 
                                                  action="#{gestionDetPatenteControlador.buscarPatente()}" 
@@ -75,7 +107,10 @@
                             <h:panelGrid id="pnlConAvisoDedPat">
                                 <p:panel rendered="#{gestionDetPatenteControlador.deducciones==false}">
                                     <p:outputLabel style="font-size: #{txt.font_size}" id="preExiste" value="Existe exoneración, multa o deducción que aplicar a la patente ? "/>                                                                                       
-                                    <p:selectBooleanButton required="true" requiredMessage="Existe exoneración, multa o deducción que aplicar a la patente ? Se necesita un valor" id="preExisteChk" value="#{gestionDetPatenteControlador.existeDedPatente}" onLabel="Si" offLabel="No" style="width:60px" />
+                                    <p:selectBooleanButton required="true" requiredMessage="Existe exoneración, multa o deducción que aplicar a la patente ? Se necesita un valor" id="preExisteChk" value="#{gestionDetPatenteControlador.existeDedPatente}" onLabel="Si" offLabel="No" style="width:60px" >
+                                        <p:ajax event="change"                                                                                
+                                                process="@this" update=":frmPat:tabPrin:exoDedMulPat" async="true" global="false"/>
+                                    </p:selectBooleanButton>
                                     <p:message for="preExiste"/> 
                                 </p:panel>  
                             </h:panelGrid>
@@ -107,22 +142,7 @@
                         </h:panelGrid>
                         <h:panelGrid id="pnlContienDetImpuestos">
                             <h:panelGrid rendered="#{gestionDetPatenteControlador.verPanelDetalleImp==1}">
-                                <h:panelGrid columns="1">    
-                                    <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_anio}"/>
-                                    <p:selectOneMenu requiredMessage="#{txt.lbl_anio} Se necesita un valor"   required="true" id="cmbPatDetAnio" 
-                                                     value="#{gestionDetPatenteControlador.catDetAnio}" style="width:250px"
-                                                     converter="#{catalogoDetalleConverter}" var="t">
-                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
-                                        <f:selectItems var="tipTem"  
-                                                       value="#{gestionDetPatenteControlador.listAnios}" 
-                                                       itemLabel="#{tipTem.catdetTexto}" 
-                                                       itemValue="#{tipTem}"/> 
-                                        <p:column width="200" style="white-space: normal">  
-                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
-                                        </p:column> 
-                                    </p:selectOneMenu>                               
-                                    <p:message for="cmbPatDetAnio" display="icon"/>
-                                </h:panelGrid>
+
 
                                 <h:panelGrid columns="6" id="pnlIngresaValPatDet">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_total_activos}"/>
@@ -207,6 +227,7 @@
                                     <p:commandButton rendered="#{gestionDetPatenteControlador.verguarda==1}" value="#{txt.btn_guardar}" 
                                                      id="btnGuardar3" 
                                                      action="#{gestionDetPatenteControlador.guardaPatenteValoracion()}" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      icon="ui-icon-disk"  
                                                      process="@this,pnlConDetPatente" 
                                                      update=":frmPat:tabPrin:pnlConDetPatente,:frmPat:msgs"
@@ -216,6 +237,7 @@
                                     <p:commandButton rendered="#{gestionDetPatenteControlador.verActualiza==1}" value="#{txt.btn_actualizar}" 
                                                      id="actualizar3" 
                                                      action="#{gestionDetPatenteControlador.actualizaPatenteValoracion()}" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      icon="ui-icon-arrowrefresh-1-w"  
                                                      process="@this,pnlConDetPatente" 
                                                      update=":frmPat:tabPrin:pnlConDetPatente,:frmPat:msgs"

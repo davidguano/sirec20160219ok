@@ -15,24 +15,54 @@
                     <center>
                         <h:panelGrid id="ExoDedBuscaPatente" columns="1">
                             <p:panel rendered="#{gestionExoDedMulPatenteControlador.verBuscaPatente==1}" header="Búsqueda de Patente:">
-                                <h:panelGrid columns="4">
+                                <h:panelGrid columns="7">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_ingre_valor_busca} AE-MPM-"/>
                                     <p:inputText  id="txtbusPatente"  value="#{gestionExoDedMulPatenteControlador.buscNumPat}" 
-                                                  maxlength="20" size="40"/>
+                                                  maxlength="20" size="20"/>
                                     <p:message for="txtbusPatente" display="icon"/>
+                                    <h:outputLabel rendered="#{gestionExoDedMulPatenteControlador.verCrear==0}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio}"/>
+                                    <h:panelGrid rendered="#{gestionExoDedMulPatenteControlador.verCrear==0}" columns="1">    
+                                        <p:selectOneMenu id="cmbPatExoDeducAnio" 
+                                                         value="#{gestionExoDedMulPatenteControlador.catDetAnio}" style="width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionExoDedMulPatenteControlador.listAnios}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>                               
+                                        <p:message for="cmbPatExoDeducAnio" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:outputLabel rendered="#{gestionExoDedMulPatenteControlador.verCrear==1}" style="font-size: #{txt.font_size}" value="Ingrese el año:"/>
+                                    <p:inputText required="true" requiredMessage=" Se nesecita un valor" rendered="#{gestionExoDedMulPatenteControlador.verCrear==1}" id="txtbusPatenteAnio"  value="#{gestionExoDedMulPatenteControlador.buscAnioPat}" 
+                                                 maxlength="20" size="20"/>
+                                    <p:message rendered="#{gestionExoDedMulPatenteControlador.verCrear==1}"  for="txtbusPatenteAnio" display="icon"/>
+
                                     <p:commandButton value="#{txt.btn_aceptar}" 
                                                      id="btnBuscaPatente" 
                                                      action="#{gestionExoDedMulPatenteControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-extlink"  
                                                      process="@this,ExoDedBuscaPatente" 
-                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                     update=":frmPat:tabPrin:pnlConExoDedMulNumPat,pnlConValExuDedMul,:frmPat:tabPrin:patExDedMulBotGuAct"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update=":frmPat:tabPrin:pnlConExoDedMulNumPat,pnlConValExuDedMul,:frmPat:tabPrin:patExDedMulBotGuAct,frmPat:tabPrin:ExoDedBuscaPatente"
                                                      async="true"
                                                      global="false"
                                                      />            
                                 </h:panelGrid>
                             </p:panel>  
-                            <h:panelGrid columns="2">
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Crear" 
+                                                 id="btnCrePat" 
+                                                 action="#{gestionExoDedMulPatenteControlador.crearPatente()}" 
+                                                 icon="ui-icon-contact"  
+                                                 process="@this,ExoDedBuscaPatente" 
+                                                 update=":frmPat,ExoDedBuscaPatente,frmPat:msgs"
+                                                 async="true"
+                                                 global="false"
+                                                 /> 
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btnBusPat" 
                                                  action="#{gestionExoDedMulPatenteControlador.buscarPatente()}" 
@@ -50,7 +80,8 @@
                                                  update=":frmPat,pnlConExoDedMulNumPat,patExDedMulBotGuAct"
                                                  async="true"
                                                  global="false"
-                                                 />                        
+                                                 /> 
+
                             </h:panelGrid>
                         </h:panelGrid>
                     </center>
@@ -86,8 +117,8 @@
                         </p:selectOneMenu>   
                         <p:message for="cmbAdiDeduc" display="icon" />
                         -->
-
-
+                      
+                       
                         <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_mes_incumplimiento}"/>
                         <p:inputText requiredMessage="#{txt.lbl_mes_incumplimiento} Se nesecita un valor"  id="txtMesIncumplimiento"  value="#{gestionExoDedMulPatenteControlador.patValExActual.patvalextNumMesesIncum}" 
                                      maxlength="2" size="10"/>

@@ -16,24 +16,56 @@
                     <center>
                         <h:panelGrid id="pnl15xMiDeterBuscaPatente" columns="1">
                             <p:panel rendered="#{gestionDetPatenteUnoCincoporMilControlador.verBuscaPatente==1}" header="Búsqueda de Patente:">
-                                <h:panelGrid columns="4">
+                                <h:panelGrid columns="9">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_ingre_valor_busca} AE-MPM-"/>
                                     <p:inputText  id="txtExo15xMilDeterPatente"  value="#{gestionDetPatenteUnoCincoporMilControlador.buscNumPat}" 
-                                                  maxlength="20" size="40"/>
+                                                  maxlength="20" size="20"/>
                                     <p:message for="txtExo15xMilDeterPatente" display="icon"/>
+
+                                    <h:outputLabel rendered="#{gestionDetPatenteUnoCincoporMilControlador.verCrear==0}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio_declaracion}"/>
+                                    <h:panelGrid rendered="#{gestionDetPatenteUnoCincoporMilControlador.verCrear==0}" columns="1">    
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_anio_declaracion} Se necesita un valor"   required="true" id="cmbAclaraAnio" 
+                                                         value="#{gestionDetPatenteUnoCincoporMilControlador.catDetAnioDeclara}" style="width:150px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionDetPatenteUnoCincoporMilControlador.listAnios}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>                               
+                                        <p:message for="cmbAclaraAnio" display="icon"/>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel rendered="#{gestionDetPatenteUnoCincoporMilControlador.verCrear==1}" style="font-size: #{txt.font_size}" value="Ingrese el año:"/>
+                                    <p:inputText  rendered="#{gestionDetPatenteUnoCincoporMilControlador.verCrear==1}" id="txtExo15xMilDeterPatenteAnio"  value="#{gestionDetPatenteUnoCincoporMilControlador.buscAnioPat}" 
+                                                  maxlength="20" size="20"/>
+                                    <p:message rendered="#{gestionDetPatenteUnoCincoporMilControlador.verCrear==1}"  for="txtExo15xMilDeterPatenteAnio" display="icon"/>
+
                                     <p:commandButton value="#{txt.btn_aceptar}" 
                                                      id="btn15xMilDeterBuscaPatente" 
                                                      action="#{gestionDetPatenteUnoCincoporMilControlador.cagarPatenteActual()}" 
                                                      icon="ui-icon-extlink"  
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      process="@this,pnl15xMiDeterBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnlConAvisoDedPatxMil"
+                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnlConAvisoDedPatxMil,frmPat:tabPrin:pnl15xMiDeterBuscaPatente"
                                                      async="true"
                                                      global="false"
                                                      />            
                                 </h:panelGrid>
                             </p:panel>
-                            <h:panelGrid columns="2">
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Crear" 
+                                                 id="btn15xMilDeterCrearPat" 
+                                                 action="#{gestionDetPatenteUnoCincoporMilControlador.crearPatente()}" 
+                                                 icon="ui-icon-contact"  
+                                                 process="@this,pnl15xMiDeterBuscaPatente" 
+                                                 update=":frmPat,pnl15xMiDeterBuscaPatente"
+                                                 async="true"
+                                                 global="false"
+                                                 /> 
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btn15xMilDeterBusPat" 
                                                  action="#{gestionDetPatenteUnoCincoporMilControlador.buscarPatente()}" 
@@ -129,22 +161,10 @@
 
 
 
-                                    <h:panelGrid columns="1">    
+                                 <!--   <h:panelGrid columns="1">    
                                         <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_anio_declaracion}"/>
-                                        <p:selectOneMenu requiredMessage="#{txt.lbl_anio_declaracion} Se necesita un valor"   required="true" id="cmbAclaraAnio" 
-                                                         value="#{gestionDetPatenteUnoCincoporMilControlador.catDetAnioDeclara}" style="width:250px"
-                                                         converter="#{catalogoDetalleConverter}" var="t">
-                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
-                                            <f:selectItems var="tipTem"  
-                                                           value="#{gestionDetPatenteUnoCincoporMilControlador.listAnios}" 
-                                                           itemLabel="#{tipTem.catdetTexto}" 
-                                                           itemValue="#{tipTem}"/> 
-                                            <p:column width="200" style="white-space: normal">  
-                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
-                                            </p:column> 
-                                        </p:selectOneMenu>                               
-                                        <p:message for="cmbAclaraAnio" display="icon"/>
-                                    </h:panelGrid> 
+                                        <h:outputText value="#{gestionDetPatenteUnoCincoporMilControlador.catDetAnioDeclara}"></h:outputText>
+                                    </h:panelGrid> -->
                                 </h:panelGrid>
 
 
