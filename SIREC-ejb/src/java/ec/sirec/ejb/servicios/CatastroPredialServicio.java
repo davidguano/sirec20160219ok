@@ -894,7 +894,7 @@ public class CatastroPredialServicio {
                 CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
                 CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
-                valoracionPredioServicio.crearAplicacion(CP2);
+                valoracionPredioServicio.crearCatastroPredialValoracion(CP2);
             }
         }
     }
@@ -905,7 +905,7 @@ public class CatastroPredialServicio {
             CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
             CP2.setCatpreCodigo(CatastroPredial);
             CP2.setCatprevalAnio(anio);
-            valoracionPredioServicio.crearAplicacion(CP2);
+            valoracionPredioServicio.crearCatastroPredialValoracion(CP2);
         }
     }
 
@@ -918,7 +918,7 @@ public class CatastroPredialServicio {
                 CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
                 CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
-                valoracionPredioServicio.crearAplicacion(CP2);
+                valoracionPredioServicio.crearCatastroPredialValoracion(CP2);
             }
         }
     }
@@ -932,7 +932,7 @@ public class CatastroPredialServicio {
                 CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
                 CP2.setCatpreCodigo(lstCat.get(i));
                 CP2.setCatprevalAnio(anio);
-                valoracionPredioServicio.crearAplicacion(CP2);
+                valoracionPredioServicio.crearCatastroPredialValoracion(CP2);
             }
         }
     }

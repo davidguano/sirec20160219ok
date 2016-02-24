@@ -29,12 +29,12 @@ public class CatastroPredialValoracionServicio {
     private CatastroPredialValoracionFacade catastroPredialValoracionDao;
     private final String ENTIDAD_CATASTRO_PREDIAL_VALORACION="CatastroPredialValoracion";
     
-    public String crearAplicacion(CatastroPredialValoracion catastroPredialValoracion) throws Exception {
+    public String crearCatastroPredialValoracion(CatastroPredialValoracion catastroPredialValoracion) throws Exception {
         catastroPredialValoracionDao.crear(catastroPredialValoracion);
         return "Se ha creado la aplicación" + catastroPredialValoracion.getCatpreCodigo();
     }
 
-    public String editarAplicacion(CatastroPredialValoracion catastroPredialValoracion) throws Exception {
+    public String editarCatastroPredialValoracion(CatastroPredialValoracion catastroPredialValoracion) throws Exception {
         catastroPredialValoracionDao.editar(catastroPredialValoracion);
         return "Se ha modificado la aplicación" + catastroPredialValoracion.getCatpreCodigo();
     }
