@@ -60,7 +60,9 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     private BigDecimal valTotAnual;
     private boolean habilitaEdicion;
     private String buscNumPat;
+    private String buscAnioPat;
     private int verBuscaPatente;
+    private int verCrear;
     String numPatente;
     private CatalogoDetalle catDetAnioBalance;
     private CatalogoDetalle catDetAnioDeclara;
@@ -72,6 +74,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     private int verDetDeducciones;
     private boolean deducciones;
     private boolean existeDedPatente;
+    private CatalogoDetalle catDetAnio;
     private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteUnoCincoporMilControlador.class.getName());
 
     /**
@@ -80,6 +83,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     @PostConstruct
     public void inicializar() {
         try {
+            catDetAnio = new CatalogoDetalle();
+            verCrear = 0;
             existeDedPatente = false;
             deducciones = false;
             detaleExoDedMulxMil = new ArrayList<String>();
@@ -88,6 +93,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             numPatente = "";
             verBuscaPatente = 0;
             buscNumPat = "";
+            buscAnioPat = "";
             datoGlobalActal = new DatoGlobal();
             patenteActual = new Patente();
             patente15milValActual = new Patente15xmilValoracion();
@@ -108,7 +114,19 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void buscarPatente() {
         try {
+            inicializar();
             verBuscaPatente = 1;
+            verCrear = 1;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void crearPatente() {
+        try {
+            inicializar();
+            verBuscaPatente = 1;
+            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -136,7 +154,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 verPanelDetalleImp = 0;
             } else {
                 if (cargarExistePat15porMilValoracion()) {
-                    patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMil(patenteActual.getPatCodigo());
+                    // patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
                     CatalogoDetalle objCatDetAux = new CatalogoDetalle();
@@ -144,18 +162,8 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                     catDetAnioDeclara = objCatDetAux;
                     objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(patente15milValActual.getPat15valAnioBalance() + "", "A" + patente15milValActual.getPat15valAnioBalance());
                     catDetAnioBalance = objCatDetAux;
-                    verActualiza = 1;
-                    verGuardar = 0;
                     //Verifica si tiene deducciones
-                    Patente15xmilValoracionExtras objPatValEx = new Patente15xmilValoracionExtras();
-                    objPatValEx = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patente15milValActual.getPat15valCodigo());
-                    if (objPatValEx != null) {
-                        deducciones = true;
-                        existeDedPatente = true;
-                    } else {
-                        deducciones = false;
-                        existeDedPatente = false;
-                    }
+
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
@@ -213,14 +221,34 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public boolean cargarExistePat15porMilValoracion() {
         boolean pa15PorMilValoracion = false;
+        //  Patente15xmilValoracion objPat15PorMilValoracion = new Patente15xmilValoracion();
         try {
-            Patente15xmilValoracion objPat15PorMilValoracion = new Patente15xmilValoracion();
-            objPat15PorMilValoracion = unoPCinoPorMilServicio.buscaPatValoracion15xMil(patenteActual.getPatCodigo());
-            patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
-            if (objPat15PorMilValoracion == null) {
-                pa15PorMilValoracion = false;
+            if (verCrear == 1) {
+                patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+
             } else {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+                patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+            }
+
+            if (patente15milValActual == null) {
+                pa15PorMilValoracion = false;
+                verGuardar = 1;
+                verActualiza = 0;
+            } else {
+                verGuardar = 0;
+                verActualiza = 1;
                 pa15PorMilValoracion = true;
+                Patente15xmilValoracionExtras objPatValEx = new Patente15xmilValoracionExtras();
+                objPatValEx = unoPCinoPorMilServicio.buscaPatVal15xMilExtraPorPatValoracion(patente15milValActual.getPat15valCodigo());
+                if (objPatValEx != null) {
+                    deducciones = true;
+                    existeDedPatente = true;
+                } else {
+                    deducciones = false;
+                    existeDedPatente = false;
+                }
             }
 
         } catch (Exception ex) {
@@ -388,7 +416,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void guardaPatenteDet15xMil() {
         try {
-            if (habilitaEdicion == false) {
+            if (verExistePateneAnioxMil() == false) {
                 CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioBalance.getCatdetCodigo());
                 patente15milValActual.setPat15valAnioBalance(Integer.parseInt(objCatDetAux.getCatdetTexto()));
@@ -402,10 +430,30 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 addSuccessMessage("Guardado Exitosamente", "Patente 1.5 Mil Valoración Guardado");
                 patente15milValActual = new Patente15xmilValoracion();
                 inicializar();
+            } else {
+                addSuccessMessage("Ya esta determinada la patente 1.5 x mil para este anio", "Ya esta determinada la patente 1.5 x mil para este anio");
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
+    }
+
+    public boolean verExistePateneAnioxMil() {
+        boolean existePatAnio = false;
+        try {
+            CatalogoDetalle objCatDetAnio = new CatalogoDetalle();
+            objCatDetAnio = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+            Patente15xmilValoracion objPatValExiste = new Patente15xmilValoracion();
+            objPatValExiste = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAnio.getCatdetTexto()));
+            if (objPatValExiste == null) {
+                existePatAnio = false;
+            } else {
+                existePatAnio = true;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+        return existePatAnio;
     }
 
     public void actualizaPatenteDet15xMil() {
@@ -479,6 +527,9 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
             objPat15Extra.setPat15valNumMesesIncum(0);
             objPat15Extra.setPat15valEvaluaDatFalsos(0);
             objPat15Extra.setPat15valProcesoLiquidacion(0);
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+            objPat15Extra.setPat15valAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
             unoPCinoPorMilServicio.crearPatenteValoracion15xMilExtra(objPat15Extra);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -655,6 +706,30 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void setExisteDedPatente(boolean existeDedPatente) {
         this.existeDedPatente = existeDedPatente;
+    }
+
+    public String getBuscAnioPat() {
+        return buscAnioPat;
+    }
+
+    public void setBuscAnioPat(String buscAnioPat) {
+        this.buscAnioPat = buscAnioPat;
+    }
+
+    public int getVerCrear() {
+        return verCrear;
+    }
+
+    public void setVerCrear(int verCrear) {
+        this.verCrear = verCrear;
+    }
+
+    public CatalogoDetalle getCatDetAnio() {
+        return catDetAnio;
+    }
+
+    public void setCatDetAnio(CatalogoDetalle catDetAnio) {
+        this.catDetAnio = catDetAnio;
     }
 
 }

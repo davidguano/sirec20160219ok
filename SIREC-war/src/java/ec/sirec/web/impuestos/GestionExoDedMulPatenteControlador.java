@@ -6,6 +6,7 @@
 package ec.sirec.web.impuestos;
 
 import ec.sirec.ejb.entidades.AdicionalesDeductivos;
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Patente;
 import ec.sirec.ejb.entidades.PatenteArchivo;
@@ -13,6 +14,7 @@ import ec.sirec.ejb.entidades.PatenteValoracion;
 import ec.sirec.ejb.entidades.PatenteValoracionExtras;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
+import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.PatenteArchivoServicio;
 import ec.sirec.ejb.servicios.PatenteServicio;
 import ec.sirec.web.base.BaseControlador;
@@ -43,6 +45,9 @@ import org.primefaces.event.FileUploadEvent;
 public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     @EJB
+    private CatalogoDetalleServicio catalogoDetalleServicio;
+
+    @EJB
     private PatenteArchivoServicio patenteArchivoServicio;
     @EJB
     private AdicionalesDeductivosServicio adicionalesDeductivosServicio;
@@ -65,8 +70,12 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     private SegUsuario usuarioActual;
     private PatenteArchivo patenteArchivoActual;
     private String buscNumPat;
+    private String buscAnioPat;
     private int verActualiza;
     private int verGuarda;
+    private int verCrear;
+    private CatalogoDetalle catDetAnio;
+    private List<CatalogoDetalle> listAnios;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -74,9 +83,12 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            verCrear = 0;
             buscNumPat = "";
             numPatente = "";
+            buscAnioPat = "";
             verActualiza = 0;
+            catDetAnio = new CatalogoDetalle();
             verGuarda = 0;
             patenteArchivoActual = new PatenteArchivo();
             adiDeductivoActual = new AdicionalesDeductivos();
@@ -88,6 +100,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             listaFiles = new ArrayList<ParametrosFile>();
             listadoArchivos = new ArrayList<PatenteArchivo>();
             listAdicionalDeductivo = new ArrayList<AdicionalesDeductivos>();
+            listarAnios();
             listarAdicionalDeductivo();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -97,15 +110,21 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     public GestionExoDedMulPatenteControlador() {
     }
 
+    public void listarAnios() throws Exception {
+        listAnios = catalogoDetalleServicio.listarPorNemonicoCatalogo("ANIOS");
+    }
+
     public void guardaPatenteValExtra() {
         try {
             if (verificaArchivosCargados()) {
                 if (habilitaEdicion == false) {
-
                     guardaPatenteValoracion();
                     AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
                     objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
                     patValExActual.setAdidedCodigo(objAdiDec);
+                    CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                    objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                    patValExActual.setPatvalextAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
                     patValExActual.setPatvalCodigo(patenteValoracionActal);
                     patenteServicio.crearPatenteValoracionExtra(patValExActual);
                     addSuccessMessage("Guardado Exitosamente", "Patente Valoración Extra Guardado");
@@ -152,7 +171,19 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     public void buscarPatente() {
         try {
+            inicializar();
             verBuscaPatente = 1;
+            verCrear = 1;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void crearPatente() {
+        try {
+            inicializar();
+            verBuscaPatente = 1;
+            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -218,7 +249,13 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     public boolean cargarExistePatValExtra() {
         boolean patValExActualCargado = false;
         try {
-            patenteValoracionActal = patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
+            if (verCrear == 1) {
+                patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+            } else {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+            }
             if (patenteValoracionActal == null) {
                 patValExActualCargado = false;
             } else {
@@ -237,7 +274,9 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
         try {
             patenteValoracionActal = new PatenteValoracion();
             patenteValoracionActal.setPatCodigo(patenteActual);
-            patenteValoracionActal.setPatvalAnio(0);
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
             patenteValoracionActal.setPatvalActivos(valTemporal);
             patenteValoracionActal.setPatvalPasivos(valTemporal);
             patenteValoracionActal.setPatvalPatrimonio(valTemporal);
@@ -486,6 +525,38 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     public void setVerGuarda(int verGuarda) {
         this.verGuarda = verGuarda;
+    }
+
+    public String getBuscAnioPat() {
+        return buscAnioPat;
+    }
+
+    public void setBuscAnioPat(String buscAnioPat) {
+        this.buscAnioPat = buscAnioPat;
+    }
+
+    public int getVerCrear() {
+        return verCrear;
+    }
+
+    public void setVerCrear(int verCrear) {
+        this.verCrear = verCrear;
+    }
+
+    public CatalogoDetalle getCatDetAnio() {
+        return catDetAnio;
+    }
+
+    public void setCatDetAnio(CatalogoDetalle catDetAnio) {
+        this.catDetAnio = catDetAnio;
+    }
+
+    public List<CatalogoDetalle> getListAnios() {
+        return listAnios;
+    }
+
+    public void setListAnios(List<CatalogoDetalle> listAnios) {
+        this.listAnios = listAnios;
     }
 
 }

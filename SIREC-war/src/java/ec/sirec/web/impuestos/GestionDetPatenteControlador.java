@@ -67,6 +67,8 @@ public class GestionDetPatenteControlador extends BaseControlador {
     private String numPatente;
     DatoGlobal datoGlobalActual;
     private String buscNumPat;
+    private String buscAnioPat;
+    private int verCrear;
     private int verBuscaPatente;
     private static final Logger LOGGER = Logger.getLogger(GestionDetPatenteControlador.class.getName());
     private int verguarda;
@@ -88,6 +90,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            verCrear = 0;
             existeDedPatente = false;
             deducciones = false;
             detaleExoDedMul = new ArrayList<String>();
@@ -101,6 +104,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
             habilitaEdicion = false;
             numPatente = "";
             buscNumPat = "";
+            buscAnioPat = "";
             catDetAnio = new CatalogoDetalle();
             verguarda = 0;
             verActualiza = 0;
@@ -527,25 +531,61 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void guardaPatenteValoracion() {
         try {
-            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-            patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
-            patenteValoracionActal.setPatCodigo(patenteActual);
-            patenteServicio.crearPatenteValoracion(patenteValoracionActal);
-            guardarPatValExtra();
-            patenteServicio.editarPatenteValoracion(patenteValoracionActal);
-            addSuccessMessage("Guardado Exitosamente", "Patente Valoración Guardado");
-            patenteValoracionActal = new PatenteValoracion();
-            inicializar();
+            if (verExistePateneAnio() == false) {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                patenteValoracionActal.setPatCodigo(patenteActual);
+                PatenteValoracion objPatValAux = new PatenteValoracion();
+                objPatValAux.setPatCodigo(patenteActual);
+                objPatValAux.setPatvalAnio(patenteValoracionActal.getPatvalAnio());
+                objPatValAux.setPatvalActivos(patenteValoracionActal.getPatvalActivos());
+                objPatValAux.setPatvalPasivos(patenteValoracionActal.getPatvalPasivos());
+                objPatValAux.setPatvalPatrimonio(patenteValoracionActal.getPatvalPatrimonio());
+                objPatValAux.setPatvalImpuesto(patenteValoracionActal.getPatvalImpuesto());
+                objPatValAux.setPatvalSubtotal(patenteValoracionActal.getPatvalSubtotal());
+                objPatValAux.setPatvalDeducciones(patenteValoracionActal.getPatvalDeducciones());
+                objPatValAux.setPatvalTasaBomb(patenteValoracionActal.getPatvalTasaBomb());
+                objPatValAux.setPatvalTasaProc(patenteValoracionActal.getPatvalTasaProc());
+                objPatValAux.setPatvalTotal(patenteValoracionActal.getPatvalTotal());
+                patenteServicio.crearPatenteValoracion(objPatValAux);
+                if (existeDedPatente == false) {
+                    guardarPatValExtra(objPatValAux);
+                }
+                patenteServicio.editarPatenteValoracion(objPatValAux);
+                addSuccessMessage("Guardado Exitosamente", "Patente Valoración Guardado");
+                objPatValAux = new PatenteValoracion();
+                inicializar();
+            } else {
+                addSuccessMessage("Ya esta determinada la patente para este año", "Ya esta determinada la patente para este anio");
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
     }
 
-    public void guardarPatValExtra() {
+    public boolean verExistePateneAnio() {
+        boolean existePatAnio = false;
+        try {
+            CatalogoDetalle objCatDetAnio = new CatalogoDetalle();
+            objCatDetAnio = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            PatenteValoracion objPatValExiste = new PatenteValoracion();
+            objPatValExiste = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAnio.getCatdetTexto()));
+            if (objPatValExiste == null) {
+                existePatAnio = false;
+            } else {
+                existePatAnio = true;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+        return existePatAnio;
+    }
+
+    public void guardarPatValExtra(PatenteValoracion objPatVal) {
         try {
             PatenteValoracionExtras objPatValEx = new PatenteValoracionExtras();
-            objPatValEx.setPatvalCodigo(patenteValoracionActal);
+            objPatValEx.setPatvalCodigo(objPatVal);
             AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
             objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
             objPatValEx.setAdidedCodigo(objAdiDec);
@@ -560,6 +600,11 @@ public class GestionDetPatenteControlador extends BaseControlador {
             objPatValEx.setPatentePorcIngreso(0.0);
             objPatValEx.setPatenteBaseimpNegativa(BigDecimal.ZERO);
             objPatValEx.setPatvalextNoObligado(false);
+            objPatValEx.setPatvalextAnio(verCrear);
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            objPatValEx.setPatvalextAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+
             patenteServicio.crearPatenteValoracionExtra(objPatValEx);
 
         } catch (Exception e) {
@@ -569,14 +614,18 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void actualizaPatenteValoracion() {
         try {
-            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-            patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
-            patenteValoracionActal.setPatCodigo(patenteActual);
-            patenteServicio.editarPatenteValoracion(patenteValoracionActal);
-            addSuccessMessage("Guardado Exitosamente", "Patente Valoración Guardado");
-            patenteValoracionActal = new PatenteValoracion();
-            inicializar();
+            if (patenteValoracionActal.getPatvalActivo() == true) {
+                addErrorMessage("La patente ya fue emitida");
+            } else {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                patenteValoracionActal.setPatCodigo(patenteActual);
+                patenteServicio.editarPatenteValoracion(patenteValoracionActal);
+                addSuccessMessage("Guardado Exitosamente", "Patente Valoración Guardado");
+                patenteValoracionActal = new PatenteValoracion();
+                inicializar();
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -584,7 +633,19 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void buscarPatente() {
         try {
+            inicializar();
             verBuscaPatente = 1;
+            verCrear = 1;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void crearPatente() {
+        try {
+            inicializar();
+            verBuscaPatente = 1;
+            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -602,24 +663,13 @@ public class GestionDetPatenteControlador extends BaseControlador {
                 verPanelDetalleImp = 0;
             } else {
                 if (cargarExistePatValoracion()) {
-                    patenteValoracionActal = patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
+                    // patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
                     System.out.println("Si encontro el objeto");
                     numPatente = generaNumPatente(); //"AE-MPM-" + patenteActual.getPatCodigo();
                     CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                     objCatDetAux = catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(patenteValoracionActal.getPatvalAnio() + "", "A" + patenteValoracionActal.getPatvalAnio());
                     catDetAnio = objCatDetAux;
-                    verguarda = 0;
-                    verActualiza = 1;
-                    //Verifica si tiene deducciones
-                    PatenteValoracionExtras objPatValEx = new PatenteValoracionExtras();
-                    objPatValEx = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
-                    if (objPatValEx != null) {
-                        deducciones = true;
-                        existeDedPatente=true;
-                    } else {
-                        deducciones = false;
-                        existeDedPatente=false;
-                    }
+
                 } else {
                     System.out.println("No encontro el objeto");
                     numPatente = generaNumPatente();//"AE-MPM-" + patenteActual.getPatCodigo();
@@ -656,14 +706,37 @@ public class GestionDetPatenteControlador extends BaseControlador {
     public boolean cargarExistePatValoracion() {
         boolean patValoracion = false;
         try {
-            PatenteValoracion objPatValoracion = new PatenteValoracion();
-            objPatValoracion = patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
-            if (objPatValoracion == null) {
-                patValoracion = false;
+            if (verCrear == 1) {
+                patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
             } else {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+            }
+            if (patenteValoracionActal == null) {
+                patValoracion = false;
+                verguarda = 1;
+                verActualiza = 0;
+            } else {
+                verguarda = 0;
+                verActualiza = 1;
                 patValoracion = true;
+                PatenteValoracionExtras objPatValEx = new PatenteValoracionExtras();
+                objPatValEx = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
+                if (objPatValEx != null) {
+                    verActualiza = 1;
+                    verguarda = 0;
+                    deducciones = true;
+                    existeDedPatente = true;
+                } else {
+                    verguarda = 1;
+                    verActualiza = 0;
+                    deducciones = false;
+                    existeDedPatente = false;
+                }
             }
 
+//            }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -837,6 +910,22 @@ public class GestionDetPatenteControlador extends BaseControlador {
 
     public void setDeducciones(boolean deducciones) {
         this.deducciones = deducciones;
+    }
+
+    public String getBuscAnioPat() {
+        return buscAnioPat;
+    }
+
+    public void setBuscAnioPat(String buscAnioPat) {
+        this.buscAnioPat = buscAnioPat;
+    }
+
+    public int getVerCrear() {
+        return verCrear;
+    }
+
+    public void setVerCrear(int verCrear) {
+        this.verCrear = verCrear;
     }
 
 }

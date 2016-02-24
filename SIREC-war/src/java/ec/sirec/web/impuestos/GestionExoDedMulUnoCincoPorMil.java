@@ -6,6 +6,7 @@
 package ec.sirec.web.impuestos;
 
 import ec.sirec.ejb.entidades.AdicionalesDeductivos;
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Patente;
 import ec.sirec.ejb.entidades.Patente15xmilValoracion;
@@ -13,6 +14,7 @@ import ec.sirec.ejb.entidades.Patente15xmilValoracionExtras;
 import ec.sirec.ejb.entidades.PatenteArchivo;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
+import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.PatenteArchivoServicio;
 import ec.sirec.ejb.servicios.PatenteServicio;
 import ec.sirec.ejb.servicios.UnoPCinoPorMilServicio;
@@ -44,6 +46,9 @@ import org.primefaces.event.FileUploadEvent;
 public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     @EJB
+    private CatalogoDetalleServicio catalogoDetalleServicio;
+
+    @EJB
     private AdicionalesDeductivosServicio adicionalesDeductivosServicio1;
 
     @EJB
@@ -73,10 +78,14 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     private SegUsuario usuarioActual;
     private PatenteArchivo patenteArchivoActual;
     private String buscNumPat;
+    private String buscAnioPat;
     private int verBuscaPatente;
     private int verResultado;
     private int verGuarda;
     private int verActualiza;
+    private int verCrear;
+    private CatalogoDetalle catDetAnio;
+    private List<CatalogoDetalle> listAnios;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -84,10 +93,13 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            verCrear = 0;
             numPatente = "";
             buscNumPat = "";
+            buscAnioPat = "";
             verResultado = 0;
             verBuscaPatente = 0;
+            catDetAnio = new CatalogoDetalle();
             adiDeductivoActual = new AdicionalesDeductivos();
             patenteActual = new Patente();
             patValo15xMilActal = new Patente15xmilValoracion();
@@ -98,6 +110,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             listaFiles = new ArrayList<ParametrosFile>();
             listadoArchivos = new ArrayList<PatenteArchivo>();
             patenteArchivoActual = new PatenteArchivo();
+            listarAnios();
             listarAdicionalDeductivo();
             verGuarda = 0;
             verActualiza = 0;
@@ -107,6 +120,10 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     }
 
     public GestionExoDedMulUnoCincoPorMil() {
+    }
+
+    public void listarAnios() throws Exception {
+        listAnios = catalogoDetalleServicio.listarPorNemonicoCatalogo("ANIOS");
     }
 
     public void cargarNumPatente() {
@@ -120,7 +137,19 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void buscarPatente() {
         try {
+            inicializar();
             verBuscaPatente = 1;
+            verCrear = 1;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
+    public void crearPatente() {
+        try {
+            inicializar();
+            verBuscaPatente = 1;
+            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -183,7 +212,13 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     public boolean cargarExistePatVal15PorMilExtra() {
         boolean pat15PorMilValoracion = false;
         try {
-            patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMil(patenteActual.getPatCodigo());
+            if (verCrear == 1) {
+                patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+            } else {
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetCod()));
+            }
             if (patValo15xMilActal == null) {
                 pat15PorMilValoracion = false;
             } else {
@@ -204,6 +239,9 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
                 objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
                 patValEx15xMilActual.setAdidedCodigo(objAdiDec);
                 patValEx15xMilActual.setPat15valCodigo(patValo15xMilActal);
+                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patValEx15xMilActual.setPat15valAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
                 unoPCinoPorMilServicio.crearPatenteValoracion15xMilExtra(patValEx15xMilActual);
                 addSuccessMessage("Guardado Exitosamente", "Patente Valoración Extra Guardado");
                 patValEx15xMilActual = new Patente15xmilValoracionExtras();
@@ -243,6 +281,9 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
         try {
             patValo15xMilActal = new Patente15xmilValoracion();
             patValo15xMilActal.setPatCodigo(patenteActual);
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            patValo15xMilActal.setPat15valAnioDecla(Integer.parseInt(objCatDetAux.getCatdetTexto()));
             patValo15xMilActal.setPat15valNumSucursales(0);
             patValo15xMilActal.setPat15valAnioBalance(0);
             patValo15xMilActal.setPat15valIngresoAnual(valTemporal);
@@ -506,6 +547,38 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void setVerActualiza(int verActualiza) {
         this.verActualiza = verActualiza;
+    }
+
+    public String getBuscAnioPat() {
+        return buscAnioPat;
+    }
+
+    public void setBuscAnioPat(String buscAnioPat) {
+        this.buscAnioPat = buscAnioPat;
+    }
+
+    public int getVerCrear() {
+        return verCrear;
+    }
+
+    public void setVerCrear(int verCrear) {
+        this.verCrear = verCrear;
+    }
+
+    public CatalogoDetalle getCatDetAnio() {
+        return catDetAnio;
+    }
+
+    public void setCatDetAnio(CatalogoDetalle catDetAnio) {
+        this.catDetAnio = catDetAnio;
+    }
+
+    public List<CatalogoDetalle> getListAnios() {
+        return listAnios;
+    }
+
+    public void setListAnios(List<CatalogoDetalle> listAnios) {
+        this.listAnios = listAnios;
     }
 
 }

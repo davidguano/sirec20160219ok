@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.AdicionalesDeductivos;
 import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Patente;
+import ec.sirec.ejb.entidades.Patente15xmilValoracion;
 import ec.sirec.ejb.entidades.PatenteArchivo;
 import ec.sirec.ejb.entidades.PatenteValoracion;
 import ec.sirec.ejb.entidades.PatenteValoracionExtras;
@@ -17,6 +18,7 @@ import ec.sirec.ejb.servicios.AdicionalesDeductivosServicio;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.PatenteArchivoServicio;
 import ec.sirec.ejb.servicios.PatenteServicio;
+import ec.sirec.ejb.servicios.UnoPCinoPorMilServicio;
 import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.ParametrosFile;
 import java.io.InputStream;
@@ -56,6 +58,9 @@ import org.primefaces.event.FileUploadEvent;
 public class GestionEmisionPatenteControlador extends BaseControlador {
 
     @EJB
+    private UnoPCinoPorMilServicio unoPCinoPorMilServicio;
+
+    @EJB
     private CatalogoDetalleServicio catalogoDetalleServicio;
 
     @EJB
@@ -83,7 +88,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
-            msjVerificaSaldo=0;
+            msjVerificaSaldo = 0;
             numPatente = "";
             patenteActual = new Patente();
             patValoracionActual = new PatenteValoracion();
@@ -218,8 +223,33 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     }
 
     public void emisionPatente() {
-        addWarningMessage("Los valores se han enviado a recaudación", "Emision de Patentes");
-        inicializar();
+
+        try {
+            for (int i = 0; i <= listaEmisionPatente.size() - 1; i++) {
+                Object[] xcs = listaEmisionPatente.get(i);
+                System.out.println("lISTA DE PATENTES" + xcs[0]);
+                PatenteValoracion objPatVal = new PatenteValoracion();
+                int numPat = xcs[0].hashCode();
+                objPatVal = patenteServicio.buscaPatValoracion(numPat);
+                if (objPatVal != null) {
+                    objPatVal.setPatvalActivo(true);
+                    System.out.println("codPatVal" + objPatVal.getPatvalCodigo());
+                    patenteServicio.editarPatenteValoracion(objPatVal);
+                }
+                Patente15xmilValoracion objPat15Val = new Patente15xmilValoracion();
+                objPat15Val = unoPCinoPorMilServicio.buscaPatValoracion15xMil(numPat);
+                if (objPat15Val != null) {
+                    System.out.println("codPatVal" + objPat15Val.getPat15valCodigo());
+                    objPat15Val.setPat15valActivo(true);
+                    unoPCinoPorMilServicio.editarPatenteValoracion15xMil(objPat15Val);
+                }
+            }
+
+            addWarningMessage("Los valores se han enviado a recaudación", "Emision de Patentes");
+            inicializar();
+        } catch (Exception e) {
+        }
+
     }
 
     public void listarParroquias() throws Exception {
