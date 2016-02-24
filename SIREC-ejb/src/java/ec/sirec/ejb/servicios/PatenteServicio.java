@@ -149,6 +149,10 @@ public class PatenteServicio {
         return patenteValoracionDao.buscarPorCampo(ENTIDAD_PATENTE_VALORACION, "patCodigo.patCodigo", patCodigo);
     }
 
+    public PatenteValoracion buscaPatValoracionPorAnio(int patCodigo, int anio) throws Exception {
+        return patenteValoracionDao.buscarPor2Campos(ENTIDAD_PATENTE_VALORACION, "patCodigo.patCodigo", patCodigo, "patvalAnio", anio);
+    }
+
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     public void persist(Object object) {

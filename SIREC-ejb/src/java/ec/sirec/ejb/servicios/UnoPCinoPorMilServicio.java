@@ -95,6 +95,7 @@ public class UnoPCinoPorMilServicio {
         return patente15xmilValoracionExtrasDao.buscarPorCampo(ENTIDAD_PATENTE_VAL15XMIL_EXTRA, "pat15valCodigo.pat15valCodigo", patvalCodigo);
     }
 //*****************************Metodos Valoracion 1.5 x Mil de patente*************************
+
     public String crearPatenteValoracion15xMil(Patente15xmilValoracion patvalCodigo) throws Exception {
         patente15xmilValoracionDao.crear(patvalCodigo);
         return "se ha creado la patente valoracion" + patvalCodigo;
@@ -112,6 +113,10 @@ public class UnoPCinoPorMilServicio {
 
     public Patente15xmilValoracion buscaPatValoracion15xMil(int patCodigo) throws Exception {
         return patente15xmilValoracionDao.buscarPorCampo(ENTIDAD_PATENTE_VALO15XMIL, "patCodigo.patCodigo", patCodigo);
+    }
+
+    public Patente15xmilValoracion buscaPatValoracion15xMilPorAnio(int patCodigo, int anio) throws Exception {
+        return patente15xmilValoracionDao.buscarPor2Campos(ENTIDAD_PATENTE_VALO15XMIL, "patCodigo.patCodigo", patCodigo, "pat15valAnioDecla", anio);
     }
 
     // Add business logic below. (Right-click in editor and choose
