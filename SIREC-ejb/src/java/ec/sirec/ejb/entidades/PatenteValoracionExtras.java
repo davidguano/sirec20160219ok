@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -29,6 +30,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "PatenteValoracionExtras.findAll", query = "SELECT p FROM PatenteValoracionExtras p")})
 public class PatenteValoracionExtras implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +51,9 @@ public class PatenteValoracionExtras implements Serializable {
     private Boolean patvalextExonArtCalificado;
     @Column(name = "patvalext_incum_plazo_decla")
     private Boolean patvalextIncumPlazoDecla;
+    @NotNull
+    @Column(name = "patvalext_anio")
+    private int patvalextAnio;
     @Column(name = "patente_porc_datosfalsos")
     private Integer patentePorcDatosfalsos;
     @Size(max = 1)
@@ -183,6 +188,14 @@ public class PatenteValoracionExtras implements Serializable {
 
     public void setPatvalextNoObligado(Boolean patvalextNoObligado) {
         this.patvalextNoObligado = patvalextNoObligado;
+    }
+
+    public int getPatvalextAnio() {
+        return patvalextAnio;
+    }
+
+    public void setPatvalextAnio(int patvalextAnio) {
+        this.patvalextAnio = patvalextAnio;
     }
 
     @Override

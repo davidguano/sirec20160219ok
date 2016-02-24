@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
@@ -30,6 +29,7 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "Patente15xmilValoracionExtras.findAll", query = "SELECT p FROM Patente15xmilValoracionExtras p")})
 public class Patente15xmilValoracionExtras implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,9 +49,9 @@ public class Patente15xmilValoracionExtras implements Serializable {
     @ManyToOne(optional = false)
     private Patente15xmilValoracion pat15valCodigo;
     @JoinColumn(name = "adided_codigo", referencedColumnName = "adided_codigo")
-    @ManyToOne(optional = false)    
+    @ManyToOne(optional = false)
     private AdicionalesDeductivos adidedCodigo;
-   //Nuevos Cmpos Adicionales 
+    //Nuevos Cmpos Adicionales 
     @Column(name = "pat15valext_enti_pub")
     private Boolean pat15valextEntiPub;
     @Column(name = "pat15valext_fun_ben_edu")
@@ -64,14 +64,16 @@ public class Patente15xmilValoracionExtras implements Serializable {
     private Boolean pat15valextCoop;
     @Column(name = "pat15valext_multi_nac")
     private Boolean pat15valextMultiNac;
-   @Column(name = "pat15val_num_meses_incum")
+    @Column(name = "pat15val_num_meses_incum")
     private Integer pat15valNumMesesIncum;
-   @Column(name = "pat15val_evalua_dat_falsos")
+    @Column(name = "pat15val_evalua_dat_falsos")
     private Integer pat15valEvaluaDatFalsos;
-   @Column(name = "pat15val_proceso_liquidacion")
+    @Column(name = "pat15val_proceso_liquidacion")
     private Integer pat15valProcesoLiquidacion;
-   
-   
+    @NotNull
+    @Column(name = "pat15val_anio")
+    private int pat15valAnio;
+
     public Patente15xmilValoracionExtras() {
     }
 
@@ -164,7 +166,7 @@ public class Patente15xmilValoracionExtras implements Serializable {
     public void setPat15valextMultiNac(Boolean pat15valextMultiNac) {
         this.pat15valextMultiNac = pat15valextMultiNac;
     }
- 
+
     public Boolean getPat15valextCoop() {
         return pat15valextCoop;
     }
@@ -197,7 +199,13 @@ public class Patente15xmilValoracionExtras implements Serializable {
         this.pat15valProcesoLiquidacion = pat15valProcesoLiquidacion;
     }
 
-     
+    public int getPat15valAnio() {
+        return pat15valAnio;
+    }
+
+    public void setPat15valAnio(int pat15valAnio) {
+        this.pat15valAnio = pat15valAnio;
+    }
 
     @Override
     public int hashCode() {
@@ -223,5 +231,5 @@ public class Patente15xmilValoracionExtras implements Serializable {
     public String toString() {
         return "ec.sirec.ejb.entidades.Patente15xmilValoracionExtras[ pat15valextCodigo=" + pat15valextCodigo + " ]";
     }
-    
+
 }

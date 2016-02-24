@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
@@ -33,6 +32,7 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({
     @NamedQuery(name = "PatenteValoracion.findAll", query = "SELECT p FROM PatenteValoracion p")})
 public class PatenteValoracion implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,11 +64,13 @@ public class PatenteValoracion implements Serializable {
     private BigDecimal patvalTasaProc;
     @Column(name = "patval_total")
     private BigDecimal patvalTotal;
-     @Column(name = "patval_tasa_bomb")
+    @Column(name = "patval_tasa_bomb")
     private BigDecimal patvalTasaBomb;
-        @JoinColumn(name = "pat_codigo", referencedColumnName = "pat_codigo")
+    @JoinColumn(name = "pat_codigo", referencedColumnName = "pat_codigo")
     @ManyToOne(optional = false)
     private Patente patCodigo;
+    @Column(name = "patval_activo")
+    private Boolean patvalActivo;
 
     public PatenteValoracion() {
     }
@@ -180,8 +182,14 @@ public class PatenteValoracion implements Serializable {
         this.patvalTasaBomb = patvalTasaBomb;
     }
 
-    
-    
+    public Boolean getPatvalActivo() {
+        return patvalActivo;
+    }
+
+    public void setPatvalActivo(Boolean patvalActivo) {
+        this.patvalActivo = patvalActivo;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -206,5 +214,5 @@ public class PatenteValoracion implements Serializable {
     public String toString() {
         return "ec.sirec.ejb.entidades.PatenteValoracion[ patvalCodigo=" + patvalCodigo + " ]";
     }
-    
+
 }
