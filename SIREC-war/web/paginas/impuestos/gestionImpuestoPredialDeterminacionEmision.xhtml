@@ -169,8 +169,9 @@
 
                             <p:column headerText="#{txt.total}" width="50" style="font-size:10px;"> 
                                 <h:outputText value="#{catastroP.totalRegistro}"  style="font-size:10px;"/>
-                            </p:column>  
-
+                            </p:column>                                                       
+                                        
+                                        
                             <p:columnGroup type="footer">
                                 <p:row>
                                     <p:column colspan="19" style="text-align:right" footerText="Total:" />
@@ -198,9 +199,13 @@
                                      global="false"
                                      immediate="true"
                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                     oncomplete="PF('blockUIWidget1').unblock()"
                                      >
                         <p:dataExporter type="xlsx" target="lstVals" fileName="Emision_Valoracion" postProcessor="#{gestionImpuestoPredialControlador.postProcessXLS}"/>
-                    </p:commandButton>                                                                        
+                    </p:commandButton> 
+                        
+                    
+                        
                     </h:panelGrid>                                                                                            
                 </h:panelGrid>                                                                                                                                                                                                                                                 
             </p:panel>                                                                                                                                                                                                     

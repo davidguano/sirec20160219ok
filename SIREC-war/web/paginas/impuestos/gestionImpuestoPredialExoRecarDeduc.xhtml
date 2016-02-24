@@ -189,12 +189,13 @@
                                 
                                 
                                 <p:panel id="pnllstArch">                                
-                             <p:dataTable id="lstArch" value="#{gestionImpuestoPredialControlador.listaPredioArchivo}"  var="archivo"  >
+                             <p:dataTable id="lstArch" value="#{gestionImpuestoPredialControlador.listaPredioArchivo}"  var="archivo" 
+                                          emptyMessage="No se han encontrado archivos">
                                         <f:facet name="header">
                                             <p:outputLabel value="Lista de Archivos" style="font-size:12px;"/>
                                         </f:facet>
                                         <p:column headerText="Tipo" width="50">
-                                            <h:outputText value="#{archivo.prearcTipo}" style="font-size:12px;" />
+                                            <h:outputText  value="Impuesto Predial" rendered="#{archivo.prearcTipo =='PR'}" style="font-size:12px;" />
                                         </p:column>
                                         <p:column headerText="Nombre del Archivo" width="150">
                                             <h:outputText value="#{archivo.prearcNombre}" style="font-size:12px;" />
@@ -241,7 +242,7 @@
                                                      action="#{gestionImpuestoPredialControlador.guardarAdicionalesDeductivos()}" 
                                                      icon="ui-icon-disk"  
                                                      process="@this, pnllstArch, pnlRec, pnlExo, pnlDec, pnlCC, apeProp, pnlAnio" 
-                                                     update=":frmImpPredial:msgs"
+                                                     update=":frmImpPredial:msgs, :frmImpPredial:tabImpPred:panelContieneAplicacion1"
                                                      async="true"
                                                      global="false"
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
