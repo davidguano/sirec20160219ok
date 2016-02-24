@@ -376,12 +376,10 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
         try {                       
             adicionalesDeductivosActual = new AdicionalesDeductivos();  
             if (catastroPredialActual.getCatpreCodigo() != null || catastroPredialActual != null) {
-                try {
-                    if (listaPredioArchivo.size() > 0) {
-                        
-                        
-                        cpValoracionExtrasServicio.eliminarCpValoracionExtrar(catastroPredialValoracionActual); 
-                        
+                try {                    
+                    if(catastroPredialValoracionActual.isCatprevalActivo()==null || catastroPredialValoracionActual.isCatprevalActivo()==false){                   
+                        if (listaPredioArchivo.size() > 0) {                                                
+                        cpValoracionExtrasServicio.eliminarCpValoracionExtrar(catastroPredialValoracionActual);                         
                         for (int i = 0; i < listaAdicionalesDeductivosRecargosSeleccion.size(); i++) {                                                        
                             cpValoracionExtrasActual = new CpValoracionExtras();
                             adicionalesDeductivosActual = adicionalesDeductivosServicio.buscarAdicionesDeductivosXCodigo(Integer.parseInt(listaAdicionalesDeductivosRecargosSeleccion.get(i)));
@@ -420,9 +418,21 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                         }
   
                         addSuccessMessage("Guardado Exitosamente!");
+                        
+                        limpiarCatastro();
+                        limpiarDedRecExo();
+                        listarArchivos();
                     } else {
                         addSuccessMessage("No existen documentos cargados!");    
                     }
+                    
+                    }else{
+                    
+                        addSuccessMessage("No Se pueden guardar Cambios, Ya fue emitida!"); 
+                        
+                    }
+                    
+                    
                 } catch (NullPointerException exNull) {
                     // LOGGER.log(Level.SEVERE, null, exNull);
                     addSuccessMessage("No existen documentos cargados!");
@@ -446,14 +456,20 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
         }
     }
 
-    
+     public void limpiarCatastro() {
+        try {
+            propietarioPredioBusqueda = new PropietarioPredio();
+             catastroPredialActual = new CatastroPredial();
+            
+        } catch (Exception ex) {
+           
+            // System.out.println("alma de hombre");            
+            //LOGGER.log(Level.SEVERE, null, ex);         
+        }
+    }
 
    
-
-    
-   
-    
-    
+             
     public List<PropietarioPredio> obtenerPropietarioPredioPorApellidoProp(String vapellido) {
         List<PropietarioPredio> lstPP = new ArrayList<PropietarioPredio>();
         try {
@@ -476,13 +492,19 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
     
     
      
-     public void limpiar() {
+     public void limpiarDedRecExo() {
         try {
            
              anio = 0;
              listaAdicionalesDeductivosRecargosSeleccion = new ArrayList<String>();
              listaAdicionalesDeductivosDeduccionesSeleccion = new ArrayList<String>();
              listaAdicionalesDeductivosExoneracionesSeleccion = new ArrayList<String>();
+             visibleRebHipotecaria = "";
+             rebHipotecaria = new BigDecimal(BigInteger.ZERO).setScale(2, RoundingMode.HALF_UP);
+             visibleBeneficiencia = "";
+             valorBeneficiencia = 0.00;
+             visibleEntidadPublica = "";
+             valorEntidadPublica = 0.00;
          
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -546,7 +568,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
             pp = catastroPredialServicio.buscarPropietarioPredioPorCodigo(pp.getPropreCodigo());
             //catastroPredialActual = iraCatastroDesdeBusqueda(pp.getCatpreCodigo());
             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo().getCatpreCodigo());            
-             limpiar();
+             limpiarDedRecExo();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -559,7 +581,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
              propietarioPredioBusqueda = new PropietarioPredio();
              propietarioPredioBusqueda = catastroPredialServicio.buscarPropietarioPredioPorCatastro(pp.getCatpreCodigo());            
             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());            
-             limpiar();
+             limpiarDedRecExo();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -598,8 +620,11 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
 
             
             for (int i = 0; i < catastroPredialValoracionActualEje.size(); i++) {
-               catastroPredialValoracionActualEJE  = catastroPredialValoracionActualEje.get(i);               
+               catastroPredialValoracionActualEJE  = catastroPredialValoracionActualEje.get(i);
+               if(catastroPredialValoracionActualEJE.isCatprevalActivo()==null || catastroPredialValoracionActualEJE.isCatprevalActivo()==false){
                valoracionConstruccion(catastroPredialValoracionActualEJE.getCatpreCodigo());
+               }
+               
             }
             
             for (int i = 0; i < catastroPredialValoracionActualEje.size(); i++) {
@@ -1207,16 +1232,21 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
              for (int i = 0; i < listaEjecutarValoracion.size(); i++) {
                  
                  EjecutarValoracion eje = listaEjecutarValoracion.get(i);
+                 
+                 
                  cxcServicio.crearCxcPorImpPredial(eje.getCatastroPredialValoracion());
                  eje.getCatastroPredialValoracion().setCatprevalActivo(true); 
                  catastroPredialValoracionServicio.editarCatastroPredialValoracion(eje.getCatastroPredialValoracion());
-                 addSuccessMessage("Emisión Realizada"); 
+                 
+
+                //addSuccessMessage("Emisión Realizada"); 
                  
              }
-                                    
-        } catch (Exception ex) {
-                      
-            //LOGGER.log(Level.SEVERE, null, ex);         
+               
+//             FacesContext fc = FacesContext.getCurrentInstance();  
+//        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "New message has been added successfully", null));
+        } catch (Exception ex) {                      
+            LOGGER.log(Level.SEVERE, null, ex);         
         }
     }
     
