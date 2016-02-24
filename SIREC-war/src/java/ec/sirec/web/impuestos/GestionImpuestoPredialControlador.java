@@ -187,7 +187,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                 catastroPredialValoracionActual = new CatastroPredialValoracion();
                 catastroPredialValoracionActual.setCatpreCodigo(catastroPredialActual);
                 catastroPredialValoracionActual.setCatprevalAnio(anio);                 
-                catastroPredialValoracionServicio.crearAplicacion(catastroPredialValoracionActual);            
+                catastroPredialValoracionServicio.crearCatastroPredialValoracion(catastroPredialValoracionActual);            
             }else{
               //listaAdicionalesDeductivosRecargosSeleccion = new ArrayList<String>();
               List<AdicionalesDeductivos> listaR_PR = adicionalesDeductivosServicio.recuperarAdicionesDeductivos(catastroPredialValoracionActual, "R", "PR");
@@ -966,7 +966,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
           catastroPredialValoracionActualEJE.setCatprevalTasaAdm(new BigDecimal(datoGlobalServicio.obtenerDatoGlobal("Tasa_Administrativa").getDatgloValor()).setScale(2, RoundingMode.HALF_UP));  
           catastroPredialValoracionActualEJE.setCatprevalAnio(anioPr);
           
-          catastroPredialValoracionServicio.editarAplicacion(catastroPredialValoracionActualEJE);
+          catastroPredialValoracionServicio.editarCatastroPredialValoracion(catastroPredialValoracionActualEJE);
           
           System.out.println("valorConstruccionT: "+ valorAvaluoConstruccion);
         } catch (Exception ex) {
@@ -1208,6 +1208,8 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
                  
                  EjecutarValoracion eje = listaEjecutarValoracion.get(i);
                  cxcServicio.crearCxcPorImpPredial(eje.getCatastroPredialValoracion());
+                 eje.getCatastroPredialValoracion().setCatprevalActivo(true); 
+                 catastroPredialValoracionServicio.editarCatastroPredialValoracion(eje.getCatastroPredialValoracion());
                  addSuccessMessage("Emisión Realizada"); 
                  
              }
