@@ -257,7 +257,9 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void actualizaPatente15xMilValExtra() {
         try {
-            if (habilitaEdicion == false) {
+            if (patValEx15xMilActual.getPat15valCodigo().getPat15valActivo() == false) {
+                addErrorMessage("La patente 1.5 por Mil ya fue emitida", "Emision de patentes");
+            } else {
                 AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
                 objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
                 patValEx15xMilActual.setAdidedCodigo(objAdiDec);

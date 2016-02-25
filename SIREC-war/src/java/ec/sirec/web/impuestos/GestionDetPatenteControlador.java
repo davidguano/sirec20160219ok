@@ -615,7 +615,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     public void actualizaPatenteValoracion() {
         try {
             if (patenteValoracionActal.getPatvalActivo() == true) {
-                addErrorMessage("La patente ya fue emitida");
+                addErrorMessage("La patente ya fue emitida","Emision de patentes");
             } else {
                 CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());

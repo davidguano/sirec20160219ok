@@ -144,17 +144,18 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
 
     public void actualizaPatenteValExtra() {
         try {
-            //  patValExActual.setAdidedCodigo(adiDeductivoActual);
-            //  patValExActual.setPatvalCodigo(patenteValoracionActal);
-            patenteServicio.editarPatenteValoracionExtra(patValExActual);
-            addSuccessMessage("Actualizado Exitosamente", "Patente Valoración Extra Actualizado");
-            patValExActual = new PatenteValoracionExtras();
-            if (!listaFiles.isEmpty()) {
-                cargaObjetosBitacora();
-                guardarArchivos();
+            if (patValExActual.getPatvalCodigo().getPatvalActivo() == true) {
+                addErrorMessage("La patente ya fue emitida", "Emision de patentes");
+            } else {
+                patenteServicio.editarPatenteValoracionExtra(patValExActual);
+                addSuccessMessage("Actualizado Exitosamente", "Patente Valoración Extra Actualizado");
+                patValExActual = new PatenteValoracionExtras();
+                if (!listaFiles.isEmpty()) {
+                    cargaObjetosBitacora();
+                    guardarArchivos();
+                }
+                inicializar();
             }
-
-            inicializar();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }

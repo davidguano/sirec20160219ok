@@ -298,7 +298,6 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual.setCatdetTipoEmpresa(catDetTipoEmpresActual);
             patenteActual.setCatdetTipoLocal(catDetTipoLocalActual);
             patenteActual.setCatdetTipoActEco(catDetTipActEcoActual);
-            patenteActual.setCatdetEspecialidad(catDetEspTurisActual);
             patenteActual.setCatdetHorarioFunc(catDetHorFuncionaActual);
             patenteActual.setPatArtesanoCalificado(artesCalificado);
             patenteActual.setPatObligadoCont(llevaConta);

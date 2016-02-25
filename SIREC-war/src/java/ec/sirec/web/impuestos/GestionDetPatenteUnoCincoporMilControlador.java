@@ -458,7 +458,9 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void actualizaPatenteDet15xMil() {
         try {
-            if (habilitaEdicion == false) {
+            if (patente15milValActual.getPat15valActivo() == true) {
+                addErrorMessage("La patente 1.5 por Mil ya fue emitida", "Emision de patentes");
+            } else {
                 CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioBalance.getCatdetCodigo());
                 patente15milValActual.setPat15valAnioBalance(Integer.parseInt(objCatDetAux.getCatdetTexto()));

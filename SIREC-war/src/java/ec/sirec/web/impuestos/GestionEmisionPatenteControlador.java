@@ -58,6 +58,9 @@ import org.primefaces.event.FileUploadEvent;
 public class GestionEmisionPatenteControlador extends BaseControlador {
 
     @EJB
+    private PatenteArchivoServicio patenteArchivoServicio;
+
+    @EJB
     private UnoPCinoPorMilServicio unoPCinoPorMilServicio;
 
     @EJB
@@ -73,6 +76,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     private List<CatalogoDetalle> listAnios;
     private static final Logger LOGGER = Logger.getLogger(GestionEmisionPatenteControlador.class.getName());
     private List<Object[]> listaEmisionPatente;
+    private List<PatenteArchivo> listArchivos;
     private String numPatente;
     private CatalogoDetalle catDetAnio;
     private int busOpcion;
@@ -81,6 +85,8 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     private int verBusGlobal;
     private boolean global;
     private int msjVerificaSaldo;
+    private int emitido;
+    private int noEmitido;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -88,12 +94,15 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            emitido = 0;
+            noEmitido = 0;
             msjVerificaSaldo = 0;
             numPatente = "";
             patenteActual = new Patente();
             patValoracionActual = new PatenteValoracion();
             catDetAnio = new CatalogoDetalle();
             listaEmisionPatente = new ArrayList<Object[]>();
+            listArchivos = new ArrayList<PatenteArchivo>();
             busOpcion = 0;
             verBusParroquias = 0;
             verBusPatente = 0;
@@ -129,6 +138,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
     }
 
     public void listarEmisionPatente() {
+        listArchivos = new ArrayList<PatenteArchivo>();
         msjVerificaSaldo = 0;
         CatalogoDetalle objCatDet = new CatalogoDetalle();
         try {
@@ -138,7 +148,8 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
                 listaEmisionPatente = patenteServicio.listarEmisionAnioPatente(patenteActual.getPatCodigo(), Integer.parseInt(objCatDet.getCatdetTexto()));
                 Patente objAuxPat = new Patente();
                 objAuxPat = patenteServicio.cargarObjPatente(patenteActual.getPatCodigo());
-                if (objAuxPat.getPatDeudaInicial() != null) {
+                listArchivos = patenteArchivoServicio.listarArchivoPatentePorTipo(objAuxPat, "TA");
+                if (!listArchivos.isEmpty()) {
                     msjVerificaSaldo = 1;
                 }
             }
@@ -156,6 +167,7 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
             } else {
                 numPatente = null;
             }
+            emitido = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -244,9 +256,8 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
                     unoPCinoPorMilServicio.editarPatenteValoracion15xMil(objPat15Val);
                 }
             }
-
-            addWarningMessage("Los valores se han enviado a recaudación", "Emision de Patentes");
-            inicializar();
+            emitido = 1;
+            addSuccessMessage("La emision se ha realizado exitosamente", "Emision de Patentes");
         } catch (Exception e) {
         }
 
@@ -358,6 +369,22 @@ public class GestionEmisionPatenteControlador extends BaseControlador {
 
     public void setMsjVerificaSaldo(int msjVerificaSaldo) {
         this.msjVerificaSaldo = msjVerificaSaldo;
+    }
+
+    public int getEmitido() {
+        return emitido;
+    }
+
+    public void setEmitido(int emitido) {
+        this.emitido = emitido;
+    }
+
+    public int getNoEmitido() {
+        return noEmitido;
+    }
+
+    public void setNoEmitido(int noEmitido) {
+        this.noEmitido = noEmitido;
     }
 
 }

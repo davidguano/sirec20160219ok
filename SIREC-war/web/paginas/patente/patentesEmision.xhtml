@@ -135,19 +135,25 @@
                                 <h:outputText value="#{car[14]}" />
                             </p:column>
                         </p:dataTable>
-                        <h:panelGrid columns="2">
+                        <h:panelGrid columns="3">
                             <p:commandButton value="#{txt.PRE_EMISION_btn}"
-                                             rendered="#{gestionEmisionPatenteControlador.listaEmisionPatente.size()>0}"
+                                             rendered="#{gestionEmisionPatenteControlador.listaEmisionPatente.size()>0 and gestionEmisionPatenteControlador.emitido==0}"
                                              onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                              id="btnPreEmi" ajax="false" immediate="true">
                                 <p:dataExporter type="xlsx" target="listaDatosCapturados" fileName="Emision_Pate_1.5xMil" postProcessor="#{gestionEmisionPatenteControlador.postProcessXLS}"/>
                             </p:commandButton>   
                             <p:commandButton value="EMISION"
-                                             rendered="#{gestionEmisionPatenteControlador.listaEmisionPatente.size()>0}"
+                                             rendered="#{gestionEmisionPatenteControlador.listaEmisionPatente.size()>0 and gestionEmisionPatenteControlador.emitido==0}"
                                              action="#{gestionEmisionPatenteControlador.emisionPatente()}" 
                                              onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                              update=":frmPat:tabPrin:pnlConListEmision,:frmPat:tabPrin:pnlConEmisionPatente"
                                              id="btnEmi" ajax="false" immediate="true">
+                            </p:commandButton>  
+                            <p:commandButton value="DESCARGAR ARCHIVO EMITIDO"
+                                             rendered="#{gestionEmisionPatenteControlador.emitido==1}"
+                                             onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                             id="btnDesEmi" ajax="false" immediate="true">
+                                <p:dataExporter type="xlsx" target="listaDatosCapturados" fileName="Emision_Pate_1.5xMil" postProcessor="#{gestionEmisionPatenteControlador.postProcessXLS}"/>
                             </p:commandButton>  
                         </h:panelGrid>                      
                     </h:panelGrid>
