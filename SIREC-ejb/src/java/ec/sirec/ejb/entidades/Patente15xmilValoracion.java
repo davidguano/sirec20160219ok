@@ -219,13 +219,15 @@ public class Patente15xmilValoracion implements Serializable {
         this.patCodigo = patCodigo;
     }
 
-    public Boolean isPat15valActivo() {
+    public Boolean getPat15valActivo() {
         return pat15valActivo;
     }
 
     public void setPat15valActivo(Boolean pat15valActivo) {
         this.pat15valActivo = pat15valActivo;
     }
+
+    
     
     
 
