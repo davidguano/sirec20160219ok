@@ -56,4 +56,8 @@ public class CatastroPredialPlusvaliaValoracionServicio {
     public List<Object[]> listarPlusvaliaEmitidaXTipoTarifa(CatalogoDetalle catastroDetalle) {
         return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaXTipoTarifa(catastroDetalle);
     }
+    
+     public List<Object[]> listarPlusvaliaEmitidaXParroquia(CatalogoDetalle catastroDetalle) {
+        return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaXParroquia(catastroDetalle);
+    }
 }
