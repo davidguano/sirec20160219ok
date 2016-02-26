@@ -49,3 +49,10 @@ PrimeFaces.locales ['es'] = {
     day: 'Día',
     allDayText: 'Todo el día'
 };
+
+
+function getid(a) {
+    var nombre = a.name;
+    var valor = a.id;
+    alert('ID: ' + nombre + ' valor: ' + valor + ' id: ');
+}
