@@ -257,7 +257,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void actualizaPatente15xMilValExtra() {
         try {
-            if (patValEx15xMilActual.getPat15valCodigo().getPat15valActivo() == false) {
+            if (patValEx15xMilActual.getPat15valCodigo().getPat15valActivo() == true) {
                 addErrorMessage("La patente 1.5 por Mil ya fue emitida", "Emision de patentes");
             } else {
                 AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
@@ -300,6 +300,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
             patValo15xMilActal.setPat15valSubtotal(valTemporal);
             patValo15xMilActal.setPat15valRecargos(valTemporal);
             patValo15xMilActal.setPat15valTotal(valTemporal);
+            patValo15xMilActal.setPat15valActivo(false);
             unoPCinoPorMilServicio.crearPatenteValoracion15xMil(patValo15xMilActal);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);

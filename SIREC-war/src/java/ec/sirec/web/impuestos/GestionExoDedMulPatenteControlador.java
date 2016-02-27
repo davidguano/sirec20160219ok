@@ -76,6 +76,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     private int verCrear;
     private CatalogoDetalle catDetAnio;
     private List<CatalogoDetalle> listAnios;
+    private int anioDeclaracion;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -83,6 +84,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            anioDeclaracion=0;
             verCrear = 0;
             buscNumPat = "";
             numPatente = "";
@@ -122,9 +124,9 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
                     AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
                     objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
                     patValExActual.setAdidedCodigo(objAdiDec);
-                    CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                    objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-                    patValExActual.setPatvalextAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//                    CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+//                    objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                    patValExActual.setPatvalextAnio(anioDeclaracion);
                     patValExActual.setPatvalCodigo(patenteValoracionActal);
                     patenteServicio.crearPatenteValoracionExtra(patValExActual);
                     addSuccessMessage("Guardado Exitosamente", "Patente Valoración Extra Guardado");
@@ -252,10 +254,12 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
         try {
             if (verCrear == 1) {
                 patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+                anioDeclaracion=Integer.parseInt(buscAnioPat);
             } else {
                 CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
                 patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                anioDeclaracion=Integer.parseInt(objCatDetAux.getCatdetTexto());
             }
             if (patenteValoracionActal == null) {
                 patValExActualCargado = false;
@@ -275,9 +279,9 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
         try {
             patenteValoracionActal = new PatenteValoracion();
             patenteValoracionActal.setPatCodigo(patenteActual);
-            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-            patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+//            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            patenteValoracionActal.setPatvalAnio(anioDeclaracion);
             patenteValoracionActal.setPatvalActivos(valTemporal);
             patenteValoracionActal.setPatvalPasivos(valTemporal);
             patenteValoracionActal.setPatvalPatrimonio(valTemporal);
@@ -287,6 +291,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             patenteValoracionActal.setPatvalTasaProc(valTemporal);
             patenteValoracionActal.setPatvalTotal(valTemporal);
             patenteValoracionActal.setPatvalTasaBomb(valTemporal);
+            patenteValoracionActal.setPatvalActivo(false);
             patenteServicio.crearPatenteValoracion(patenteValoracionActal);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);

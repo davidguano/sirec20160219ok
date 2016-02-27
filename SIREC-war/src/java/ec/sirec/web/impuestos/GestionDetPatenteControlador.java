@@ -83,6 +83,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     ArrayList<String> detaleExoDedMul;
     private boolean existeDedPatente;
     private boolean deducciones;
+    private int anioDeclaracion;
 
     /**
      * Creates a new instance of GestionDetPatenteControlador
@@ -90,6 +91,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            anioDeclaracion=0;
             verCrear = 0;
             existeDedPatente = false;
             deducciones = false;
@@ -303,10 +305,10 @@ public class GestionDetPatenteControlador extends BaseControlador {
             BigDecimal valDatFalso = BigDecimal.ZERO; //Valor Falsedad Datos
             BigDecimal valBaseImponible = BigDecimal.ZERO;
             BigDecimal valMultaPlazoDeclaracion = BigDecimal.ZERO;//Valor multa plazo declaración
-            PatenteValoracion objPatValoracionAux = new PatenteValoracion();
-            objPatValoracionAux = patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
+//            PatenteValoracion objPatValoracionAux = new PatenteValoracion();
+//            objPatValoracionAux = patenteServicio.buscaPatValoracion(patenteActual.getPatCodigo());
             PatenteValoracionExtras objPatValorExtAux = new PatenteValoracionExtras();
-            objPatValorExtAux = patenteServicio.buscaPatValExtraPorPatValoracion(objPatValoracionAux.getPatvalCodigo());
+            objPatValorExtAux = patenteServicio.buscaPatValExtraPorPatValoracion(patenteValoracionActal.getPatvalCodigo());
 //*************************Adicionales Deductivos*********************************
             //if (objPatValorExtAux.getAdidedCodigo().getAdidedCodigo() != 0) { //Suspendido No se ha aclarado el uso de adicionales deductivos
             //AdicionalesDeductivos objAdiDed = new AdicionalesDeductivos();
@@ -431,7 +433,7 @@ public class GestionDetPatenteControlador extends BaseControlador {
             System.out.println("Valor total deducciones:" + valDeduciones);
             patenteValoracionActal.setPatvalDeducciones(valDeduciones);
             objPatValorExtAux = new PatenteValoracionExtras();
-            objPatValoracionAux = new PatenteValoracion();
+//            objPatValoracionAux = new PatenteValoracion();
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -532,9 +534,10 @@ public class GestionDetPatenteControlador extends BaseControlador {
     public void guardaPatenteValoracion() {
         try {
             if (verExistePateneAnio() == false) {
-                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-                patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+//                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+                patenteValoracionActal.setPatvalAnio(anioDeclaracion);
+                patenteValoracionActal.setPatvalActivo(false);
                 patenteValoracionActal.setPatCodigo(patenteActual);
                 PatenteValoracion objPatValAux = new PatenteValoracion();
                 objPatValAux.setPatCodigo(patenteActual);
@@ -600,11 +603,9 @@ public class GestionDetPatenteControlador extends BaseControlador {
             objPatValEx.setPatentePorcIngreso(0.0);
             objPatValEx.setPatenteBaseimpNegativa(BigDecimal.ZERO);
             objPatValEx.setPatvalextNoObligado(false);
-            objPatValEx.setPatvalextAnio(verCrear);
-            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-            objPatValEx.setPatvalextAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
-
+//            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+//            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            objPatValEx.setPatvalextAnio(anioDeclaracion);
             patenteServicio.crearPatenteValoracionExtra(objPatValEx);
 
         } catch (Exception e) {
@@ -615,11 +616,11 @@ public class GestionDetPatenteControlador extends BaseControlador {
     public void actualizaPatenteValoracion() {
         try {
             if (patenteValoracionActal.getPatvalActivo() == true) {
-                addErrorMessage("La patente ya fue emitida","Emision de patentes");
+                addErrorMessage("La patente ya fue emitida", "Emision de patentes");
             } else {
-                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-                patenteValoracionActal.setPatvalAnio(Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+//                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+//                patenteValoracionActal.setPatvalAnio(anioDeclaracion);
                 patenteValoracionActal.setPatCodigo(patenteActual);
                 patenteServicio.editarPatenteValoracion(patenteValoracionActal);
                 addSuccessMessage("Guardado Exitosamente", "Patente Valoración Guardado");
@@ -708,10 +709,12 @@ public class GestionDetPatenteControlador extends BaseControlador {
         try {
             if (verCrear == 1) {
                 patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+                anioDeclaracion=Integer.parseInt(buscAnioPat);
             } else {
                 CatalogoDetalle objCatDetAux = new CatalogoDetalle();
                 objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
                 patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+                anioDeclaracion=Integer.parseInt(objCatDetAux.getCatdetTexto());
             }
             if (patenteValoracionActal == null) {
                 patValoracion = false;
