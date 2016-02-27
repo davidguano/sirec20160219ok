@@ -70,7 +70,6 @@ public class Patente15xmilValoracionExtras implements Serializable {
     private Integer pat15valEvaluaDatFalsos;
     @Column(name = "pat15val_proceso_liquidacion")
     private Integer pat15valProcesoLiquidacion;
-    @NotNull
     @Column(name = "pat15val_anio")
     private int pat15valAnio;
 

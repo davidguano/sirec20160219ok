@@ -211,6 +211,14 @@ public class Patente15xmilValoracion implements Serializable {
         this.pat15valTotal = pat15valTotal;
     }
 
+    public Boolean getPat15valActivo() {
+        return pat15valActivo;
+    }
+
+    public void setPat15valActivo(Boolean pat15valActivo) {
+        this.pat15valActivo = pat15valActivo;
+    }
+
     public Patente getPatCodigo() {
         return patCodigo;
     }
@@ -219,13 +227,7 @@ public class Patente15xmilValoracion implements Serializable {
         this.patCodigo = patCodigo;
     }
 
-    public Boolean getPat15valActivo() {
-        return pat15valActivo;
-    }
-
-    public void setPat15valActivo(Boolean pat15valActivo) {
-        this.pat15valActivo = pat15valActivo;
-    }
+     
 
     
     

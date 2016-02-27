@@ -51,7 +51,6 @@ public class PatenteValoracionExtras implements Serializable {
     private Boolean patvalextExonArtCalificado;
     @Column(name = "patvalext_incum_plazo_decla")
     private Boolean patvalextIncumPlazoDecla;
-    @NotNull
     @Column(name = "patvalext_anio")
     private int patvalextAnio;
     @Column(name = "patente_porc_datosfalsos")
