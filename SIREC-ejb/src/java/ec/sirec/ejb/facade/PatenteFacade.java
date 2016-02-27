@@ -59,7 +59,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
                 + " and pa.pat_codigo=:codPatente "
-                + " and pv.patval_anio=:anio "
+                + " and pv.patval_anio=:anio"
+                + " and pvmil.pat15val_anio_decla=:anio "
                 + "union "
                 + " select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
                 + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
@@ -74,7 +75,7 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + "   and cp.catdet_parroquia=cdp.catdet_codigo "
                 + "and pa.pat_codigo not in (select pat_codigo from sirec.patente_15xmil_valoracion ) "
                 + "  and pa.pat_codigo=:codPatente "
-                + "    and pv.patval_anio=:anio";
+                + "    and pv.patval_anio=:anio ";
 
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("codPatente", codPatente).setParameter("anio", anio);
@@ -105,7 +106,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
                 + " and cp.catdet_parroquia=:parroquia "
-                + " and pv.patval_anio=:anio "
+                + " and pv.patval_anio=:anio"
+                + " and pvmil.pat15val_anio_decla=:anio "
                 + "union "
                 + "select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
                 + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
@@ -151,6 +153,7 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + " and pa.pat_codigo=pvmil.pat_codigo"
                 + " and cp.catdet_parroquia=cdp.catdet_codigo "
                 + " and pv.patval_anio=:anio "
+                + " and pvmil.pat15val_anio_decla=:anio "
                 + "union "
                 + "select distinct( pa.pat_codigo) as clavePatente,p.pro_apellidos||' '||p.pro_nombres as nomContribuente ,  "
                 + "p.pro_ci as identificacion,p.pro_direccion as direccion,cdp.catdet_texto as parroquia,pv.patval_anio as año,pv.patval_patrimonio as patrimonio,  "
@@ -164,7 +167,7 @@ public class PatenteFacade extends AbstractFacade<Patente> {
                 + "   and pa.pat_codigo=pv.pat_codigo  "
                 + "   and cp.catdet_parroquia=cdp.catdet_codigo  "
                 + "   and pa.pat_codigo not in (select pat_codigo from sirec.patente_15xmil_valoracion ) "
-                + "    and pv.patval_anio=:anio "
+                + "    and pv.patval_anio=:anio"             
                 + "    order by 1";
 
         Query q = getEntityManager().createNativeQuery(sql);
