@@ -6,6 +6,7 @@
 package ec.sirec.web.impuestos;
 
 import ec.sirec.ejb.entidades.CatalogoDetalle;
+import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.CatastroPredialAlcabalaValoracionServicio;
@@ -48,7 +49,8 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     private SegUsuario usuarioActual;
     private Date fechaActual;
     private String fechaActualString;
-    private String criterio;
+    private String criterioPL;
+    private String criterioAL;
 
      private List<CatalogoDetalle> listAnios;
      private CatalogoDetalle catDetAnio;
@@ -56,10 +58,19 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
      private CatalogoDetalle catDetTipoTarifa;
      private CatalogoDetalle catDetParroquia;
      private CatalogoDetalle catDetSectores;
+     private CatalogoDetalle catDetParroquiaAL;
+     private CatalogoDetalle catDetSectoresAL;
+     private CatastroPredial catastroPredialReporte;
+     private CatastroPredial catastroPredialReporteAL;
+     private CatalogoDetalle catDetConcepto;
      
       private List<CatalogoDetalle> listaTipoDeTarifa;
       private List<CatalogoDetalle> listaParroquias;
        private List<CatalogoDetalle> listaSectores;
+       private List<CatalogoDetalle> listaSectoresAL;
+        private List<CatastroPredial> listaCatastroPredialClavesCatastrales;
+         private List<CatalogoDetalle> listaCatalogoDetalleConcepto;
+         
       
       private List<Object[]> listaAlcabalasEmitidas;
       private List<Object[]> listaAlcabalasEmitidasSeleccion;
@@ -84,15 +95,27 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             catDetAnioPL= new CatalogoDetalle(); 
             catDetTipoTarifa = new CatalogoDetalle();
             catDetParroquia = new CatalogoDetalle();
+            catDetConcepto = new CatalogoDetalle();
+            catDetParroquiaAL = new CatalogoDetalle();
+            catDetSectoresAL = new CatalogoDetalle();
              listaAlcabalasEmitidas = new ArrayList<Object[]>();
              listaAlcabalasEmitidasSeleccion = new ArrayList<Object[]>();
              listaPlusvaliaEmitidas = new ArrayList<Object[]>();
              listaPlusvaliaEmitidasSeleccion = new ArrayList<Object[]>();
-            criterio ="";
+            criterioPL ="";
+            criterioAL ="";
+            
+            
+            
+             catastroPredialReporte = new CatastroPredial();
+             catastroPredialReporteAL = new CatastroPredial();
              
             listarTipoTarifa();            
             listarAnios();
             listarParroquia();
+            listarTodasComboClaves();
+            listarConceptos();
+              
             obtenerFechaCadena();
             
             
@@ -133,12 +156,18 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     }
     
      public void listarSectores() {
-        try {
-            
+        try {            
            CatalogoDetalle parroquia = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetParroquia.getCatdetCodigo());                     
-            listaSectores = catastroPredialServicio.listaCatSectores(parroquia.getCatdetCod());
-                        
-            
+            listaSectores = catastroPredialServicio.listaCatSectores(parroquia.getCatdetCod());                                    
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+     
+     public void listarSectoresAL() {
+        try {            
+           CatalogoDetalle parroquia = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetParroquiaAL.getCatdetCodigo());                     
+            listaSectoresAL = catastroPredialServicio.listaCatSectores(parroquia.getCatdetCod());                                    
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -148,6 +177,25 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         listAnios = catalogoDetalleServicio.listarPorNemonicoCatalogo("ANIOS");
     }
     
+    public void listarTodasComboClaves() {
+
+        try {
+            listaCatastroPredialClavesCatastrales = catastroPredialServicio.listarClaveCatastral();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void listarConceptos() {
+        try {
+
+            listaCatalogoDetalleConcepto = new ArrayList<CatalogoDetalle>();
+            listaCatalogoDetalleConcepto = catalogoDetalleServicio.listarPorNemonicoCatalogo("CONCEPTOS");
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
     
     public String obtenerCodigos(List<Object[]> listaSeleccion) {        
         String codigos="";
@@ -168,7 +216,9 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     
     public String reporteAlcabalaEmitidas() throws Exception {                                    
         
-        //Conexion con local datasource
+        if(listaAlcabalasEmitidasSeleccion.size()>0){
+            
+            //Conexion con local datasource
         usuarioActual = new SegUsuario();
         usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");        
             catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo());           
@@ -185,8 +235,28 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
             parameters.put("fecha_genera", fechaActualString);
             parameters.put("codigos", obtenerCodigos(listaAlcabalasEmitidasSeleccion));            
-            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));            
-                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_emitida.jasper"));
+            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));   
+                                                                              
+            if (criterioAL.equals("T")) {               
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_concepto.jasper"));
+            } else {
+                if (criterioAL.equals("A")) {
+                    jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_emitida.jasper"));
+                } else {
+                    if (criterioAL.equals("P")) {
+                        jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_parroquia.jasper"));
+                    } else {
+                        if (criterioAL.equals("S")) {
+                            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_sector.jasper"));
+                        }else{
+                        if (criterioAL.equals("C")) {
+                            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/alcabala_predio.jasper"));
+                        }
+                        }
+                    }
+                }
+            }
+            
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
             session.setAttribute("reporteInforme", fichero);
             usuarioActual = new SegUsuario();
@@ -199,6 +269,14 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
                 conexion.close();
             }
         }
+            
+        }else{
+        
+              addSuccessMessage("Seleccione registros","Seleccione registros");
+        
+        }
+        
+        
         return null;
     }
     
@@ -223,18 +301,21 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             parameters.put("fecha_genera", fechaActualString);            
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
             parameters.put("codigos", obtenerCodigos(listaPlusvaliaEmitidasSeleccion)); 
-            if (criterio.equals("F")) {
-                // parameters.put("tipo_tarifa", catDetTipoTarifa.getCatdetCodigo()); 
+            if (criterioPL.equals("F")) {               
                 jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_tipo_tarifa.jasper"));
             } else {
-                if (criterio.equals("A")) {
+                if (criterioPL.equals("A")) {
                     jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
                 } else {
-                    if (criterio.equals("P")) {
+                    if (criterioPL.equals("P")) {
                         jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_parroquia.jasper"));
                     } else {
-                        if (criterio.equals("S")) {
+                        if (criterioPL.equals("S")) {
                             jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_sector.jasper"));
+                        }else{
+                        if (criterioPL.equals("C")) {
+                            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_predio.jasper"));
+                        }
                         }
                     }
                 }
@@ -306,10 +387,29 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     
     
      public void listarAlcabalaEmitidas() throws Exception {
-         try {
-              catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo()); 
-            listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXAño(Integer.parseInt(catDetAnio.getCatdetTexto()));                               
-             
+         try {         
+               
+             if (criterioAL.equals("A")) {                 
+             catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo());        
+            listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXAño(Integer.parseInt(catDetAnio.getCatdetTexto()));                
+             } else {
+                 if (criterioAL.equals("T")) {
+                     listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXConcepto(catDetConcepto);
+                 } else {
+                     if (criterioAL.equals("P")) {
+                        listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXParroquia(catDetParroquiaAL);
+                     } else {
+                         if (criterioAL.equals("S")) {
+                          listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXSector(catDetSectoresAL);
+                         } else {
+                             if (criterioAL.equals("C")) {
+                              listaAlcabalasEmitidas = catastroPredialAlcabalaValoracionServicio.listarAlcabalaEmitidaXClaveCatastral(catastroPredialReporteAL);
+                             }
+                         }
+                     }
+                 }
+             }
+                                    
          }catch(Exception ex){
           LOGGER.log(Level.SEVERE, null, ex);
          }
@@ -318,18 +418,22 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     
      public void listarPlusvaliaEmitidas() throws Exception {
          try {
-             if (criterio.equals("A")) {
+             if (criterioPL.equals("A")) {
                  catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
                  listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXAño(Integer.parseInt(catDetAnioPL.getCatdetTexto()));
              } else {
-                 if (criterio.equals("F")) {
+                 if (criterioPL.equals("F")) {
                      listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXTipoTarifa(catDetTipoTarifa);
                  } else {
-                     if (criterio.equals("P")) {
+                     if (criterioPL.equals("P")) {
                          listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXParroquia(catDetParroquia);
                      } else {
-                         if (criterio.equals("S")) {                                                      
+                         if (criterioPL.equals("S")) {
                              listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXSector(catDetSectores);
+                         } else {
+                             if (criterioPL.equals("C")) {
+                                 listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXClaveCatastral(catastroPredialReporte);
+                             }
                          }
                      }
                  }
@@ -413,12 +517,12 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         this.listaPlusvaliaEmitidasSeleccion = listaPlusvaliaEmitidasSeleccion;
     }
 
-    public String getCriterio() {
-        return criterio;
+    public String getCriterioPL() {
+        return criterioPL;
     }
 
-    public void setCriterio(String criterio) {
-        this.criterio = criterio;
+    public void setCriterioPL(String criterioPL) {
+        this.criterioPL = criterioPL;
     }
 
     public CatalogoDetalle getCatDetParroquia() {
@@ -452,6 +556,77 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     public void setCatDetSectores(CatalogoDetalle catDetSectores) {
         this.catDetSectores = catDetSectores;
     }
-   
-    
+
+    public CatastroPredial getCatastroPredialReporte() {
+        return catastroPredialReporte;
+    }
+
+    public void setCatastroPredialReporte(CatastroPredial catastroPredialReporte) {
+        this.catastroPredialReporte = catastroPredialReporte;
+    }
+
+    public List<CatastroPredial> getListaCatastroPredialClavesCatastrales() {
+        return listaCatastroPredialClavesCatastrales;
+    }
+
+    public void setListaCatastroPredialClavesCatastrales(List<CatastroPredial> listaCatastroPredialClavesCatastrales) {
+        this.listaCatastroPredialClavesCatastrales = listaCatastroPredialClavesCatastrales;
+    }
+
+    public String getCriterioAL() {
+        return criterioAL;
+    }
+
+    public void setCriterioAL(String criterioAL) {
+        this.criterioAL = criterioAL;
+    }
+
+    public CatalogoDetalle getCatDetConcepto() {
+        return catDetConcepto;
+    }
+
+    public void setCatDetConcepto(CatalogoDetalle catDetConcepto) {
+        this.catDetConcepto = catDetConcepto;
+    }
+
+    public List<CatalogoDetalle> getListaCatalogoDetalleConcepto() {
+        return listaCatalogoDetalleConcepto;
+    }
+
+    public void setListaCatalogoDetalleConcepto(List<CatalogoDetalle> listaCatalogoDetalleConcepto) {
+        this.listaCatalogoDetalleConcepto = listaCatalogoDetalleConcepto;
+    }
+
+    public CatastroPredial getCatastroPredialReporteAL() {
+        return catastroPredialReporteAL;
+    }
+
+    public void setCatastroPredialReporteAL(CatastroPredial catastroPredialReporteAL) {
+        this.catastroPredialReporteAL = catastroPredialReporteAL;
+    }
+
+    public CatalogoDetalle getCatDetParroquiaAL() {
+        return catDetParroquiaAL;
+    }
+
+    public void setCatDetParroquiaAL(CatalogoDetalle catDetParroquiaAL) {
+        this.catDetParroquiaAL = catDetParroquiaAL;
+    }
+
+    public CatalogoDetalle getCatDetSectoresAL() {
+        return catDetSectoresAL;
+    }
+
+    public void setCatDetSectoresAL(CatalogoDetalle catDetSectoresAL) {
+        this.catDetSectoresAL = catDetSectoresAL;
+    }
+
+    public List<CatalogoDetalle> getListaSectoresAL() {
+        return listaSectoresAL;
+    }
+
+    public void setListaSectoresAL(List<CatalogoDetalle> listaSectoresAL) {
+        this.listaSectoresAL = listaSectoresAL;
+    }
+       
 }
