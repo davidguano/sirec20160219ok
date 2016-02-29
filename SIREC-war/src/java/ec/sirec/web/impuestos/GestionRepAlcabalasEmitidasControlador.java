@@ -54,8 +54,12 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
      private CatalogoDetalle catDetAnio;
      private CatalogoDetalle catDetAnioPL;
      private CatalogoDetalle catDetTipoTarifa;
+     private CatalogoDetalle catDetParroquia;
+     private CatalogoDetalle catDetSectores;
      
       private List<CatalogoDetalle> listaTipoDeTarifa;
+      private List<CatalogoDetalle> listaParroquias;
+       private List<CatalogoDetalle> listaSectores;
       
       private List<Object[]> listaAlcabalasEmitidas;
       private List<Object[]> listaAlcabalasEmitidasSeleccion;
@@ -79,6 +83,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             catDetAnio= new CatalogoDetalle(); 
             catDetAnioPL= new CatalogoDetalle(); 
             catDetTipoTarifa = new CatalogoDetalle();
+            catDetParroquia = new CatalogoDetalle();
              listaAlcabalasEmitidas = new ArrayList<Object[]>();
              listaAlcabalasEmitidasSeleccion = new ArrayList<Object[]>();
              listaPlusvaliaEmitidas = new ArrayList<Object[]>();
@@ -87,6 +92,7 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
              
             listarTipoTarifa();            
             listarAnios();
+            listarParroquia();
             obtenerFechaCadena();
             
             
@@ -112,6 +118,27 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
         try {
            listaTipoDeTarifa = new ArrayList<CatalogoDetalle>();
            listaTipoDeTarifa = catastroPredialServicio.listarTipoDeTarifa();            
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void listarParroquia() {        
+        try {
+           listaParroquias = new ArrayList<CatalogoDetalle>();
+           listaParroquias =  catastroPredialServicio.listaCatParroquias();    
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+     public void listarSectores() {
+        try {
+            
+           CatalogoDetalle parroquia = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetParroquia.getCatdetCodigo());                     
+            listaSectores = catastroPredialServicio.listaCatSectores(parroquia.getCatdetCod());
+                        
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -177,11 +204,11 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     
     public String reportePlusvaliaEmitidas() throws Exception {
         //Conexion con local datasource
-        usuarioActual = new SegUsuario();
-        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
         
-            catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
-           
+        if(listaPlusvaliaEmitidasSeleccion.size()>0){
+        
+            usuarioActual = new SegUsuario();
+        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");                   
         UtilitariosCod util = new UtilitariosCod();
         Connection conexion = util.getConexion();
         byte[] fichero = null;
@@ -196,17 +223,22 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
             parameters.put("fecha_genera", fechaActualString);            
             parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
             parameters.put("codigos", obtenerCodigos(listaPlusvaliaEmitidasSeleccion)); 
-             if (criterio.equals("F")) {
-                  System.out.println("FFF ");
-                  // parameters.put("tipo_tarifa", catDetTipoTarifa.getCatdetCodigo()); 
-                 jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_tipo_tarifa.jasper"));
-             }else{
-               if (criterio.equals("A")) {
-                   
-                   jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
-                   
-               }
-             }
+            if (criterio.equals("F")) {
+                // parameters.put("tipo_tarifa", catDetTipoTarifa.getCatdetCodigo()); 
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_tipo_tarifa.jasper"));
+            } else {
+                if (criterio.equals("A")) {
+                    jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
+                } else {
+                    if (criterio.equals("P")) {
+                        jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_parroquia.jasper"));
+                    } else {
+                        if (criterio.equals("S")) {
+                            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_sector.jasper"));
+                        }
+                    }
+                }
+            }
             
             
              //   jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/impuestos/plusvalia_emitida.jasper"));
@@ -222,6 +254,14 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
                 conexion.close();
             }
         }
+            
+        }else{
+        
+            addSuccessMessage("Seleccione registros","Seleccione registros");
+            
+        }
+        
+        
         return null;
     }
     
@@ -282,8 +322,16 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
                  catDetAnioPL = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnioPL.getCatdetCodigo());
                  listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXAño(Integer.parseInt(catDetAnioPL.getCatdetTexto()));
              } else {
-                 if (criterio.equals("F")) {                     
+                 if (criterio.equals("F")) {
                      listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXTipoTarifa(catDetTipoTarifa);
+                 } else {
+                     if (criterio.equals("P")) {
+                         listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXParroquia(catDetParroquia);
+                     } else {
+                         if (criterio.equals("S")) {                                                      
+                             listaPlusvaliaEmitidas = catastroPredialPlusvaliaValoracionServicio.listarPlusvaliaEmitidaXSector(catDetSectores);
+                         }
+                     }
                  }
              }
                             
@@ -372,5 +420,38 @@ public class GestionRepAlcabalasEmitidasControlador extends BaseControlador {
     public void setCriterio(String criterio) {
         this.criterio = criterio;
     }
+
+    public CatalogoDetalle getCatDetParroquia() {
+        return catDetParroquia;
+    }
+
+    public void setCatDetParroquia(CatalogoDetalle catDetParroquia) {
+        this.catDetParroquia = catDetParroquia;
+    }
+
+    public List<CatalogoDetalle> getListaParroquias() {
+        return listaParroquias;
+    }
+
+    public void setListaParroquias(List<CatalogoDetalle> listaParroquias) {
+        this.listaParroquias = listaParroquias;
+    }
+
+    public List<CatalogoDetalle> getListaSectores() {
+        return listaSectores;
+    }
+
+    public void setListaSectores(List<CatalogoDetalle> listaSectores) {
+        this.listaSectores = listaSectores;
+    }
+
+    public CatalogoDetalle getCatDetSectores() {
+        return catDetSectores;
+    }
+
+    public void setCatDetSectores(CatalogoDetalle catDetSectores) {
+        this.catDetSectores = catDetSectores;
+    }
    
+    
 }
