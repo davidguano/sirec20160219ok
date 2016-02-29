@@ -191,17 +191,17 @@
                             </p:panel>
                             <h:panelGrid columns="3">
                                 <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_representante}"/>
-                                <p:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
+                                <h:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="100" size="40">
-                                    <f:validateRegex pattern="[a-zA-Z]+"/>
-                                </p:inputText>
+                                  
+                                </h:inputText>
                                 <p:message for="compPnl1_10" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_contado}"/>
-                                <p:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
+                                <h:inputText validatorMessage="#{txt.lbl_contado} Solo se admiten letras" requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="50" size="40"> 
-                                     <f:validateRegex pattern="[a-zA-Z]+"/>
-                                </p:inputText>
+                                     
+                                </h:inputText>
                                 <p:message for="compPnl1_11" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ruc_contador}"/>
