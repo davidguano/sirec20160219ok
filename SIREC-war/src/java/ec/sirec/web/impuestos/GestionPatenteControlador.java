@@ -100,6 +100,7 @@ public class GestionPatenteControlador extends BaseControlador {
     private String buscNumPat;
     private int verguarda;
     private int verActualiza;
+    private boolean flagEditar;
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -109,6 +110,7 @@ public class GestionPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            flagEditar = false;
             catastroPredBusca = null;
             patenteActual = new Patente();
             propietarioActual = new Propietario();
@@ -150,6 +152,19 @@ public class GestionPatenteControlador extends BaseControlador {
             buscNumPat = "";
             verguarda = 1;
             verActualiza = 0;
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void validarCedulaRuc() {
+        try {
+            if (propietarioServicio.esCedulaRucValida(patenteActual.getPatRucContador(), flagEditar).equals("valida")) {
+                addSuccessMessage("Cedula valida","Cedula valida");
+            } else {
+                addErrorMessage("Cedula no valida","Cedula no valida");
+                patenteActual.setPatRucContador(null);
+            }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -446,7 +461,9 @@ public class GestionPatenteControlador extends BaseControlador {
                         if (propietarioActual == null) {
                             addWarningMessage("No se encontraron propietarios", "No se encontraron propietarios");
                         } else {
+
                             catDetParroquia = catalogoDetalleServicio.buscarPorCodigoCatDet(propietarioActual.getCatdetCiudad().getCatdetCodigo());
+                            System.out.println("Entro a propietarios" + propietarioActual.getCatdetCiudad().getCatdetCodigo() + "Parroquia " + catDetParroquia.getCatdetTexto());
                         }
                     }
                 }

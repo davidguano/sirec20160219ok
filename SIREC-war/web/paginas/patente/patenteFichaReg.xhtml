@@ -87,7 +87,7 @@
                                                      value="Buscar" async="true" global="false"
                                                      action="#{gestionPatenteControlador.cargarInformacionPropietario()}"
                                                      process="@this,pnlBuscaProPatente"
-                                                     update="panlDatosPropietario,:frmPat:msgs"
+                                                     update=":frmPat:tabPrin:panlDatosPropietario,:frmPat:tabPrin:cmbPropParroquia,:frmPat:msgs"
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      icon="fa fa-search"/>
                                 </h:panelGrid>
@@ -135,8 +135,8 @@
                             </h:panelGrid>
                             <p:panel>
                                 <h:panelGrid id="panlDatosPropietario" columns="6">
-                                    <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_cedula}"/>
-                                    <p:inputText style="background: lightgreen;color:black;font-weight: bold" requiredMessage="#{txt.lbl_cedula} Se necesita un valor"  disabled="#{gestionPatenteControlador.habilitaCamposPropietario}" id="compPnl1_2"  value="#{gestionPatenteControlador.propietarioActual.proCi}" 
+                                    <p:outputLabel   style="font-size: #{txt.font_size}" value="#{txt.lbl_cedula}"/>
+                                    <p:inputText readonly="true" style="background: lightgreen;color:black;font-weight: bold" requiredMessage="#{txt.lbl_cedula} Se necesita un valor"  disabled="#{gestionPatenteControlador.habilitaCamposPropietario}" id="compPnl1_2"  value="#{gestionPatenteControlador.propietarioActual.proCi}" 
                                                  maxlength="20" size="40"/>
                                     <p:message for="compPnl1_2" display="icon"/>
 
@@ -191,22 +191,31 @@
                             </p:panel>
                             <h:panelGrid columns="3">
                                 <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_representante}"/>
-                                <p:inputText requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
-                                             maxlength="50" size="40"/>
+                                <p:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
+                                             onkeyup="value = value.toUpperCase()" maxlength="100" size="40">
+                                    <f:validateRegex pattern="[a-zA-Z]+"/>
+                                </p:inputText>
                                 <p:message for="compPnl1_10" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_contado}"/>
-                                <p:inputText requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
-                                             maxlength="50" size="40"/>
+                                <p:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
+                                             onkeyup="value = value.toUpperCase()" maxlength="50" size="40"> 
+                                     <f:validateRegex pattern="[a-zA-Z]+"/>
+                                </p:inputText>
                                 <p:message for="compPnl1_11" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_ruc_contador}"/>
                                 <p:inputText requiredMessage="#{txt.lbl_ruc_contador} Se necesita un valor" disabled="false" id="compPnl1_11ext"  value="#{gestionPatenteControlador.patenteActual.patRucContador}" 
-                                             maxlength="20" size="40"/>
+                                             maxlength="20" size="40">
+                                    <p:ajax event="blur" async="true" global="false"
+                                            listener="#{gestionPatenteControlador.validarCedulaRuc}"
+                                            process="@this"
+                                            update="@this,:frmPat:msgs"/>
+                                </p:inputText>
                                 <p:message for="compPnl1_11ext" display="icon"/>
                             </h:panelGrid>
                         </h:panelGrid>
-                    </p:panel>
+                    </p:panel>                     
                     <p:panel style="background: antiquewhite">
                         <h:panelGrid columns="6">
                             <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_establecimiento}"/>

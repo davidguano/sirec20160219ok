@@ -83,7 +83,6 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     private int verResultado;
     private int verGuarda;
     private int verActualiza;
-    private int verCrear;
     private CatalogoDetalle catDetAnio;
     private List<CatalogoDetalle> listAnios;
 
@@ -93,7 +92,6 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
-            verCrear = 0;
             numPatente = "";
             buscNumPat = "";
             buscAnioPat = "";
@@ -139,17 +137,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
         try {
             inicializar();
             verBuscaPatente = 1;
-            verCrear = 1;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, null, e);
-        }
-    }
 
-    public void crearPatente() {
-        try {
-            inicializar();
-            verBuscaPatente = 1;
-            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -212,13 +200,13 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
     public boolean cargarExistePatVal15PorMilExtra() {
         boolean pat15PorMilValoracion = false;
         try {
-            if (verCrear == 1) {
-                patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
-            } else {
-                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
-                patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetCod()));
-            }
+//            if (verCrear == 1) {
+//                patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+//            } else {
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
+            patValo15xMilActal = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//            }
             if (patValo15xMilActal == null) {
                 pat15PorMilValoracion = false;
             } else {
@@ -233,7 +221,7 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void guardaPatente15xMilValExtra() {
         try {
-            if (habilitaEdicion == false) {
+            if (verificaArchivosCargados()) {
                 guardaPatenteValoracion15PorMil();
                 AdicionalesDeductivos objAdiDec = new AdicionalesDeductivos();
                 objAdiDec = adicionalesDeductivosServicio.buscarAdicionesDeductivosXNemonico("ADIDED_PAT");
@@ -248,11 +236,22 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
                 cargaObjetosBitacora();
                 guardarArchivos();
                 inicializar();
+            } else {
+                addSuccessMessage("Debe Cargar Documentación", "Debe Cargar Documentación");
             }
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
+    }
+
+    public boolean verificaArchivosCargados() {
+        if (listaFiles.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     public void actualizaPatente15xMilValExtra() {
@@ -558,14 +557,6 @@ public class GestionExoDedMulUnoCincoPorMil extends BaseControlador {
 
     public void setBuscAnioPat(String buscAnioPat) {
         this.buscAnioPat = buscAnioPat;
-    }
-
-    public int getVerCrear() {
-        return verCrear;
-    }
-
-    public void setVerCrear(int verCrear) {
-        this.verCrear = verCrear;
     }
 
     public CatalogoDetalle getCatDetAnio() {

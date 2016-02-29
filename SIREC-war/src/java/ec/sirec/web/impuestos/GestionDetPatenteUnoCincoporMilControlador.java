@@ -62,7 +62,6 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
     private String buscNumPat;
     private String buscAnioPat;
     private int verBuscaPatente;
-    private int verCrear;
     String numPatente;
     private CatalogoDetalle catDetAnioBalance;
     private CatalogoDetalle catDetAnioDeclara;
@@ -86,7 +85,6 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
         try {
             anioDeclaracion = 0;
             catDetAnio = new CatalogoDetalle();
-            verCrear = 0;
             existeDedPatente = false;
             deducciones = false;
             detaleExoDedMulxMil = new ArrayList<String>();
@@ -118,17 +116,6 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
         try {
             inicializar();
             verBuscaPatente = 1;
-            verCrear = 1;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, null, e);
-        }
-    }
-
-    public void crearPatente() {
-        try {
-            inicializar();
-            verBuscaPatente = 1;
-            verCrear = 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -224,16 +211,16 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
         boolean pa15PorMilValoracion = false;
         //  Patente15xmilValoracion objPat15PorMilValoracion = new Patente15xmilValoracion();
         try {
-            if (verCrear == 1) {
-                patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
-                anioDeclaracion = Integer.parseInt(buscAnioPat);
-
-            } else {
-                CatalogoDetalle objCatDetAux = new CatalogoDetalle();
-                objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
-                patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
-                anioDeclaracion = Integer.parseInt(objCatDetAux.getCatdetTexto());
-            }
+//            if (verCrear == 1) {
+//                patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(buscAnioPat));
+//                anioDeclaracion = Integer.parseInt(buscAnioPat);
+//
+//            } else {
+            CatalogoDetalle objCatDetAux = new CatalogoDetalle();
+            objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnioDeclara.getCatdetCodigo());
+            patente15milValActual = unoPCinoPorMilServicio.buscaPatValoracion15xMilPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
+//            anioDeclaracion = Integer.parseInt(objCatDetAux.getCatdetTexto());
+//            }
 
             if (patente15milValActual == null) {
                 pa15PorMilValoracion = false;
@@ -354,7 +341,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_porc_incumple_declaracion15PorMil");
                 porcentajeImp = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valMultaPlazoDeclaracion = (valImpuesto15xMil.multiply(porcentajeImp)).multiply(BigDecimal.valueOf(objPat15MilExtAux.getPat15valNumMesesIncum()));
-                valMultaPlazoDeclaracion.setScale(verCrear, RoundingMode.HALF_UP);
+                valMultaPlazoDeclaracion.setScale(2, RoundingMode.HALF_UP);
                 detaleExoDedMulxMil.add("Multas 1.5 por mil: Plazo de declaración " + objPat15MilExtAux.getPat15valNumMesesIncum() + " meses  tardios; valor: " + valMultaPlazoDeclaracion + "\n");
             }
             //Falsedad de datos------------------------------------------
@@ -364,7 +351,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_sueldo_basico");
                 BigDecimal valSueldoBasico = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valDatFalso = valSueldoBasico.multiply(BigDecimal.valueOf(objPat15MilExtAux.getPat15valEvaluaDatFalsos()));
-                valDatFalso.setScale(verCrear, RoundingMode.HALF_UP);
+                valDatFalso.setScale(2, RoundingMode.HALF_UP);
                 detaleExoDedMulxMil.add("Multas 1.5 por mil: Falsedad de datos; valor: " + valDatFalso + "\n");
             }
             //La no justificacion de las empresas en proceso de liquidación---------------
@@ -373,7 +360,7 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
                 objDatglobAux = patenteServicio.cargarObjDatGloPorNombre("Val_recargo_mensual_emp_proceso_liquidacion");
                 BigDecimal valPagoMensual = BigDecimal.valueOf(Double.parseDouble(objDatglobAux.getDatgloValor()));
                 valMultaProcesoLiquidacion = valPagoMensual.multiply(BigDecimal.valueOf(objPat15MilExtAux.getPat15valEvaluaDatFalsos()));
-                valMultaProcesoLiquidacion.setScale(verCrear, RoundingMode.HALF_UP);
+                valMultaProcesoLiquidacion.setScale(2, RoundingMode.HALF_UP);
                 detaleExoDedMulxMil.add("Multas 1.5 por mil: Multa Proceso liquidación; valor: " + valMultaProcesoLiquidacion + "\n");
             }
             //Base imponible---------------------------------
@@ -720,14 +707,6 @@ public class GestionDetPatenteUnoCincoporMilControlador extends BaseControlador 
 
     public void setBuscAnioPat(String buscAnioPat) {
         this.buscAnioPat = buscAnioPat;
-    }
-
-    public int getVerCrear() {
-        return verCrear;
-    }
-
-    public void setVerCrear(int verCrear) {
-        this.verCrear = verCrear;
     }
 
     public CatalogoDetalle getCatDetAnio() {

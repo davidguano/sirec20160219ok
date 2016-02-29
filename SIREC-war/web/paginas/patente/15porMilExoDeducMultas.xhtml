@@ -15,17 +15,17 @@
                     <center>
                         <h:panelGrid id="pnl15xMilExoBuscaPatente" columns="1">
                             <p:panel rendered="#{gestionExoDedMulUnoCincoPorMil.verBuscaPatente==1}" header="Búsqueda de Patente:">
-                                <h:panelGrid columns="7">
+                                <h:panelGrid columns="6">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_ingre_valor_busca} AE-MPM-"/>
                                     <p:inputText  id="txtExo15xMilBusPatente"  value="#{gestionExoDedMulUnoCincoPorMil.buscNumPat}" 
                                                   maxlength="20" size="20"/>
                                     <p:message for="txtExo15xMilBusPatente" display="icon"/>
 
-                                    <h:outputLabel rendered="#{gestionExoDedMulUnoCincoPorMil.verCrear==0}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio_declaracion}"/>
-                                    <h:panelGrid rendered="#{gestionExoDedMulUnoCincoPorMil.verCrear==0}" columns="1">    
+                                    <h:outputLabel    style="font-size: #{txt.font_size}" value="#{txt.lbl_anio_declaracion}"/>
+                                    <h:panelGrid  columns="1">    
                                         <p:selectOneMenu  id="cmbPatExoxMilAnio" 
-                                                         value="#{gestionExoDedMulUnoCincoPorMil.catDetAnio}" style="width:150px"
-                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                                          value="#{gestionExoDedMulUnoCincoPorMil.catDetAnio}" style="width:150px"
+                                                          converter="#{catalogoDetalleConverter}" var="t">
                                             <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
                                             <f:selectItems var="tipTem"  
                                                            value="#{gestionExoDedMulUnoCincoPorMil.listAnios}" 
@@ -38,10 +38,6 @@
                                         <p:message for="cmbPatExoxMilAnio" display="icon"/>
                                     </h:panelGrid>
 
-                                    <p:outputLabel rendered="#{gestionExoDedMulUnoCincoPorMil.verCrear==1}" style="font-size: #{txt.font_size}" value="Ingrese el año:"/>
-                                    <p:inputText required="true" requiredMessage=" Se nesecita un valor" rendered="#{gestionExoDedMulUnoCincoPorMil.verCrear==1}" id="txtExo15xMilBusPatenteAnio"  value="#{gestionExoDedMulUnoCincoPorMil.buscAnioPat}" 
-                                                 maxlength="20" size="20"/>
-                                    <p:message rendered="#{gestionExoDedMulUnoCincoPorMil.verCrear==1}"  for="txtExo15xMilBusPatenteAnio" display="icon"/>
 
 
                                     <p:commandButton value="#{txt.btn_aceptar}" 
@@ -56,16 +52,7 @@
                                                      />                                       
                                 </h:panelGrid>
                             </p:panel>
-                            <h:panelGrid columns="3">
-                                <p:commandButton value="Crear" 
-                                                 id="btn15xMilExoCreaPat" 
-                                                 action="#{gestionExoDedMulUnoCincoPorMil.crearPatente()}" 
-                                                 icon="ui-icon-contact"  
-                                                 process="@this,pnl15xMilExoBuscaPatente" 
-                                                 update=":frmPat,pnl15xMilExoBuscaPatente"
-                                                 async="true"
-                                                 global="false"
-                                                 /> 
+                            <h:panelGrid columns="2">
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btn15xMilExoBusPat" 
                                                  action="#{gestionExoDedMulUnoCincoPorMil.buscarPatente()}" 

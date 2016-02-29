@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.PatenteReporteServicio;
 import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.UtilitariosCod;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -31,8 +32,12 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
 /**
@@ -99,6 +104,7 @@ public class GestionRepPatenteControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
+//Reporte de negocios por rango de patrimonio 
 
     public void listarDatosReporte1() {
         try {
@@ -107,6 +113,7 @@ public class GestionRepPatenteControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
+//Reporte de emision inicial
 
     public void listarDatosReporte2() {
         try {
@@ -142,6 +149,52 @@ public class GestionRepPatenteControlador extends BaseControlador {
             parameters.put("rango_parametros", cargarRgistroSeleccionado());
             jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
             fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+            session.setAttribute("reporteInforme", fichero);
+            usuarioActual = new SegUsuario();
+        } catch (JRException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        } finally {
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+        return null;
+    }
+
+    public String reporteNegRangoPatrimonioXLS() throws Exception {
+        //Conexion con local datasource
+        usuarioActual = new SegUsuario();
+        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+        UtilitariosCod util = new UtilitariosCod();
+        Connection conexion = util.getConexion();
+        byte[] fichero = null;
+        JasperReport jasperReport = null;
+        JasperPrint jasperPrint = new JasperPrint(); //Excel
+        Map parameters = new HashMap();
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            session.removeAttribute("reporteInforme");
+            parameters.put("valor_inicial", valorInicial);
+            parameters.put("valor_final", valorFinal);
+            parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+            parameters.put("fecha_genera", fechaActual.getDay() + "-" + fechaActual.getMonth() + "-" + fechaActual.getYear());
+            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+            parameters.put("rango_parametros", cargarRgistroSeleccionado());
+           jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
+            
+                jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
+                JRXlsExporter exporterXLS = new JRXlsExporter();
+                ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
+                exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+                exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
+                exporterXLS.exportReport();
+                fichero = xlsReport.toByteArray();
+                session.setAttribute("reporteInformeXls", fichero);
+               
             session.setAttribute("reporteInforme", fichero);
             usuarioActual = new SegUsuario();
         } catch (JRException ex) {

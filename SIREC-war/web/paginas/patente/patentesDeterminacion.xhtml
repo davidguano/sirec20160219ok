@@ -15,17 +15,17 @@
                     <center>
                         <h:panelGrid id="DedPatBuscaPatente" columns="1">
                             <p:panel rendered="#{gestionDetPatenteControlador.verBuscaPatente==1}" header="Búsqueda de Patente:">
-                                <h:panelGrid columns="9">
+                                <h:panelGrid columns="6">
                                     <p:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_ingre_valor_busca} AE-MPM-"/>
                                     <p:inputText  id="txtDedBusPatente"  value="#{gestionDetPatenteControlador.buscNumPat}" 
                                                   maxlength="20" size="20"/>
                                     <p:message for="txtDedBusPatente" display="icon"/>
 
-                                    <h:outputLabel rendered="#{gestionDetPatenteControlador.verCrear==0}"  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio}"/>
-                                    <h:panelGrid rendered="#{gestionDetPatenteControlador.verCrear==0}" columns="1">    
+                                    <h:outputLabel  style="font-size: #{txt.font_size}" value="#{txt.lbl_anio}"/>
+                                    <h:panelGrid columns="1">    
                                         <p:selectOneMenu  id="cmbPatDetAnio" 
-                                                         value="#{gestionDetPatenteControlador.catDetAnio}" style="width:250px"
-                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                                          value="#{gestionDetPatenteControlador.catDetAnio}" style="width:250px"
+                                                          converter="#{catalogoDetalleConverter}" var="t">
                                             <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
                                             <f:selectItems var="tipTem"  
                                                            value="#{gestionDetPatenteControlador.listAnios}" 
@@ -38,10 +38,6 @@
                                         <p:message for="cmbPatDetAnio" display="icon"/>
                                     </h:panelGrid>
 
-                                    <p:outputLabel rendered="#{gestionDetPatenteControlador.verCrear==1}" style="font-size: #{txt.font_size}" value="Ingrese el año:"/>
-                                    <p:inputText  rendered="#{gestionDetPatenteControlador.verCrear==1}" id="txtDedBusPatenteAnio"  value="#{gestionDetPatenteControlador.buscAnioPat}" 
-                                                  maxlength="20" size="20"/>
-                                    <p:message rendered="#{gestionDetPatenteControlador.verCrear==1}"  for="txtDedBusPatenteAnio" display="icon"/>
 
 
                                     <p:commandButton value="#{txt.btn_aceptar}" 
@@ -57,15 +53,6 @@
                                 </h:panelGrid>
                             </p:panel>
                             <h:panelGrid columns="3">
-                                <p:commandButton value="Crear" 
-                                                 id="btnDedCrearPat" 
-                                                 action="#{gestionDetPatenteControlador.crearPatente()}" 
-                                                 icon="ui-icon-contact"  
-                                                 process="@this,DedPatBuscaPatente" 
-                                                 update=":frmPat,DedPatBuscaPatente"
-                                                 async="true"
-                                                 global="false"
-                                                 /> 
                                 <p:commandButton value="#{txt.btn_buscar}" 
                                                  id="btnDedBusPat" 
                                                  action="#{gestionDetPatenteControlador.buscarPatente()}" 

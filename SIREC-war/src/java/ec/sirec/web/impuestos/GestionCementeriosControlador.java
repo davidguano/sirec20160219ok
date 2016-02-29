@@ -102,6 +102,9 @@ public class GestionCementeriosControlador extends BaseControlador {
     private int verSuelo;
     private String nombreOcciso;
     private String nombreRep;
+    private String direccionRep;
+    private boolean irAPropietarios;
+
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -111,6 +114,8 @@ public class GestionCementeriosControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            irAPropietarios = false;
+            direccionRep = "";
             nombreOcciso = "";
             nombreRep = "";
             verNicho = 0;
@@ -170,43 +175,43 @@ public class GestionCementeriosControlador extends BaseControlador {
     }
 
     public void guardarCementerios() {
-              try {
-            
+        try {
+
 //                if (existeRuc()) {
-                    cargaObjetosBitacora();
-                    CatalogoDetalle objCatDet = new CatalogoDetalle();
-                    cementerioActual.setProCi(propietarioActual);
-                    cementerioActual.setProOccisoCi(propietarioActualOcciso);
-                    cementerioActual.setOccisoCi(propietarioActualOcciso.getProCi());
-                    cementerioActual.setCemNombreOcciso(nombreOcciso);
-                    cementerioActual.setCemRepresentante(nombreRep);
-                    cementerioActual.setCatdetParroquia(catDetParroquia);
-                    objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetGenero.getCatdetCodigo());
-                    cementerioActual.setCemGenero(objCatDet.getCatdetCod());
-                    objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetUbicAtaud.getCatdetCodigo());
-                    cementerioActual.setCemUbicacion(objCatDet.getCatdetCod());
-                    objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetEstadoDefun.getCatdetCodigo());
-                    cementerioActual.setCemEstado(objCatDet.getCatdetCod());
-                    objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetTipNicho.getCatdetCodigo());
-                    cementerioActual.setCemTipo(objCatDet.getCatdetCod());
-                    cementerioActual.setCemFechaFallece(fechaFallece);
-                    cementerioActual.setCemFechaFinContrato(fehcaFinContrato);
-                    cementerioActual.setUsuIdentificacion(usuarioActual);
-                    cementerioActual.setUltaccDetalle(datoGlobalActual.getDatgloValor());
-                    cementerioActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
-                    cementerioServicio.crearCementerio(cementerioActual);
-                    if (!listaFiles.isEmpty()) {
-                        guardarArchivos();
-                    }
-                    addSuccessMessage("Guardado Exitosamente");
-                    cementerioActual = new Cementerio();
-                    limpiarObjetosBitacora();
-                    inicializar();
+            cargaObjetosBitacora();
+            CatalogoDetalle objCatDet = new CatalogoDetalle();
+            cementerioActual.setProCi(propietarioActual);
+            cementerioActual.setProOccisoCi(propietarioActualOcciso);
+            cementerioActual.setOccisoCi(propietarioActualOcciso.getProCi());
+            cementerioActual.setCemNombreOcciso(nombreOcciso);
+            cementerioActual.setCemRepresentante(nombreRep);
+            cementerioActual.setCemDirecRepresentante(direccionRep);
+            cementerioActual.setCatdetParroquia(catDetParroquia);
+            objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetGenero.getCatdetCodigo());
+            cementerioActual.setCemGenero(objCatDet.getCatdetCod());
+            objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetUbicAtaud.getCatdetCodigo());
+            cementerioActual.setCemUbicacion(objCatDet.getCatdetCod());
+            objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetEstadoDefun.getCatdetCodigo());
+            cementerioActual.setCemEstado(objCatDet.getCatdetCod());
+            objCatDet = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetTipNicho.getCatdetCodigo());
+            cementerioActual.setCemTipo(objCatDet.getCatdetCod());
+            cementerioActual.setCemFechaFallece(fechaFallece);
+            cementerioActual.setCemFechaFinContrato(fehcaFinContrato);
+            cementerioActual.setUsuIdentificacion(usuarioActual);
+            cementerioActual.setUltaccDetalle(datoGlobalActual.getDatgloValor());
+            cementerioActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
+            cementerioServicio.crearCementerio(cementerioActual);
+            if (!listaFiles.isEmpty()) {
+                guardarArchivos();
+            }
+            addSuccessMessage("Guardado Exitosamente");
+            cementerioActual = new Cementerio();
+            limpiarObjetosBitacora();
+            inicializar();
 //                } else {
 //                    addWarningMessage("Cédula/Ruc no existe en la base de datos");
 //                }
-           
-            
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
         }
@@ -242,6 +247,16 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     }
 
+    public void registrarPropietarios() {
+        try {
+            if (irAPropietarios = true) {
+                redirect(getContextName() + "/paginas/base/propietario.xhtml");
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, null, e);
+        }
+    }
+
     public void guardarCementerioHistorial() {
         try {
             //---actualizo el estado de inhumado a exhumado
@@ -268,10 +283,9 @@ public class GestionCementeriosControlador extends BaseControlador {
     }
 
     public List<Cementerio> sugiereNombreOcciso(String nombre) {
-        cementerioActual.setCemNombreOcciso(nombre);
         List<Cementerio> listNombres = new ArrayList<Cementerio>();
         try {
-            listaNombreOccisos = cementerioServicio.listarOccisosPorNombre(cementerioActual.getCemNombreOcciso());
+            listaNombreOccisos = cementerioServicio.listarOccisosPorNombre(nombre);
             for (Cementerio cementerio : listaNombreOccisos) {
                 listNombres.add(cementerio);
             }
@@ -282,10 +296,9 @@ public class GestionCementeriosControlador extends BaseControlador {
     }
 
     public List<Propietario> sugiereCedulaRuc(String cedulaNumero) {
-        propietarioActual.setProCi(ciRuc);
         List<Propietario> listNombresProp = new ArrayList<Propietario>();
         try {
-            listaPropietarios = propietarioServicio.listarPropietariosPorCedula(propietarioActual.getProCi());
+            listaPropietarios = propietarioServicio.listarPropietariosPorCedula(cedulaNumero);
             for (Propietario propietario : listaPropietarios) {
                 listNombresProp.add(propietario);
             }
@@ -300,6 +313,16 @@ public class GestionCementeriosControlador extends BaseControlador {
         cementerioActual = cementerioServicio.buscarCementerioPorId(objCem.getCemCodigo());
         if (cementerioActual == null) {
             resulBusqueda = 1;
+        }else{
+        nombreOcciso=cementerioActual.getCemNombreOcciso();
+        nombreRep=cementerioActual.getCemRepresentante();
+        direccionRep=cementerioActual.getCemDirecRepresentante();
+        catDetGenero=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemGenero(), "GENERO_SX");
+        catDetUbicAtaud=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemUbicacion(), "UBIC_ATAUD");
+        catDetEstadoDefun=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemEstado(), "DEFUN_ESTADO");
+        catDetTipNicho=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemTipo(), "TIPO_NICHO");
+                
+        
         }
     }
 
@@ -307,6 +330,7 @@ public class GestionCementeriosControlador extends BaseControlador {
         Propietario objProp = (Propietario) event.getObject();
         propietarioActual = propietarioServicio.buscarPropietarioPorCedula(objProp.getProCi());
         nombreRep = propietarioActual.getProApellidos() + " " + propietarioActual.getProNombres();
+        direccionRep = propietarioActual.getProDireccion();
     }
 
     public void onItemSelectPropietarioOcciso(SelectEvent event) throws Exception {
@@ -320,6 +344,15 @@ public class GestionCementeriosControlador extends BaseControlador {
             cementerioActual = cementerioServicio.buscarPorParroquiaNumNicho(catDetParroquia.getCatdetCodigo(), numNicho);
             if (cementerioActual == null) {
                 resulBusqueda = 1;
+            }else{
+             nombreOcciso=cementerioActual.getCemNombreOcciso();
+        nombreRep=cementerioActual.getCemRepresentante();
+        direccionRep=cementerioActual.getCemDirecRepresentante();
+        catDetGenero=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemGenero(), "GENERO_SX");
+        catDetUbicAtaud=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemUbicacion(), "UBIC_ATAUD");
+        catDetEstadoDefun=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemEstado(), "DEFUN_ESTADO");
+        catDetTipNicho=catalogoDetalleServicio.buscarPoCatdetTexCatdetCod(cementerioActual.getCemTipo(), "TIPO_NICHO");
+       
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);
@@ -364,7 +397,6 @@ public class GestionCementeriosControlador extends BaseControlador {
 //
 //        return existe;
 //    }
-
     public void onTabChange(TabChangeEvent event) {
 //        if (event.getTab().getId().equals("patDet")) {
 //            GestionDetPatenteControlador objGesDetControlador = new GestionDetPatenteControlador();
@@ -758,6 +790,22 @@ public class GestionCementeriosControlador extends BaseControlador {
 
     public void setNombreRep(String nombreRep) {
         this.nombreRep = nombreRep;
+    }
+
+    public String getDireccionRep() {
+        return direccionRep;
+    }
+
+    public void setDireccionRep(String direccionRep) {
+        this.direccionRep = direccionRep;
+    }
+
+    public boolean isIrAPropietarios() {
+        return irAPropietarios;
+    }
+
+    public void setIrAPropietarios(boolean irAPropietarios) {
+        this.irAPropietarios = irAPropietarios;
     }
 
 }
