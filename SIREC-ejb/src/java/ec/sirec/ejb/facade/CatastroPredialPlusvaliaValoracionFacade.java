@@ -126,9 +126,10 @@ public class CatastroPredialPlusvaliaValoracionFacade extends AbstractFacade<Cat
         }
     }
      
-    public List<Object[]> listaPlusvaliaXParroquia(Object parroquia) {
+    public List<Object[]> listaPlusvaliaXParroquia(String campo, Object parroquia) {
         List<Object[]> lista = new ArrayList<Object[]>();                                               
-        String sql = " SELECT  concat(cp.catpre_cod_nacional, cp.catpre_cod_local) clave_catastral,\n" +
+        String sql = " SELECT a.catprepluval_codigo, "+
+   " concat(cp.catpre_cod_nacional, cp.catpre_cod_local) clave_catastral,\n" +
 "	a.catprepluval_anio,\n" +
 "	(SELECT cd.catdet_texto parroquia from sirec.catalogo_detalle cd\n" +
 "	where cd.catdet_codigo=cp.catdet_parroquia),\n" +
@@ -159,7 +160,7 @@ public class CatastroPredialPlusvaliaValoracionFacade extends AbstractFacade<Cat
 "  FROM sirec.catastro_predial_plusvalia_valoracion a, sirec.catastro_predial cp\n" +
 "WHERE a.catprepluval_activo=true and\n" +
 "a.catpre_codigo=cp.catpre_codigo and\n" +
-"cp.catdet_parroquia =:parroquia " +
+"cp."+campo+" =:parroquia " +
 "order by a.catprepluval_anio, nombre_propietario asc";
         Query q = getEntityManager().createNativeQuery(sql);
         q.setParameter("parroquia", parroquia);
@@ -170,6 +171,6 @@ public class CatastroPredialPlusvaliaValoracionFacade extends AbstractFacade<Cat
             lista = q.getResultList();
             return lista;
         }
-    } 
-     
+    }      
+             
 }
