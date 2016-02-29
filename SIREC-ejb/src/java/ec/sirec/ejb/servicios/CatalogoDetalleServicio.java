@@ -79,4 +79,7 @@ public class CatalogoDetalleServicio {
     public CatalogoDetalle buscarPoCatdetTexCatdetCod(String catdetTexto, String catdetCod) throws Exception {
         return catalogoDetalleDao.buscarPor2Campos(ENTIDAD_CAT_DETALLE, "catdetTexto", catdetTexto, "catdetCod", catdetCod);
     }
+    public CatalogoDetalle buscarPoCatdetTexcCatNemonico(String catdetTexto, String catNemonico) throws Exception {
+        return catalogoDetalleDao.buscarPor2Campos(ENTIDAD_CAT_DETALLE, "catdetTexto", catdetTexto, "catCodigo.catNemonico", catNemonico);
+    }
 }

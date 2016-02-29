@@ -217,7 +217,7 @@ public class PropietarioServicio {
     }
 
     public List<Propietario> listarPropietariosPorCedula(String cedula) throws Exception {
-        return propietarioDao.listarPropietariosPorClavePatenteContiene(cedula);
+        return propietarioDao.listarPropietariosPorCedulaContiene(cedula);
     }
 
 }

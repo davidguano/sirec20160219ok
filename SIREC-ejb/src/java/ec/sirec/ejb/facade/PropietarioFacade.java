@@ -49,7 +49,7 @@ public class PropietarioFacade extends AbstractFacade<Propietario> {
         String sql = "select max(p.proCi) from Propietario p"
                 + " where p.proCi like '9999E%' and LENGTH(p.proCi)=10 and p.proCi<>'9999999999'";
         Query q = em.createQuery(sql);
-        if (q.getResultList().isEmpty() || q.getResultList().get(0)==null) {
+        if (q.getResultList().isEmpty() || q.getResultList().get(0) == null) {
             return "9999E10001";
         } else {
             String rs = String.valueOf(q.getSingleResult());
@@ -61,27 +61,37 @@ public class PropietarioFacade extends AbstractFacade<Propietario> {
         String sql = "select max(p.proCi) from Propietario p"
                 + " where p.proCi like '9999999E%' and LENGTH(p.proCi)=13 and p.proCi<>'9999999999999'";
         Query q = em.createQuery(sql);
-        if (q.getResultList().isEmpty() || q.getResultList().get(0)==null) {
+        if (q.getResultList().isEmpty() || q.getResultList().get(0) == null) {
             return "9999999E10001";
         } else {
             String rs = String.valueOf(q.getSingleResult());
             return "9999999E" + ((Long.valueOf(rs.substring(8, 13))) + 1);
         }
     }
-    
-    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception{
-         String sql = "select pp.proCi from PropietarioPredio pp "
+
+    public List<Propietario> listarPropietariosPorClaveCatastralContiene(String vclave) throws Exception {
+        String sql = "select pp.proCi from PropietarioPredio pp "
                 + " where CONCAT(pp.catpreCodigo.catpreCodNacional,pp.catpreCodigo.catpreCodLocal) like :vclave";
         Query q = em.createQuery(sql);
-        q.setParameter("vclave", "%"+vclave+"%");
+        q.setParameter("vclave", "%" + vclave + "%");
         return q.getResultList();
     }
-    
-    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception{
-         String sql = "select pp.proCi from PropietarioPredio pp, CatastroPredial cp, Patente p "
+
+    public List<Propietario> listarPropietariosPorClavePatenteContiene(String vclave) throws Exception {
+        String sql = "select pp.proCi from PropietarioPredio pp, CatastroPredial cp, Patente p "
                 + " where pp.catpreCodigo=cp and cp=p.catpreCodigo and CONCAT('AE-MPM',p.patCodigo) like :vclave";
         Query q = em.createQuery(sql);
-        q.setParameter("vclave", "%"+vclave+"%");
+        q.setParameter("vclave", "%" + vclave + "%");
         return q.getResultList();
+    }
+
+    public List<Propietario> listarPropietariosPorCedulaContiene(String ceduRuc) throws Exception {
+     
+        String sql = "select distinct(p) from Propietario p "
+                + " where p.proCi like :cedRuc ";
+        Query q = em.createQuery(sql);
+        q.setParameter("cedRuc", "%" + ceduRuc + "%");
+        q.setMaxResults(5);
+               return q.getResultList();
     }
 }
