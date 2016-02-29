@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
-	<property name="ireport.zoom" value="1.7379862784201412"/>
-	<property name="ireport.x" value="686"/>
-	<property name="ireport.y" value="127"/>
+	<property name="ireport.zoom" value="1.1870680134008216"/>
+	<property name="ireport.x" value="5"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
-	<parameter name="codigos" class="java.lang.String"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
 	<parameter name="usuario_genera" class="java.lang.String"/>
+	<parameter name="codigos" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT  concat(cp.catpre_cod_nacional, cp.catpre_cod_local) clave_catastral,
 	a.catprepluval_anio,
@@ -59,7 +59,7 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 	<field name="catprepluval_anios_transf" class="java.lang.Integer"/>
 	<field name="catprepluval_anios_transf_val" class="java.math.BigDecimal"/>
 	<field name="catprepluval_dif_final" class="java.math.BigDecimal"/>
-	<field name="catprepluval_porc_rebaja" class="java.lang.Integer"/>
+	<field name="catprepluval_porc_rebaja" class="java.lang.Double"/>
 	<field name="catprepluval_valor_rebaja" class="java.math.BigDecimal"/>
 	<field name="catprepluval_baseimp" class="java.math.BigDecimal"/>
 	<field name="catprepluval_tasaproc" class="java.math.BigDecimal"/>
@@ -68,7 +68,7 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="87" splitType="Stretch">
+		<band height="94" splitType="Stretch">
 			<image>
 				<reportElement x="23" y="26" width="100" height="50" uuid="9472a441-fee0-4b7b-8f6c-d29b9de6ba15"/>
 				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
@@ -95,29 +95,23 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="591" y="54" width="206" height="15" uuid="c722f916-1031-4349-a954-b0eea4b06664"/>
+				<reportElement x="591" y="58" width="206" height="15" uuid="c722f916-1031-4349-a954-b0eea4b06664"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement x="694" y="69" width="103" height="15" uuid="339ab833-1065-48dd-8d54-46c4bd78daed"/>
+				<reportElement x="694" y="73" width="103" height="15" uuid="339ab833-1065-48dd-8d54-46c4bd78daed"/>
 				<textElement textAlignment="Right">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="373" y="67" width="29" height="20" uuid="be2cd7e4-3c84-47e6-97f7-f01eca7891a2"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[AÑO:]]></text>
-			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="402" y="67" width="100" height="20" uuid="d01310f0-8f80-4468-8d52-f7bfadf495a3"/>
-				<textFieldExpression><![CDATA[$F{catprepluval_anio}]]></textFieldExpression>
+			<textField>
+				<reportElement x="290" y="66" width="245" height="20" uuid="8c79dc2c-8f92-49fc-b4b0-ade061e233c5"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["SECTOR: "+$F{sector}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -127,7 +121,7 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<rectangle>
-				<reportElement mode="Opaque" x="1" y="1" width="800" height="19" backcolor="#CAF4E9" uuid="37af338f-dda5-402f-a3bb-84a53fb6d449"/>
+				<reportElement mode="Opaque" x="1" y="1" width="800" height="19" backcolor="#CAF4E9" uuid="31a5a148-e20a-41ca-97df-2b7c8ee21162"/>
 			</rectangle>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="800" y="0" width="1" height="20" isPrintWhenDetailOverflows="true" uuid="27d6d02e-7511-4e7f-bef8-feda2134f0d5"/>
@@ -308,8 +302,8 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="1" y="23" width="802" height="1" isPrintWhenDetailOverflows="true" uuid="3a437405-03e4-4c43-8265-05e100c9b50a"/>
 			</line>
-			<textField isBlankWhenNull="true">
-				<reportElement x="1" y="0" width="69" height="24" uuid="eacc8178-849a-41fe-a5fb-f2567a93c7f3"/>
+			<textField>
+				<reportElement x="0" y="0" width="69" height="24" uuid="eacc8178-849a-41fe-a5fb-f2567a93c7f3"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
 	<property name="ireport.zoom" value="1.0791527394552922"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="118"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
@@ -302,154 +302,154 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="1" y="23" width="802" height="1" isPrintWhenDetailOverflows="true" uuid="3a437405-03e4-4c43-8265-05e100c9b50a"/>
 			</line>
-			<textField>
-				<reportElement x="0" y="0" width="69" height="24" uuid="eacc8178-849a-41fe-a5fb-f2567a93c7f3"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="1" y="0" width="69" height="24" uuid="eacc8178-849a-41fe-a5fb-f2567a93c7f3"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clave_catastral}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="69" y="0" width="21" height="24" uuid="1e0cf5e1-d0e8-43fc-82ce-34c6aa525ea2"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_anio}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="90" y="0" width="50" height="24" uuid="36893e1a-44de-4985-a908-17e3c27b7579"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{parroquia}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="140" y="0" width="49" height="24" uuid="7df0cb93-a314-4a88-86a7-e21ff3afd788"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sector}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="189" y="0" width="49" height="24" uuid="cbd6f255-a664-458e-9951-9f0cda18ed09"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="238" y="0" width="60" height="24" uuid="8d5aad66-0711-45c5-a318-9c69071ec9e2"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_propietario}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="298" y="0" width="39" height="24" uuid="f4585b5b-a499-4b2f-b270-0d2e67b85fa7"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ruc_ci}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="337" y="0" width="49" height="24" uuid="fe6cf2c3-44e0-4096-a628-6bb035f50b09"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tipo_tarifa}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="386" y="0" width="35" height="24" uuid="65af7b05-05e1-4437-be3d-9fcf4f939da2"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_fecha_ultescr}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="421" y="0" width="30" height="24" uuid="cf5f9fe8-e171-444f-9b6f-10ad34713cc9"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_precioventa}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="451" y="0" width="30" height="24" uuid="16c8f6b5-0a3a-4c35-b44d-b9ec642a2553"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_precioventa_ant}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="481" y="0" width="30" height="24" uuid="70212f70-ef17-4fcf-a677-722a94728637"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_dif_bruta}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="511" y="0" width="30" height="24" uuid="9265c2ed-e234-4660-b822-118f6df8c145"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_valor_contrmej}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="541" y="0" width="30" height="24" uuid="79044811-d6c7-41c7-afa2-2e2eac688fc6"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_dif_neta}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="571" y="0" width="20" height="24" uuid="937b1305-021e-43b6-a47e-aa9bb54a185d"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_anios_transf}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="591" y="0" width="30" height="24" uuid="6ae37c45-e7ad-44bf-b2bc-9811e8acbb07"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_anios_transf_val}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="621" y="0" width="30" height="24" uuid="9c0bfa07-24f0-4f09-aefc-7bd8c0e8c43a"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_dif_final}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="651" y="0" width="30" height="24" uuid="4bf3f36d-312c-478d-89b8-701d839c150c"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_porc_rebaja}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="681" y="0" width="33" height="24" uuid="cf39b32d-ef06-4dbf-94ed-667c8f4f1209"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_valor_rebaja}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="714" y="0" width="32" height="24" uuid="32a77705-a744-4b43-b22f-d6974fcf64c4"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_baseimp}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="746" y="0" width="20" height="24" uuid="6af08b9e-e788-425f-b1e2-9014f492dd48"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprepluval_tasaproc}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="766" y="0" width="33" height="24" uuid="756f91ff-aed3-4dda-aa53-4f6d3fd32197"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
