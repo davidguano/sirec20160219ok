@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
-	<property name="ireport.zoom" value="1.737986278420135"/>
+	<property name="ireport.zoom" value="1.4363522962149875"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="111"/>
+	<property name="ireport.y" value="48"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="codigos" class="java.lang.String"/>
 	<parameter name="fecha_genera" class="java.lang.String"/>
@@ -105,16 +105,10 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="346" y="66" width="58" height="20" uuid="6575e204-c052-4e51-8dd9-e8eed5d8c186"/>
-				<textElement textAlignment="Right">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[AÑO:]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="407" y="66" width="100" height="20" uuid="f13b8424-1b23-4ee2-8008-a3c6966efe0d"/>
-				<textFieldExpression><![CDATA[$F{catprealcval_anio}]]></textFieldExpression>
+				<reportElement x="315" y="66" width="181" height="20" uuid="f13b8424-1b23-4ee2-8008-a3c6966efe0d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["AÑO: "+$F{catprealcval_anio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -282,133 +276,133 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 	</columnHeader>
 	<detail>
 		<band height="24" splitType="Stretch">
-			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="69" height="24" isPrintWhenDetailOverflows="true" uuid="4a32d6ef-95bb-41a1-945a-851a5647118d"/>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="1" y="0" width="69" height="24" isPrintWhenDetailOverflows="true" uuid="4a32d6ef-95bb-41a1-945a-851a5647118d"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{clave_catastral}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="69" y="0" width="21" height="24" isPrintWhenDetailOverflows="true" uuid="103ee054-a359-4e93-a3c3-b8f871d7caa2"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_anio}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="90" y="0" width="50" height="24" isPrintWhenDetailOverflows="true" uuid="5d16db4b-4df0-4716-b1ba-b2374f30044d"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{parroquia}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="189" y="0" width="49" height="24" isPrintWhenDetailOverflows="true" uuid="0000912f-d966-4e05-af33-92e5193cd29f"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="238" y="0" width="60" height="24" isPrintWhenDetailOverflows="true" uuid="fab9ac58-1939-4f72-aa8b-ca17f5bcab56"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_propietario}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="298" y="0" width="39" height="24" isPrintWhenDetailOverflows="true" uuid="a13bdb92-00a7-426f-9858-27e49ef4dc4e"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ruc_ci}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="337" y="0" width="50" height="24" isPrintWhenDetailOverflows="true" uuid="8e673c92-bc6b-4536-b66d-3f5f402f63b2"/>
 				<textElement>
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_comprador}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="fc4d2c55-d13f-47a2-a0f2-f7e3fadac754"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catpre_area_total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="417" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="ce4203bd-1196-433e-aced-a98361ab7bb7"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catpre_area_total_cons}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="447" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="9a2a57db-1ad4-4cae-aae9-8c94d6ba0673"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="477" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="0402b091-8462-46b8-bfb7-30b12a9db283"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{avaluo_total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="507" y="0" width="35" height="24" isPrintWhenDetailOverflows="true" uuid="03337f47-8a03-4bc6-a105-fea4a8e315d8"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_precioventa}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="542" y="0" width="55" height="24" isPrintWhenDetailOverflows="true" uuid="1b785aa9-ad78-4870-9f91-a7f3d271efa0"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="597" y="0" width="32" height="24" isPrintWhenDetailOverflows="true" uuid="af393e87-72b5-40e8-a0a3-612d3f4897a2"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_baseimp}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="629" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="9739696a-a8bf-4b47-b7d2-8800ff9d7bdd"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_impuesto}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="659" y="0" width="24" height="24" isPrintWhenDetailOverflows="true" uuid="aeb92215-10f1-480c-a71d-92fd8273dfac"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_consejo_prov}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="683" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="bde0883d-bb14-49d7-867b-2003e21d4ce0"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_tasa_proc}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="713" y="0" width="30" height="24" isPrintWhenDetailOverflows="true" uuid="af431880-a28b-4447-a4be-15f4009265e5"/>
 				<textElement textAlignment="Right">
 					<font size="6"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{catprealcval_total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="743" y="0" width="59" height="24" isPrintWhenDetailOverflows="true" uuid="fdd56ab2-8b12-4ad8-902c-af825204e74d"/>
 				<textElement textAlignment="Center">
 					<font size="6"/>
@@ -424,7 +418,7 @@ order by a.catprealcval_anio, nombre_propietario asc]]>
 			<line>
 				<reportElement stretchType="RelativeToBandHeight" x="1" y="23" width="802" height="1" isPrintWhenDetailOverflows="true" uuid="3a437405-03e4-4c43-8265-05e100c9b50a"/>
 			</line>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="140" y="0" width="49" height="24" isPrintWhenDetailOverflows="true" uuid="0e61f8dd-eb23-430d-869e-43a574b84d26"/>
 				<textElement>
 					<font size="6"/>
