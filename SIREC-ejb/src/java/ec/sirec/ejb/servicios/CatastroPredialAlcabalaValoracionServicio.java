@@ -6,6 +6,7 @@
 
 package ec.sirec.ejb.servicios;
 
+import ec.sirec.ejb.entidades.CatalogoDetalle;
 import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.facade.CatastroPredialAlcabalaValoracionFacade;
@@ -45,8 +46,24 @@ public class CatastroPredialAlcabalaValoracionServicio {
         return catastroPredialAlcabalaValoracionDao.buscarPorCampo(ENTIDAD_CATASTRO_PREDIAL_ALCABALA_VALORACION, "catprealcvalCodigo", codigo);         
     }
     
-    public List<Object[]> listarAlcabalaEmitidaXAño(int anio) {
-        
-        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidas(anio);
+    public List<Object[]> listarAlcabalaEmitidaXAño(Integer anio) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidas("catprealcval_anio", anio);
     }
+
+    public List<Object[]> listarAlcabalaEmitidaXConcepto(CatalogoDetalle catastroDetalle) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidas("catdet_concepto", catastroDetalle);
+    }
+    
+
+     public List<Object[]> listarAlcabalaEmitidaXClaveCatastral(CatastroPredial catastroPredial) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidasCP("catpre_codigo", catastroPredial);
+    } 
+     
+  public List<Object[]> listarAlcabalaEmitidaXParroquia(CatalogoDetalle catastroDetalle) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidasCP("catdet_parroquia", catastroDetalle);
+    } 
+  
+  public List<Object[]> listarAlcabalaEmitidaXSector(CatalogoDetalle catastroDetalle) {
+        return catastroPredialAlcabalaValoracionDao.listaAlcabalasEmitidasCP("catdet_sector", catastroDetalle);
+    } 
 }

@@ -64,4 +64,8 @@ public class CatastroPredialPlusvaliaValoracionServicio {
      public List<Object[]> listarPlusvaliaEmitidaXSector(CatalogoDetalle catastroDetalle) {
         return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaXParroquia("catdet_sector", catastroDetalle);
     } 
+     
+     public List<Object[]> listarPlusvaliaEmitidaXClaveCatastral(CatastroPredial catastroPredial ) {
+        return catastroPredialPlusvaliaValoracionDao.listaPlusvaliaXParroquia("catpre_codigo", catastroPredial);
+    } 
 }
