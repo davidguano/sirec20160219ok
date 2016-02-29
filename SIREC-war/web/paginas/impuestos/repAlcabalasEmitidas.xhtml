@@ -133,17 +133,20 @@
 
 
 
-                            <p:panel id="pnlPlusAnio" header="Reporte de Plusvalia Emitidas por año" style="font-size: 12px">
+                            <p:panel id="pnlPlusAnio" header="Reporte de Plusvalia Emitidas" style="font-size: 12px">
                                 <h:panelGrid columns="3">
 
                                     <p:outputLabel value="Criterio de busqueda:"/>  
                                     <p:selectOneMenu id="cmbCriterio" value="#{gestionRepAlcabalasEmitidasControlador.criterio}" style="width:152px">
-                                        <f:selectItem itemLabel="Seleccione..." itemValue="" />                        
+                                        <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                                         <f:selectItem itemLabel="Año" itemValue="A" />
+                                         <f:selectItem itemLabel="#{txt.parroquia}" itemValue="P" />
+                                         <f:selectItem itemLabel="Predio" itemValue="R" />
                                         <f:selectItem itemLabel="Tipo de tarifa" itemValue="F" />
-                                        <f:selectItem itemLabel="#{txt.parroquia}" itemValue="P" />
+                                        
                                         <f:selectItem itemLabel="#{txt.sector}" itemValue="S" />
-                                        <f:selectItem itemLabel="#{txt.Manzana}" itemValue="M" />
-                                        <f:selectItem itemLabel="Año" itemValue="A" />
+                                       
+                                       
                                         <p:ajax event="change" process="@this" update=":frmAlcaEmi:pnlPlusAnio" async="true" global="false"/>  
                                     </p:selectOneMenu>
                                     <p:message for="cmbCriterio" display="icon"/>
@@ -171,7 +174,7 @@
                                                      converter="#{catalogoDetalleConverter}" var="t"
                                                      requiredMessage="Se necesita un valor Año:"  required="true" 
                                                      rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='A'}">
-                                        <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                        <f:selectItem  itemLabel="Seleccione ano..." itemValue="" /> 
                                         <f:selectItems var="tipTem"  
                                                        value="#{gestionRepAlcabalasEmitidasControlador.listAnios}" 
                                                        itemLabel="#{tipTem.catdetTexto}" 
@@ -181,13 +184,49 @@
                                         </p:column> 
                                     </p:selectOneMenu> 
                                     <p:message for="cmbEmiPlusAnio" display="icon" rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='A'}"/>
+                                    
+                                     <p:selectOneMenu id="pComParPL" value="#{gestionRepAlcabalasEmitidasControlador.catDetParroquia}" 
+                                                     style="width:180px;font-weight: bold;background: green;"
+                                                     converter="#{catalogoDetalleConverter}" var="t" 
+                                                     required="true" requiredMessage="Se nesecita un valor: #{txt.parroquia_t}"
+                                                     rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='P' or gestionRepAlcabalasEmitidasControlador.criterio=='S'}">
+                                        <f:selectItem itemLabel="Seleccione parroquia..." itemValue="" /> 
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listaParroquias}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>    
+                                           <p:ajax listener="#{gestionRepAlcabalasEmitidasControlador.listarSectores()}"
+                                                     process="@this" update="frmAlcaEmi:PorSec" async="true" global="false" /> 
 
+                                    </p:selectOneMenu> 
+                                    <p:message for="pComParPL" display="icon" rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='P' or gestionRepAlcabalasEmitidasControlador.criterio=='S'}"/>
+
+                                     <p:outputLabel value=""/>
+                                    <p:selectOneMenu id="PorSec" value="#{gestionRepAlcabalasEmitidasControlador.catDetSectores}" panelStyle="width:180px"
+                                                     converter="#{catalogoDetalleConverter}"
+                                                     var="t" style="width:220px"
+                                                     rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='S'}"                                                     
+                                                     >
+                                        <f:selectItem itemLabel="Seleccione sector..." itemValue="" />                                        
+                                        <f:selectItems var="tipo" 
+                                                       value="#{gestionRepAlcabalasEmitidasControlador.listaSectores}" 
+                                                       itemLabel="#{tipo.catdetTexto}" 
+                                                       itemValue="#{tipo}"/> 
+                                        <p:column width="200" style="white-space: normal">  
+                                            <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                        </p:column>                      
+                                    </p:selectOneMenu>
+                                    <p:message for="PorSec" display="icon" rendered="#{gestionRepAlcabalasEmitidasControlador.criterio=='S'}"/>
+                                    
                                     <p:commandButton value="Buscar" 
                                                      id="btnReportePLBuscar" 
                                                      action="#{gestionRepAlcabalasEmitidasControlador.listarPlusvaliaEmitidas()}"  
                                                      icon="ui-icon-disk"  
-                                                     process="@this,cmbEmiPlusAnio,pComTTPL" 
-                                                     update=":frmAlcaEmi:pnlListEmisionPL"
+                                                     process="@this,cmbEmiPlusAnio,pComTTPL,pComParPL,PorSec" 
+                                                     update=":frmAlcaEmi:pnlListEmisionPL "
                                                      async="true"
                                                      global="false"/>
                                 </h:panelGrid>
@@ -276,6 +315,7 @@
                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                  async="true"
                                                  global="false"
+                                                 update=":frmAlcaEmi:msgs"
                                                  process="@this,pnlListEmisionPL" 
                                                  />
                             </p:panel>
