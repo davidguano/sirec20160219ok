@@ -104,7 +104,7 @@
                                                               action="#{gestionCementeriosControlador.inicializar()}" 
                                                               icon="ui-icon-disk"  
                                                               process="@this,pnlBuscaCementerios" 
-                                                              update=":frmCementerios:pnlBuscaCementerios"
+                                                              update=":frmCementerios:pnlBuscaCementerios,:frmCementerios:pnlDatosCementerio"
                                                               async="true"
                                                               global="false"
                                                               />    
@@ -120,7 +120,7 @@
                                     <p:panel>
                                         <h:panelGrid>
                                             <h:panelGrid  columns="3">
-                                                <p:outputLabel style="font-size: #{txt.font_size}" value="Occiso #{txt.lbl_parroquia}"/>
+                                                <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_parroquia}"/>
                                                 <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"    required="true" id="cmbPropParroquia" 
                                                                  value="#{gestionCementeriosControlador.catDetParroquia}" style="width:250px"
                                                                  converter="#{catalogoDetalleConverter}" var="t">
@@ -136,7 +136,7 @@
                                                 <p:message for="cmbPropParroquia" display="icon"/>                                      
                                             </h:panelGrid>   
 
-                                            <h:panelGrid columns="6" id="pnlConCedOcciso">
+                                            <h:panelGrid columns="9" id="pnlConCedOcciso">
                                                 <h:panelGrid columns="4" id="pnlBuscaCedOcciso">
                                                     <p:outputLabel value="Ingrese la Cédula/Ruc Occiso:"  style="font-size: 12px" />
                                                     <p:autoComplete  
@@ -146,7 +146,7 @@
                                                         var="player"
                                                         itemLabel="#{player.proCi}"
                                                         itemValue="#{player}"
-                                                        size="20"
+                                                        size="15"
                                                         converter="#{propietarioConverter}" >
                                                         <p:ajax event="itemSelect" process="@this,pnlBuscaCedOcciso" listener="#{gestionCementeriosControlador.onItemSelectPropietarioOcciso}" update="pnlConCedOcciso" />
                                                     </p:autoComplete>                                            
@@ -154,9 +154,14 @@
                                                 <p:column/>
                                                 <p:column/>
                                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_occioso}"/>
-                                                <p:inputText  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.nombreOcciso}" 
+                                                <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.nombreOcciso}" 
                                                               size="40"/>
                                                 <p:message for="compPnl1_7" display="icon"/>
+                                                
+                                                <p:outputLabel style="font-size: #{txt.font_size}" value="Occiso Parroquia:"/>
+                                                <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="txtParroquia" disabled="true" value="#{gestionCementeriosControlador.nomParroquiaOcciso}" 
+                                                              size="40"/>
+                                                <p:message for="txtParroquia" display="icon"/>
                                             </h:panelGrid> 
                                         </h:panelGrid>
                                     </p:panel>
@@ -173,7 +178,7 @@
                                                     var="player"
                                                     itemLabel="#{player.proCi}"
                                                     itemValue="#{player}"
-                                                    size="20"
+                                                    size="15"
                                                     converter="#{propietarioConverter}" >
                                                     <p:ajax event="itemSelect" process="@this,pnlConCedRep" listener="#{gestionCementeriosControlador.onItemSelectPropietario}" update="pnlConCedRep" />
                                                 </p:autoComplete>    
@@ -181,7 +186,7 @@
                                           <!--  </h:panelGrid> -->
                                             
                                             <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_representante}"/>
-                                            <p:inputText   requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.nombreRep}" 
+                                            <p:inputText   onkeyup="value = value.toUpperCase()" requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.nombreRep}" 
                                                            size="40"/>
                                             <p:message for="compPnl1_8" display="icon"/>  
 
