@@ -8,9 +8,11 @@ package ec.sirec.ejb.facade;
 
 import ec.sirec.ejb.entidades.Catalogo;
 import ec.sirec.ejb.entidades.Cementerio;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,6 +30,15 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
 
     public CementerioFacade() {
         super(Cementerio.class);
+    }
+    public List<Cementerio> listarOccisoPorNombre(String nombre) throws Exception {
+     
+        String sql = "select c from Cementerio c "
+                + " where c.cemNombreOcciso like :nombre ";
+        Query q = em.createQuery(sql);
+        q.setParameter("nombre", "%" + nombre + "%");
+        q.setMaxResults(5);
+               return q.getResultList();
     }
     
 }

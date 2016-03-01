@@ -50,6 +50,9 @@ public class CementerioServicio {
     public Cementerio buscarPorParroquiaNumNicho(int codParroquia, String numNicho) throws Exception {
         return cementerioDao.buscarPor2Campos(ENTIDAD_CEMENTERIO, "catdetParroquia.catdetCodigo", codParroquia, "cemNumNicho", numNicho);
     }
+    public Cementerio buscarPorParroquiaNumSuelo(int codParroquia, String numSuelo) throws Exception {
+        return cementerioDao.buscarPor2Campos(ENTIDAD_CEMENTERIO, "catdetParroquia.catdetCodigo", codParroquia, "cemNumSuelo", numSuelo);
+    }
          
     public List<Cementerio> listarOccisoInhumado() throws Exception {
         return cementerioDao.listarPorCampoOrdenada(ENTIDAD_CEMENTERIO, "cemEstado", "I", "cemCodigo", "asc");
@@ -60,7 +63,7 @@ public class CementerioServicio {
     }
 
     public List<Cementerio> listarOccisosPorNombre(String nomOcciso) throws Exception {
-        return cementerioDao.listarPorCamposContieneOrdenada(ENTIDAD_CEMENTERIO, "cemNombreOcciso", nomOcciso, "cemCodigo", "asc");
+        return cementerioDao.listarOccisoPorNombre(nomOcciso);
     }
 
     public Cementerio buscarCementerioPorId(Integer vCemCod) throws Exception {
