@@ -106,6 +106,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
     private BigDecimal areaTotal;
     private BigDecimal renumeracion;
     private String visibleRenumeracion;
+    private boolean existeAlcabala;
     
     
     /// ATRIBUTOS PLUSVALIA
@@ -175,6 +176,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
             areaTotal = new BigDecimal(BigInteger.ZERO);
             renumeracion =  new BigDecimal(BigInteger.ZERO).setScale(2, RoundingMode.HALF_UP);
             visibleRenumeracion = "";
+            existeAlcabala = false;
             
             obtenerUsuario();
             listarConceptos();
@@ -223,11 +225,18 @@ public class GestionAlcabalasControlador extends BaseControlador {
     
     public void onItemSelectClave(SelectEvent event) {
         try {
+            
+             catastroPredialActual = new CatastroPredial();
+             catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();
+             catastroPredialPlusvaliaValoracion = new CatastroPredialPlusvaliaValoracion();
+             propietario = new Propietario();
+             
+             
             CatastroPredial pp = (CatastroPredial) event.getObject();
             
              propietarioPredioBusqueda = new PropietarioPredio();
              propietarioPredioBusqueda = catastroPredialServicio.buscarPropietarioPredioPorCatastro(pp.getCatpreCodigo());            
-            catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());            
+             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(pp.getCatpreCodigo());                                               
              //limpiar();
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -259,6 +268,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
         try {
             
             visibleRenumeracion = "";
+            existeAlcabala=false;
             
             catastroPredialActual = catastroPredialServicio.cargarObjetoCatastro(catastroPredialActual.getCatpreCodigo());                                    
             if(catastroPredialActual.getCatpreAreaTotal()==null){
@@ -288,10 +298,11 @@ public class GestionAlcabalasControlador extends BaseControlador {
             catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredialAnio(catastroPredialActual,anio);
             if(catastroPredialAlcabalaValoracion==null){
                 
-                catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();                
-                catastroPredialAlcabalaValoracion.setCatprealcvalAnio(anio); 
+                catastroPredialAlcabalaValoracion = new CatastroPredialAlcabalaValoracion();                   
+                catastroPredialAlcabalaValoracion.setCatprealcvalAnio(anio);
+                existeAlcabala=false;
             }else{
-            
+            existeAlcabala=true;
                 
                  List<AdicionalesDeductivos> listaD_AL = adicionalesDeductivosServicio.recuperarAdicionalesDeductivosAlcabala(catastroPredialAlcabalaValoracion, "AL", "D");
                 for (int i = 0; i < listaD_AL.size(); i++) {                     
@@ -361,10 +372,39 @@ public class GestionAlcabalasControlador extends BaseControlador {
 
     public void guardarAlcabala() {
         try {
-            catastroPredialAlcabalaValoracion.setCatpreCodigo(catastroPredialActual);
+            
+            System.out.println("aquiii: "+ catastroPredialActual.getCatpreCodigo());
+            
+            if (existeAlcabala==false){
+                
+                System.out.println("entra a");
+               
+                
+                catastroPredialAlcabalaValoracion.setCatpreCodigo(catastroPredialActual);
             catastroPredialAlcabalaValoracion.setCatprealcvalActivo(false); 
             catastroPredialAlcabalaValoracionServicio.crearCatastroPredialAlcabalaValoracion(catastroPredialAlcabalaValoracion);
             addSuccessMessage("Guardado Exitosamente!","Guardado Exitosamente!");
+                
+                System.out.println("nullllllllll2");
+            }else{
+//                
+                System.out.println("entra 2 ");
+                
+                if(catastroPredialAlcabalaValoracion.isCatprealcvalActivo()==null || catastroPredialAlcabalaValoracion.isCatprealcvalActivo()==false){                                
+                    
+                      System.out.println("entra 3 ");
+            catastroPredialAlcabalaValoracionServicio.editarCatastroPredialAlcabalaValoracion(catastroPredialAlcabalaValoracion);                    
+            addSuccessMessage("Alcabala modificada!","Alcabala modificada!");
+                }else{
+                      System.out.println("entra 4 ");
+                    addSuccessMessage("No se puede modificar, Alcabala ya fue emitida!","No se puede modificar, Alcabala ya fue emitida!");
+                }
+                
+                
+                 System.out.println("lleno");
+            }
+            
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -551,7 +591,9 @@ public class GestionAlcabalasControlador extends BaseControlador {
                         
                         //catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredial(catastroPredialActual);
                         if (catastroPredialAlcabalaValoracion != null) {
-                            cpAlcabalaValoracionExtrasServicio.eliminarCpValoracionExtrar(catastroPredialAlcabalaValoracion);
+                            
+                            if(catastroPredialAlcabalaValoracion.isCatprealcvalActivo()==null || catastroPredialAlcabalaValoracion.isCatprealcvalActivo()==false){
+                                cpAlcabalaValoracionExtrasServicio.eliminarCpValoracionExtrar(catastroPredialAlcabalaValoracion);
                             
                             for (int i = 0; i < listaAdicionalesDeductivosDeduccionesSeleccion.size(); i++) {
                                 cpAlcabalaValoracionExtrasActual = new CpAlcabalaValoracionExtras();
@@ -572,6 +614,10 @@ public class GestionAlcabalasControlador extends BaseControlador {
                             }
 
                             addSuccessMessage("Guardado Exitosamente!","Guardado Exitosamente!");
+                            }else{
+                            addSuccessMessage("No se puede modificar, Alcabala ya fue emitida!","No se puede modificar, Alcabala ya fue emitida!");
+                            
+                            }                                                        
 
                         } else {
                             addErrorMessage("No existe Determinación del Alcabala","No existe Determinación del Alcabala");
