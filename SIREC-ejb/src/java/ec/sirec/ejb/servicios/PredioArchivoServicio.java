@@ -63,10 +63,10 @@ public class PredioArchivoServicio {
         return predioArchivoDao.listarPor3CamposOrdenada(ENTIDAD_PREDIO_ARCHIVO, "catpreCodigo", catastro, "prearcTipo", tipoImp, "prearcAnio", anio, "ultaccMarcatiempo", "asc");
     }
     
-    public boolean existenArchivosDePredioEnFecha(CatastroPredial  cp) throws Exception{
+    public boolean existenArchivosDePredioCambio(CatastroPredial  cp) throws Exception{
         
-        //return predioArchivoDao.existePor2Campos(ENTIDAD_PREDIO_ARCHIVO, "catpreCodigo", cp, "ultaccMarcatiempo", java.util.Calendar.getInstance().getTime());
-        return true;
+        return predioArchivoDao.existePor2Campos(ENTIDAD_PREDIO_ARCHIVO, "catpreCodigo", cp, "proCi", "CAMBIO1");
+        
     }
 
 //    public boolean existeAplicacion(Integer vApli) throws Exception {

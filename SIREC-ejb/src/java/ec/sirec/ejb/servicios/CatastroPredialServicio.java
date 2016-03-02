@@ -309,7 +309,7 @@ public class CatastroPredialServicio {
             return "Se ha guardado un propietario";
         } else {
             //archivo
-            if (archivoServicio.existenArchivosDePredioEnFecha(vPP.getCatpreCodigo())) {
+            if (archivoServicio.existenArchivosDePredioCambio(vPP.getCatpreCodigo())) {
                 if (!cxcServicio.existenPendientesPorPredio(vPP.getCatpreCodigo())) {
                     PropietarioPredio pp = propietarioServicio.buscarPropietarioPredioPorCatastro(vPP.getCatpreCodigo().getCatpreCodigo());
                     if (!vPP.equals(pp)) {
@@ -323,7 +323,7 @@ public class CatastroPredialServicio {
                     return "Existen deudas pendientes de este predio";
                 }
             } else {
-                return "No existen archivos cargados para guardar el propietario.";
+                return "Sin embargo, No existen archivos cargados para guardar el propietario. Por lo tanto propietario no fue actualizado.";
             }
 
         }
@@ -912,6 +912,19 @@ public class CatastroPredialServicio {
     public void crearCatastroXSectorVal(CatalogoDetalle codSecto, int anio) throws Exception {
         List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();
         lstCat = catastroPredialDao.listarPorCampoOrdenada(ENTIDAD_CATASTRO, "catdetSector", codSecto, "catpreCodigo", "asc");
+        for (int i = 0; i < lstCat.size(); i++) {
+            CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);
+            if (CPV == null) {
+                CatastroPredialValoracion CP2 = new CatastroPredialValoracion();
+                CP2.setCatpreCodigo(lstCat.get(i));
+                CP2.setCatprevalAnio(anio);
+                valoracionPredioServicio.crearCatastroPredialValoracion(CP2);
+            }
+        }
+    }
+    public void crearCatastroXManzanaVal(String claveManzana, int anio) throws Exception {
+        List<CatastroPredial> lstCat = new ArrayList<CatastroPredial>();
+        lstCat = catastroPredialDao.listarPorClaveManzana13Digitos(claveManzana);
         for (int i = 0; i < lstCat.size(); i++) {
             CatastroPredialValoracion CPV = valoracionPredioServicio.existeCatastroValoracion(lstCat.get(i), anio);
             if (CPV == null) {

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
@@ -22,6 +21,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,6 +34,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "PredioArchivo.findAll", query = "SELECT p FROM PredioArchivo p")})
 public class PredioArchivo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +45,7 @@ public class PredioArchivo implements Serializable {
     @Column(name = "prearc_nombre")
     private String prearcNombre;
     @Basic(optional = false)
-    @NotNull    
+    @NotNull
     @Column(name = "prearc_data")
     private byte[] prearcData;
     @Basic(optional = false)
@@ -58,14 +59,19 @@ public class PredioArchivo implements Serializable {
     @Column(name = "ultacc_marcatiempo")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ultaccMarcatiempo;
-     @Column(name = "prearc_anio")
+    @Column(name = "prearc_anio")
     private Integer prearcAnio;
+    @Size(max = 13)
+    @Column(name = "pro_ci")
+    private String proCi;
     @JoinColumn(name = "usu_identificacion", referencedColumnName = "usu_identificacion")
     @ManyToOne(optional = false)
     private SegUsuario usuIdentificacion;
     @JoinColumn(name = "catpre_codigo", referencedColumnName = "catpre_codigo")
     @ManyToOne(optional = false)
     private CatastroPredial catpreCodigo;
+    @Transient
+    private boolean cambioPropietario;
 
     public PredioArchivo() {
     }
@@ -151,6 +157,25 @@ public class PredioArchivo implements Serializable {
     public void setPrearcAnio(Integer prearcAnio) {
         this.prearcAnio = prearcAnio;
     }
+
+    public boolean getCambioPropietario() {
+        return cambioPropietario;
+    }
+
+    public void setCambioPropietario(boolean cambioPropietario) {
+        this.cambioPropietario = cambioPropietario;
+    }
+
+    public String getProCi() {
+        return proCi;
+    }
+
+    public void setProCi(String proCi) {
+        this.proCi = proCi;
+    }
+
+    
+    
     
 
     @Override
@@ -177,5 +202,5 @@ public class PredioArchivo implements Serializable {
     public String toString() {
         return "ec.sirec.ejb.entidades.PredioArchivo[ prearcCodigo=" + prearcCodigo + " ]";
     }
-    
+
 }

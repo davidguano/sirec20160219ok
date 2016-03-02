@@ -231,6 +231,7 @@ public class CatastroControlador extends BaseControlador {
             listaInfAbasAguaSeleccionado = new ArrayList<CatalogoDetalle>();
             listaInfAlcantarillado2Seleccionado = new ArrayList<CatalogoDetalle>();
             listaInfOtrosServiciosSeleccionado = new ArrayList<CatalogoDetalle>();
+            predioArchivoActual = new PredioArchivo();
             listaPredioArchivo = new ArrayList<PredioArchivo>();
             listaPredioFoto = new ArrayList<PredioArchivo>();
             cargarCatalogos();
@@ -855,10 +856,16 @@ public class CatastroControlador extends BaseControlador {
         try {
 
             if (catastroPredialActual.getCatpreCodigo() != null) {
+                boolean cp=predioArchivoActual.getCambioPropietario();
                 predioArchivoActual = new PredioArchivo();
                 predioArchivoActual.setPrearcNombre(event.getFile().getFileName().replace(" ", "_"));
                 predioArchivoActual.setCatpreCodigo(catastroPredialActual);
                 predioArchivoActual.setPrearcData(event.getFile().getContents());
+                if(cp){
+                    predioArchivoActual.setProCi("CAMBIO1");
+                }else{
+                    
+                }
                 predioArchivoActual.setPrearcTipo("FC");
                 predioArchivoActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
                 predioArchivoActual.setUltaccDetalle("");
@@ -868,7 +875,7 @@ public class CatastroControlador extends BaseControlador {
 
                 FacesMessage msg = new FacesMessage("El documento ", event.getFile().getFileName() + " ha sido cargado satisfactoriamente.");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-
+                predioArchivoActual = new PredioArchivo();
                 listarArchivos();
             } else {
                 addErrorMessage("Seleccione Clave Catastral!!!");
@@ -892,7 +899,7 @@ public class CatastroControlador extends BaseControlador {
                 predioArchivoActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
                 predioArchivoActual.setUltaccDetalle("");
                 predioArchivoActual.setUltaccMarcatiempo(new Date());
-
+                
                 predioArchivoServicio.crearPredioArchivo(predioArchivoActual);
 
                 FacesMessage msg = new FacesMessage("El documento ", event.getFile().getFileName() + " ha sido cargado satisfactoriamente.");

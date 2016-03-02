@@ -42,22 +42,7 @@
                                                             process="@this"
                                                             update=":frmImpPredial:tabImpPred:pnlAnio, :frmImpPredial:tabImpPred:pnlRec, :frmImpPredial:tabImpPred:pnlExo, :frmImpPredial:tabImpPred:pnlDec, :frmImpPredial:tabImpPred:apeProp"
                                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
-                                                </p:autoComplete>
-                                 
-                                    <!--                              
-                                <p:selectOneMenu id="alPred" value="#{gestionImpuestoPredialControlador.catastroPredialActual}" style="width:154px"
-                                                         converter="#{catastroPredialConverter}" var="t">
-                                            <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
-                                            <f:selectItems var="tipo" 
-                                                           value="#{gestionImpuestoPredialControlador.listaCatastroPredialExoRecarDeduc}" 
-                                                           itemLabel="#{tipo.catpreCodNacional}#{tipo.catpreCodLocal}" 
-                                                           itemValue="#{tipo}"/> 
-                                            <p:column width="200" style="white-space: normal">  
-                                                <h:outputText escape="false" value="#{t.catpreCodNacional}#{t.catpreCodLocal}" style="font-size: 10px"/> 
-                                            </p:column> 
-                                            <p:ajax listener="#{gestionImpuestoPredialControlador.buscarClaveCatastral()}"
-                                         process="@this" async="true" global="false"/>  
-                                        </p:selectOneMenu>      -->                           
+                                                </p:autoComplete>                       
                             </h:panelGrid>
                                                                                          
                             <h:panelGrid id="pnlAnio" columns="3">                                                       

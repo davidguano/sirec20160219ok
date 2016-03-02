@@ -39,4 +39,12 @@ public class CatastroPredialEdificacionFacade extends AbstractFacade<CatastroPre
 
     }
     
+    public List<CatastroPredialEdificacion> listar23VariablesPorBloquePiso(Integer catpreCodigo, String bloque, String piso) throws Exception {
+        String sql = "select e from CatastroPredialEdificacion e where e.catpreCodigo.catpreCodigo=:catpreCodigo and e.catpreediBloque=:bloque and e.catpreediPiso=:piso order by e.catpreediGrupo,e.catpreediSubgrupo asc";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("catpreCodigo", catpreCodigo).setParameter("bloque", bloque).setParameter("piso", piso);
+        return q.getResultList();
+
+    }
+    
 }

@@ -58,6 +58,9 @@ public class CatastroPredialValoracionServicio {
     public List<CatastroPredialValoracion> listarCatastroXSector(CatalogoDetalle codSector,Integer anio) throws Exception {       
        return catastroPredialValoracionDao.listarPor2CamposOrdenadaGenerico(ENTIDAD_CATASTRO_PREDIAL_VALORACION, "CatastroPredial", "catdetSector", codSector, "catprevalAnio", anio, "catprevalAnio", "asc");
     }
+    public List<CatastroPredialValoracion> listarCatastroXManzana(String codManzana,Integer anio) throws Exception {       
+       return catastroPredialValoracionDao.listarValoracionesPorManzana(codManzana, anio);
+    }
     
     public List<CatastroPredialValoracion> listarCatastroAnioTodo(Integer anio) throws Exception {       
        return catastroPredialValoracionDao.listarPor1CamposOrdenadaGenerico(ENTIDAD_CATASTRO_PREDIAL_VALORACION, "CatastroPredial", "catprevalAnio", anio, "catprevalAnio", "asc");

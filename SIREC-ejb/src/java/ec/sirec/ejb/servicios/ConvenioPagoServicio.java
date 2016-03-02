@@ -14,7 +14,6 @@ import ec.sirec.ejb.facade.ConvenioPagoFacade;
 import ec.sirec.ejb.facade.CuentaPorCobrarFacade;
 import ec.sirec.ejb.facade.InteresFacade;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

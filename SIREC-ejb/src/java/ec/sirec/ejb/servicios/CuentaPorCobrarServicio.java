@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.CatastroPredial;
 import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
 import ec.sirec.ejb.entidades.CatastroPredialValoracion;
+import ec.sirec.ejb.entidades.Cementerio;
 import ec.sirec.ejb.entidades.CuentaPorCobrar;
 import ec.sirec.ejb.entidades.Patente15xmilValoracion;
 import ec.sirec.ejb.entidades.PatenteValoracion;
@@ -38,6 +39,7 @@ public class CuentaPorCobrarServicio {
     private CuentaPorCobrarFacade cxcDao;
     @EJB
     private PropietarioServicio propietarioServicio;
+    
 
     public void crearCxc(CuentaPorCobrar cxc) throws Exception {
         cxcDao.crear(cxc);
@@ -48,7 +50,13 @@ public class CuentaPorCobrarServicio {
     }
 
     public void crearCxcPorImpPredial(CatastroPredialValoracion impPre) throws Exception {
-        BigDecimal total = impPre.getCatprevalImpuesto().add(impPre.getCatprevalBomberos()).add(impPre.getCatprevalSolarNoedificado()).add(impPre.getCatprevalTasaAdm());
+        BigDecimal total = (impPre.getCatprevalImpuesto().
+                add(impPre.getCatprevalBomberos()).
+                add(impPre.getCatprevalSolarNoedificado()).
+                add(impPre.getCatprevalTasaAdm()).
+                add(cxcDao.obtenerTotalRecargosPorValoracionPredial(impPre.getCatprevalCodigo()))).
+                subtract(cxcDao.obtenerTotalDeduccionesPorValoracionPredial(impPre.getCatprevalCodigo()).
+                        add(cxcDao.obtenerTotalExencionesPorValoracionPredial(impPre.getCatprevalCodigo())));
 
         if (total.compareTo(BigDecimal.ZERO) == 1) {
             CuentaPorCobrar cxc = new CuentaPorCobrar();
@@ -77,6 +85,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPre.getCatprevalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPre.getCatprevalCodigo());
+                cxc.setCxcReferencia2(impPre.getCatpreCodigo().getCatdetSector().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
@@ -87,7 +96,7 @@ public class CuentaPorCobrarServicio {
     public void crearCxcPorImpPatente(PatenteValoracion impPat) throws Exception {
         BigDecimal total = impPat.getPatvalTotal();
 
-        if (total.compareTo(BigDecimal.ZERO) == 1) {
+        if (total.compareTo(BigDecimal.ZERO) == 1 && impPat.getPatvalActivo()) {
             CuentaPorCobrar cxc = new CuentaPorCobrar();
             cxc = buscarCxCPorTipoyClave("PA", impPat.getPatvalCodigo());
             if (cxc != null) {
@@ -114,6 +123,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat.getPatvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPat.getPatvalCodigo());
+                cxc.setCxcReferencia2(impPat.getPatCodigo().getCatpreCodigo().getCatdetSector().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
@@ -150,6 +160,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPat15.getPat15valAnioDecla()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPat15.getPat15valCodigo());
+                cxc.setCxcReferencia2(impPat15.getPatCodigo().getCatpreCodigo().getCatdetSector().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
@@ -186,6 +197,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impPlus.getCatprepluvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impPlus.getCatprepluvalCodigo());
+                cxc.setCxcReferencia2(impPlus.getCatpreCodigo().getCatdetSector().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
@@ -223,6 +235,7 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(impAlc.getCatprealcvalAnio()));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(impAlc.getCatprealcvalCodigo());
+                cxc.setCxcReferencia2(impAlc.getCatpreCodigo().getCatdetSector().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
@@ -260,10 +273,46 @@ public class CuentaPorCobrarServicio {
                 cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(java.util.Calendar.getInstance().getTime().getYear()+1900));
                 cxc.setCxcEstado("P");
                 cxc.setCxcCodRef(ser.getSerCodigo());
+                cxc.setCxcReferencia2(ser.getProCi().getCatdetCiudad().getCatdetTexto());
                 cxc.setCxcActivo(true);
                 cxcDao.crear(cxc);
             }
         }
+    }
+    
+    
+    public void crearCxcPorCementerio(Cementerio cem) throws Exception {
+            CuentaPorCobrar cxc = new CuentaPorCobrar();
+            cxc = buscarCxCPorTipoyClave("CE", cem.getCemCodigo());
+            if (cxc != null) {
+                if (cxc.getCxcEstado().equals("P")) {
+                    cxc.setCxcAnio(java.util.Calendar.getInstance().getTime().getYear()+1900);
+                    cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
+                    cxc.setCxcValorTotal(BigDecimal.ZERO);
+                    cxc.setCxcSaldo(BigDecimal.ZERO);
+                    cxc.setCxcFechaVencimiento(obtenerFechaFinAnio4(java.util.Calendar.getInstance().getTime().getYear()+1900));
+                    cxcDao.editar(cxc);
+                } else {
+                    //ya hay pagos a esta cuenta, no se puede cambiar los valores
+                }
+            } else {
+                cxc = new CuentaPorCobrar();
+                cxc.setProCi(cem.getProCi());
+                cxc.setCxcAnio(java.util.Calendar.getInstance().getTime().getYear()+1900);
+                cxc.setCxcMes(0);
+                cxc.setCxcTipo("CE");
+                cxc.setCxcReferencia(cem.getProCi().getProCi());
+                cxc.setCxcFecha(java.util.Calendar.getInstance().getTime());
+                cxc.setCxcValorTotal(BigDecimal.ZERO);
+                cxc.setCxcSaldo(BigDecimal.ZERO);
+                cxc.setCxcFechaVencimiento(obtenerFechaFinAnio(java.util.Calendar.getInstance().getTime().getYear()+1900));
+                cxc.setCxcEstado("P");
+                cxc.setCxcCodRef(cem.getCemCodigo());
+                cxc.setCxcReferencia2(cem.getCatdetParroquia().getCatdetTexto());
+                cxc.setCxcActivo(true);
+                cxcDao.crear(cxc);
+            }
+        
     }
 
     public CuentaPorCobrar buscarCxCPorTipoyClave(String tipo, Integer codRef) throws Exception {
@@ -273,6 +322,11 @@ public class CuentaPorCobrarServicio {
     public Date obtenerFechaFinAnio(int anio) throws Exception {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
         Date date = formatter.parse("12/31/"+anio);
+        return date;
+    }
+    public Date obtenerFechaFinAnio4(int anio) throws Exception {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = formatter.parse("12/31/"+(anio+4));
         return date;
     }
     

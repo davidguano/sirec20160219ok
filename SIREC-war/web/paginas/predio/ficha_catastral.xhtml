@@ -299,6 +299,7 @@
                                                              value="#{catastroControlador.catastroPredialActual.listaPropietariosPredio}"
                                                              var="prop">
                                                     <p:column>#{prop.proCi.proCi}</p:column>
+                                                    <p:column>#{prop.proCi.proRazonSocial} #{prop.proCi.proApellidos} #{prop.proCi.proNombres}</p:column>
                                                 </p:dataTable>
 
                                             </h:panelGrid>
@@ -578,19 +579,27 @@
                                                              icon="fa fa-save"/>
                                         </p:panel>
                                         <p:panel id="pnlDoc" header="Documentacion">
-                                            <p:fileUpload fileUploadListener="#{catastroControlador.handleFileUpload}"  
+                                            <h:panelGrid columns="2">
+                                                <p:selectBooleanCheckbox id="cambioP" 
+                                                                         value="#{catastroControlador.predioArchivoActual.cambioPropietario}">
+                                                    <p:ajax process="@this" async="true" global="false"/>
+                                                </p:selectBooleanCheckbox>
+                                                <p:tooltip for="cambioP">Activar si se trata de documentacion por cambio de Propietario</p:tooltip> 
+                                                <p:fileUpload fileUploadListener="#{catastroControlador.handleFileUpload}"  
                                                           mode="advanced"
                                                           dragDropSupport="false"
+                                                          process="@this"
                                                           multiple="true"  
-                                                          update=":frmFicha:msgs,pnllstArch"
+                                                          update=":frmFicha:msgs,pnllstArch,cambioP"
                                                           sizeLimit="10000000000"
                                                           allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
                                                           invalidSizeMessage="El archivo debe ser maximo 1MB"
                                                           label="Seleccione el Documento" 
                                                           uploadLabel="Cargar"
                                                           cancelLabel="Cancelar"
-                                                          process="@this">                                                                                                                                        
+                                                          >                                                                                                                                        
                                             </p:fileUpload>  
+                                            </h:panelGrid>
                                             <br/>
                                             <p:commandButton value="Ver Documentos" 
                                                              id="btnVerDoc" 

@@ -67,6 +67,8 @@ public class RecaudacionDet implements Serializable {
     private CuentaPorCobrar cxcCodigo;
     @Transient
     private boolean activo;
+    @Transient
+    private int numAniosCem;
 
     public RecaudacionDet() {
     }
@@ -168,6 +170,15 @@ public class RecaudacionDet implements Serializable {
     public void setRecdetBaja(Boolean recdetBaja) {
         this.recdetBaja = recdetBaja;
     }
+
+    public int getNumAniosCem() {
+        return numAniosCem;
+    }
+
+    public void setNumAniosCem(int numAniosCem) {
+        this.numAniosCem = numAniosCem;
+    }
+
     
     
     

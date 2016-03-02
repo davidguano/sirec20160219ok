@@ -15,7 +15,7 @@
 
 
                     <p:outputLabel value="Criterio de busqueda:"/>  
-                    <p:selectOneMenu id="cmbCriterio" value="#{gestionImpuestoPredialControlador.criterio}" style="width:152px">
+                    <p:selectOneMenu id="cmbCriterio" value="#{gestionImpuestoPredialControlador.tipoBusqueda}" style="width:152px">
                         <f:selectItem itemLabel="Seleccione..." itemValue="" />                        
                         <f:selectItem itemLabel="#{txt.clave_catastral}" itemValue="C" />
                         <f:selectItem itemLabel="#{txt.parroquia}" itemValue="P" />
@@ -30,10 +30,20 @@
                     
                     <br></br>
                     <br></br>
-
+                    <h:panelGrid>
+                    <p:inputText id="tc" value="#{gestionImpuestoPredialControlador.textoClave}"
+                                 maxlength="19" rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='C'}">
+                        <p:ajax event="blur" async="true" global="false" 
+                                listener="#{gestionImpuestoPredialControlador.listarTodasComboClaves}"
+                                process="@this" update="PorCalve"/>
+                    </p:inputText>
+                        <p:tooltip for="tc" 
+                                   rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='C'}"
+                            >Digite al menos 8 numeros y luego dar TAB  , seleccione el predio de la lista. 
+                        </p:tooltip>
                     <p:selectOneMenu id="PorCalve" value="#{gestionImpuestoPredialControlador.catastroPredialActualEmision}" converter="#{catastroPredialConverter}" panelStyle="width:200px"
-                                     effect="fade" var="t" style="width:220px" filter="true" filterMatchMode="startsWith"
-                                     rendered="#{gestionImpuestoPredialControlador.criterio=='C'}"
+                                     effect="fade" var="t" style="width:220px"
+                                     rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='C'}"
                                      >
                         <f:selectItem itemLabel="Seleccione..." itemValue="" /> 
                         <f:selectItems value="#{gestionImpuestoPredialControlador.listaCatastroPredialClavesCatastrales}" 
@@ -44,11 +54,12 @@
                             <h:outputText value="#{t.catpreCodNacional}#{t.catpreCodLocal}"/>
                         </p:column>                       
                     </p:selectOneMenu>
+                    </h:panelGrid>
                     
                     
                      <p:selectOneMenu id="PorParroq" value="#{gestionImpuestoPredialControlador.catalogoParroquia}" panelStyle="width:180px"
                                   converter="#{catalogoDetalleConverter}" var="t" style="width:220px"
-                                  rendered="#{gestionImpuestoPredialControlador.criterio=='P' or gestionImpuestoPredialControlador.criterio=='S'}">
+                                  rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='P' or gestionImpuestoPredialControlador.tipoBusqueda=='S'}">
                                             <f:selectItem itemLabel="Seleccione Parroquia..." itemValue="" /> 
                                             <f:selectItems var="tipo" 
                                                            value="#{gestionImpuestoPredialControlador.listaParroquias}" 
@@ -65,7 +76,7 @@
                     
                     <p:selectOneMenu id="PorSec" value="#{gestionImpuestoPredialControlador.catalogoSector}" panelStyle="width:180px"
                                   converter="#{catalogoDetalleConverter}" var="t" style="width:220px"
-                                  rendered="#{gestionImpuestoPredialControlador.criterio=='S'}">
+                                  rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='S'}">
                                             <f:selectItem itemLabel="Seleccione Sector..." itemValue="" /> 
                                             <f:selectItems var="tipo" 
                                                            value="#{gestionImpuestoPredialControlador.listaSectores}" 
@@ -75,6 +86,16 @@
                                                 <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
                                             </p:column>                         
                     </p:selectOneMenu>
+                     <h:panelGrid>
+                         <p:inputText id="tcM" value="#{gestionImpuestoPredialControlador.textoCodigoManzana}"
+                                      maxlength="13" rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='M'}">
+                    </p:inputText>
+                        <p:tooltip for="tcM" 
+                                   rendered="#{gestionImpuestoPredialControlador.tipoBusqueda=='M'}"
+                            >Digite los 13 numeros de la manzana  
+                        </p:tooltip>
+                     </h:panelGrid>
+                     
                     
                 </h:panelGrid>   
                 

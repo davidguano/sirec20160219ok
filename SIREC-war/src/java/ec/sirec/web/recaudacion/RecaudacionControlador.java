@@ -6,13 +6,19 @@
 package ec.sirec.web.recaudacion;
 
 import ec.sirec.ejb.entidades.CatalogoDetalle;
+import ec.sirec.ejb.entidades.Cementerio;
+import ec.sirec.ejb.entidades.DatoGlobal;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.RecaudacionCab;
 import ec.sirec.ejb.entidades.RecaudacionDet;
+import ec.sirec.ejb.servicios.DatoGlobalServicio;
 import ec.sirec.ejb.servicios.PropietarioServicio;
 import ec.sirec.ejb.servicios.RecaudacionServicio;
 import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.UtilitariosCod;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +54,8 @@ public class RecaudacionControlador extends BaseControlador{
     private RecaudacionServicio recaudacionServicio;
     @EJB
     private PropietarioServicio propietarioServicio;
+    @EJB
+    private DatoGlobalServicio dgServicio;
 
     private RecaudacionCab recaudacionCabeceraActual;
     private Propietario propietarioBusqueda;
@@ -57,6 +65,8 @@ public class RecaudacionControlador extends BaseControlador{
     
     private List<Integer> listaAnios;
     private Integer anio;
+    private BigDecimal rbu;
+    private String vistaPrevia;
 
     /**
      * Creates a new instance of RecaudacionControlador
@@ -73,6 +83,12 @@ public class RecaudacionControlador extends BaseControlador{
             listaRecaudacionCabActual = new ArrayList<RecaudacionCab>();
             listaAnios=new ArrayList<Integer>();
             listaAnios=recaudacionServicio.listaAnios();
+            DatoGlobal vrmu=dgServicio.obtenerDatoGlobal("Val_sueldo_basico");
+            if(vrmu!=null){
+                rbu=new BigDecimal(vrmu.getDatgloValor());
+            }else{
+                rbu=BigDecimal.ZERO;
+            }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -193,6 +209,39 @@ public class RecaudacionControlador extends BaseControlador{
             LOGGER.log(Level.SEVERE, null, ex);
         }
      }
+     public void calcularValorCementerio(RecaudacionDet det){
+         try{
+             Cementerio cem=recaudacionServicio.buscarCementerioPorId(det.getRecdetCodref());
+             if(cem!=null){
+                 double p=0;
+                 if(cem.getCemTipo().equals("A")){
+                     p=0.05;
+                 }else if(cem.getCemTipo().equals("N")){
+                     p=0.03;
+                 }
+                 BigDecimal total=rbu.multiply(new BigDecimal(p)).multiply(new BigDecimal(det.getNumAniosCem()));
+                 det.setRecdetValorInicial(total.setScale(2, RoundingMode.HALF_UP));
+                 det.setRecdetValor(total.setScale(2, RoundingMode.HALF_UP));
+                 
+             }
+         }catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+     }
+     
+     public void cargarVistaPrevia(RecaudacionDet det) {
+         try{
+             if(!det.getRecdetTipo().equals("PM")){
+                 vistaPrevia=recaudacionServicio.obtenerVistaPrevia(det);
+                 //vistaPrevia="prueba";
+             }else{
+                 //titulo se genera desde el registro de patente.
+             }
+             
+         }catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+     }
      public void generarTituloDesdeDetalle(RecaudacionDet det) {
          try{
              if(!det.getRecdetTipo().equals("PM")){
@@ -298,6 +347,14 @@ public class RecaudacionControlador extends BaseControlador{
 
     public void setAnio(Integer anio) {
         this.anio = anio;
+    }
+
+    public String getVistaPrevia() {
+        return vistaPrevia;
+    }
+
+    public void setVistaPrevia(String vistaPrevia) {
+        this.vistaPrevia = vistaPrevia;
     }
     
     

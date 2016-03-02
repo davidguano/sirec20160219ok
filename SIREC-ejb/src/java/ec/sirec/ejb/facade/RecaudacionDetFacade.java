@@ -5,7 +5,12 @@
  */
 package ec.sirec.ejb.facade;
 
+import ec.sirec.ejb.entidades.CatastroPredialAlcabalaValoracion;
+import ec.sirec.ejb.entidades.CatastroPredialPlusvaliaValoracion;
+import ec.sirec.ejb.entidades.CatastroPredialValoracion;
 import ec.sirec.ejb.entidades.CuentaPorCobrar;
+import ec.sirec.ejb.entidades.Patente15xmilValoracion;
+import ec.sirec.ejb.entidades.PatenteValoracion;
 import ec.sirec.ejb.entidades.RecaudacionDet;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,7 +50,7 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         try {
             String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref, cxc_codigo from sirec.cuenta_por_cobrar \n"
                     + " where cxc_estado='P' and pro_ci='" + vci + "' ";
-            if (vAnio != null && vAnio>0) {
+            if (vAnio != null && vAnio > 0) {
                 sql1 = sql1 + " and cxc_anio=" + vAnio;
             }
             Query q = getEntityManager().createNativeQuery(sql1);
@@ -74,10 +79,17 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         try {
             if (!lstDets.isEmpty()) {
                 for (RecaudacionDet det : lstDets) {
-                    String sql = "update sirec.cuenta_por_cobrar set cxc_saldo=0, cxc_estado='R'  where cxc_tipo=:tipo and cxc_cod_ref=" + det.getRecdetCodref();
-                    Query q = getEntityManager().createNativeQuery(sql);
-                    q.setParameter("tipo", det.getRecdetTipo());
-                    q.executeUpdate();
+                    if (det.getRecdetTipo().equals("CE")) {
+                        String sql = "update sirec.cuenta_por_cobrar set cxc_saldo=0, cxc_estado='R'  where cxc_tipo=:tipo and cxc_cod_ref=" + det.getRecdetCodref();
+                        Query q = getEntityManager().createNativeQuery(sql);
+                        q.setParameter("tipo", det.getRecdetTipo());
+                        q.executeUpdate();
+                    } else {
+                        String sql = "update sirec.cuenta_por_cobrar set cxc_saldo=0, cxc_estado='R', cxc_valor_total="+det.getRecdetValor().toString()+"  where cxc_tipo=:tipo and cxc_cod_ref=" + det.getRecdetCodref();
+                        Query q = getEntityManager().createNativeQuery(sql);
+                        q.setParameter("tipo", det.getRecdetTipo());
+                        q.executeUpdate();
+                    }
 
                 }
             }
@@ -94,49 +106,106 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         if (tipo.equals("PR")) {
             if (mes == 1) {
                 if (dia <= 15) {
-                    p=-10;
-                }else{
-                    p=-9;
+                    p = -10;
+                } else {
+                    p = -9;
                 }
-            }else if(mes==2){
+            } else if (mes == 2) {
                 if (dia <= 15) {
-                    p=-8;
-                }else{
-                    p=-7;
+                    p = -8;
+                } else {
+                    p = -7;
                 }
-            }else if(mes==3){
+            } else if (mes == 3) {
                 if (dia <= 15) {
-                    p=-6;
-                }else{
-                    p=-5;
+                    p = -6;
+                } else {
+                    p = -5;
                 }
-            }else if(mes==4){
+            } else if (mes == 4) {
                 if (dia <= 15) {
-                    p=-4;
-                }else{
-                    p=-3;
+                    p = -4;
+                } else {
+                    p = -3;
                 }
-            }else if(mes==5){
+            } else if (mes == 5) {
                 if (dia <= 15) {
-                    p=-3;
-                }else{
-                    p=-2;
+                    p = -3;
+                } else {
+                    p = -2;
                 }
-            }else if(mes==6){
+            } else if (mes == 6) {
                 if (dia <= 15) {
-                    p=-2;
-                }else{
-                    p=-1;
+                    p = -2;
+                } else {
+                    p = -1;
                 }
-            }else if(mes>=7){
-                    p=10;
+            } else if (mes >= 7) {
+                p = 10;
             }
-        }else if (tipo.equals("PA")){
-            
+        } else if (tipo.equals("PA")) {
+
         }
         return p;
     }
+    
+    public CatastroPredialValoracion buscarCatastroPredialValoracionPorCodigo(Integer vcod) throws Exception {
+        String sql = "select e from CatastroPredialValoracion e where e.catprevalCodigo=:vcod";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vcod", vcod);
+        List<CatastroPredialValoracion> resultado = q.getResultList();
+        if (resultado.size() > 0) {
+            return (CatastroPredialValoracion) resultado.get(0);
+        } else {
+            return null;
+        }
+    }
+    public PatenteValoracion buscarPatenteValoracionPorCodigo(Integer vcod) throws Exception {
+        String sql = "select e from PatenteValoracion e where e.patvalCodigo=:vcod";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vcod", vcod);
+        List<PatenteValoracion> resultado = q.getResultList();
+        if (resultado.size() > 0) {
+            return (PatenteValoracion) resultado.get(0);
+        } else {
+            return null;
+        }
+    }
+    
+    public Patente15xmilValoracion buscarPatente15x1000ValoracionPorCodigo(Integer vcod) throws Exception {
+        String sql = "select e from Patente15xmilValoracion e where e.pat15valCodigo=:vcod";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vcod", vcod);
+        List<Patente15xmilValoracion> resultado = q.getResultList();
+        if (resultado.size() > 0) {
+            return (Patente15xmilValoracion) resultado.get(0);
+        } else {
+            return null;
+        }
+    }
+    
+    public CatastroPredialPlusvaliaValoracion buscarPlusvaliaValoracionPorCodigo(Integer vcod) throws Exception {
+        String sql = "select e from CatastroPredialPlusvaliaValoracion e where e.catprepluvalCodigo=:vcod";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vcod", vcod);
+        List<CatastroPredialPlusvaliaValoracion> resultado = q.getResultList();
+        if (resultado.size() > 0) {
+            return (CatastroPredialPlusvaliaValoracion) resultado.get(0);
+        } else {
+            return null;
+        }
+    }
+    
+    public CatastroPredialAlcabalaValoracion buscarAlcabalaValoracionPorCodigo(Integer vcod) throws Exception {
+        String sql = "select e from CatastroPredialAlcabalaValoracion e where e.catprealcvalCodigo=:vcod";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vcod", vcod);
+        List<CatastroPredialAlcabalaValoracion> resultado = q.getResultList();
+        if (resultado.size() > 0) {
+            return (CatastroPredialAlcabalaValoracion) resultado.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }
-
-

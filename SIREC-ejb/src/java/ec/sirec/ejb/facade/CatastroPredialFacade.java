@@ -37,4 +37,11 @@ public class CatastroPredialFacade extends AbstractFacade<CatastroPredial> {
         return q.getResultList();
 
     }
+     public List<CatastroPredial> listarPorClaveManzana13Digitos(String vvalor1) throws Exception {
+        String sql = "select e from CatastroPredial e where CONCAT(e.catpreCodNacional,e.catpreCodLocal) like :vvalor1 order by e.catpreCodigo asc";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vvalor1", vvalor1+"%");
+        return q.getResultList();
+
+    }
 }

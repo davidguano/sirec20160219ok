@@ -49,5 +49,12 @@ public class CatastroPredialValoracionFacade extends AbstractFacade<CatastroPred
         q.setParameter("vvalor2", vvalor2);
         return q.getResultList();
     }
+    
+    public List<CatastroPredialValoracion> listarValoracionesPorManzana(String codManzana, Integer anio) throws Exception {
+        String sql = "select v from CatastroPredialValoracion v,CatastroPredial c where v.catpreCodigo=c and CONCAT(c.catpreCodNacional,c.catpreCodLocal) like :codManzana and v.catprevalAnio=:anio";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("codManzana", codManzana+"%").setParameter("anio", anio);
+        return q.getResultList();
+    }
         
 }
