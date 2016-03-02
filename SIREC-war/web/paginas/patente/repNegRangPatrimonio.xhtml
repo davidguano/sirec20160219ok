@@ -44,6 +44,9 @@
                                     <p:column style="font-size: 12px" width="60" headerText="Patente">
                                         <h:outputText style="font-size: 12px" value="AE-MPM-#{car[0]}" />
                                     </p:column>
+                                    <p:column style="font-size: 12px" width="20" headerText="Año">
+                                        <h:outputText style="font-size: 12px" value="#{car[13]}" />
+                                    </p:column>
                                     <p:column style="font-size: 12px" width="100" headerText="Estado">
                                         <h:outputText style="font-size: 12px" value="#{car[1]}" />
                                     </p:column>
@@ -84,23 +87,23 @@
                                     </p:column>
                                 </p:dataTable>
                                 <h:panelGrid columns="2">
-                                <p:commandButton style="font-size: 12px" id="btnGeneraRep1" value="Generar (PDF)"
-                                                 action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
-                                                 oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
-                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                 async="true"
-                                                 global="false"
-                                                 process="@this,pnlReporPat1,pnlReport1List" 
-                                                 />
-                                
-                                <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
-                                                 action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonioXLS()}"
-                                                 oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
-                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                 async="true"
-                                                 global="false"
-                                                 process="@this,pnlReporPat1,pnlReport1List" 
-                                                 />
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1" value="Generar (PDF)"
+                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlReporPat1,pnlReport1List" 
+                                                     />
+
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
+                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonioXLS()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     process="@this,pnlReporPat1,pnlReport1List" 
+                                                     />
                                 </h:panelGrid>
                             </h:panelGrid>
                         </h:panelGrid>

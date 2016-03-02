@@ -59,7 +59,7 @@
                                                                              icon="ui-icon-disk" 
                                                                              onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                                              process="@this,pnlBuscaPorNicho" 
-                                                                             update="pnlDatosCementerio"
+                                                                             update="pnlDatosCementerio,verBotGuActualiza"
                                                                              async="true"
                                                                              global="false"
                                                                              />   
@@ -82,7 +82,7 @@
                                                                 itemValue="#{player}"
                                                                 size="50"
                                                                 converter="#{cementerioConverter}" >
-                                                                <p:ajax event="itemSelect" process="@this,pnlBuscaPorNombre" listener="#{gestionCementeriosControlador.onItemSelectCementerio}" update="pnlDatosCementerio" />
+                                                                <p:ajax event="itemSelect" process="@this,pnlBuscaPorNombre" listener="#{gestionCementeriosControlador.onItemSelectCementerio}" update="pnlDatosCementerio,verBotGuActualiza" />
                                                             </p:autoComplete>                                            
                                                         </h:panelGrid>
                                                     </p:panel>
@@ -104,7 +104,7 @@
                                                               action="#{gestionCementeriosControlador.inicializar()}" 
                                                               icon="ui-icon-disk"  
                                                               process="@this,pnlBuscaCementerios" 
-                                                              update=":frmCementerios:pnlBuscaCementerios,:frmCementerios:pnlDatosCementerio"
+                                                              update=":frmCementerios:pnlBuscaCementerios,:frmCementerios:pnlDatosCementerio,verBotGuActualiza"
                                                               async="true"
                                                               global="false"
                                                               />    
@@ -379,8 +379,8 @@
                             </center>
                         </p:panel>
                     </h:panelGrid>
-                    <h:panelGrid columns="2">
-                        <p:commandButton value="#{txt.btn_guardar}" 
+                    <h:panelGrid columns="3" id="verBotGuActualiza">
+                        <p:commandButton rendered="#{gestionCementeriosControlador.verGuardar==1}" value="#{txt.btn_guardar}" 
                                          style="font-size: 12px"
                                          id="btnGuardar" 
                                          action="#{gestionCementeriosControlador.guardarCementerios()}" 
@@ -390,7 +390,17 @@
                                          async="true"
                                          global="false"
                                          ajax="false"
-
+                                         />
+                        <p:commandButton rendered="#{gestionCementeriosControlador.verActualizar==1}" value="#{txt.btn_actualizar}" 
+                                         style="font-size: 12px"
+                                         id="btnActualizar" 
+                                         action="#{gestionCementeriosControlador.actualizarCementerios()}" 
+                                         icon="ui-icon-disk"  
+                                         process="@this,pnlDatosCementerio,panelArchivos" 
+                                         update=":frmCementerios:msgs"
+                                         async="true"
+                                         global="false"
+                                         ajax="false"
                                          />
                         <p:commandButton value="#{txt.btn_cancelar}"
                                          style="font-size: 12px"
@@ -398,7 +408,7 @@
                                          action="#{gestionCementeriosControlador.inicializar()}" 
                                          icon="ui-icon-document"  
                                          process="@this,pnlDatosCementerio" 
-                                         update=":frmCementerios:pnlContieneCementerios"
+                                         update=":frmCementerios:pnlContieneCementerios,verBotGuActualiza"
                                          async="true"
                                          global="false"
                                          />

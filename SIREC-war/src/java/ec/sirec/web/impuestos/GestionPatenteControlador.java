@@ -35,6 +35,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -101,6 +102,8 @@ public class GestionPatenteControlador extends BaseControlador {
     private int verguarda;
     private int verActualiza;
     private boolean flagEditar;
+    private List<Propietario> listaPropietarios;
+    private boolean cambioPropietario;
     /**
      * Creates a new instance of GestionPatenteControlador
      */
@@ -110,6 +113,7 @@ public class GestionPatenteControlador extends BaseControlador {
     @PostConstruct
     public void inicializar() {
         try {
+            cambioPropietario=false;
             flagEditar = false;
             catastroPredBusca = null;
             patenteActual = new Patente();
@@ -120,7 +124,7 @@ public class GestionPatenteControlador extends BaseControlador {
             catDetTipoEmpresActual = new CatalogoDetalle();
             catDetTipoLocalActual = new CatalogoDetalle();
             catDetTipActEcoActual = new CatalogoDetalle();
-            propietarioActual = new Propietario();
+            listaPropietarios = new ArrayList<Propietario>();
             catastroPredialActual = new CatastroPredial();
             catDetIdentEstadoActual = new CatalogoDetalle();
             catDetHorFuncionaActual = new CatalogoDetalle();
@@ -157,12 +161,30 @@ public class GestionPatenteControlador extends BaseControlador {
         }
     }
 
+    public List<Propietario> sugiereCedulaRuc(String cedulaNumero) {
+        List<Propietario> listNombresProp = new ArrayList<Propietario>();
+        try {
+            listaPropietarios = propietarioServicio.listarPropietariosPorCedula(cedulaNumero);
+            for (Propietario propietario : listaPropietarios) {
+                listNombresProp.add(propietario);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listNombresProp;
+    }
+
+    public void onItemSelectPropietario(SelectEvent event) throws Exception {
+        Propietario objProp = (Propietario) event.getObject();
+        propietarioActual = propietarioServicio.buscarPropietarioPorCedula(objProp.getProCi());
+    }
+
     public void validarCedulaRuc() {
         try {
             if (propietarioServicio.esCedulaRucValida(patenteActual.getPatRucContador(), flagEditar).equals("valida")) {
-                addSuccessMessage("Cedula valida","Cedula valida");
+                addSuccessMessage("Cedula valida", "Cedula valida");
             } else {
-                addErrorMessage("Cedula no valida","Cedula no valida");
+                addErrorMessage("Cedula no valida", "Cedula no valida");
                 patenteActual.setPatRucContador(null);
             }
         } catch (Exception ex) {
@@ -273,6 +295,7 @@ public class GestionPatenteControlador extends BaseControlador {
                 patenteActual.setUsuIdentificacion(usuarioActual);
                 patenteActual.setUltaccDetalle(datoGlobalActual.getDatgloDescripcion());
                 patenteActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
+                patenteActual.setProCiPatente(propietarioActual);
                 patenteServicio.crearPatente(patenteActual);
                 guardarArchivos();
                 getSession().setAttribute("patente", patenteActual);
@@ -330,6 +353,7 @@ public class GestionPatenteControlador extends BaseControlador {
             patenteActual.setUsuIdentificacion(usuarioActual);
             patenteActual.setUltaccDetalle(datoGlobalActual.getDatgloDescripcion());
             patenteActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
+            patenteActual.setProCiPatente(propietarioActual);
             patenteServicio.editarPatente(patenteActual);
             if (!listaFiles.isEmpty()) {
                 guardarArchivos();
@@ -492,8 +516,12 @@ public class GestionPatenteControlador extends BaseControlador {
     public void habilitaCamposPropietario() {
         System.out.println("Habilita Campos");
         habilitaCamposPropietario = false;
+        cambioPropietario=false;
     }
-
+ public void habilitaCamposCambioPropietario() {
+        System.out.println("Habilita Campos");
+        cambioPropietario = true;
+    }
     public void actualizarCamposPropietario() {
         System.out.println("Habilita Campos");
         habilitaCamposPropietario = true;
@@ -922,6 +950,14 @@ public class GestionPatenteControlador extends BaseControlador {
 
     public void setVerActualiza(int verActualiza) {
         this.verActualiza = verActualiza;
+    }
+
+    public boolean isCambioPropietario() {
+        return cambioPropietario;
+    }
+
+    public void setCambioPropietario(boolean cambioPropietario) {
+        this.cambioPropietario = cambioPropietario;
     }
 
 }

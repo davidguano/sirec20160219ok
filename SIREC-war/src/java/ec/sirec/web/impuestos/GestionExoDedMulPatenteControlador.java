@@ -246,7 +246,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             CatalogoDetalle objCatDetAux = new CatalogoDetalle();
             objCatDetAux = catalogoDetalleServicio.buscarPorCodigoCatDet(catDetAnio.getCatdetCodigo());
             patenteValoracionActal = patenteServicio.buscaPatValoracionPorAnio(patenteActual.getPatCodigo(), Integer.parseInt(objCatDetAux.getCatdetTexto()));
-//            anioDeclaracion = Integer.parseInt(objCatDetAux.getCatdetTexto());
+            anioDeclaracion = Integer.parseInt(objCatDetAux.getCatdetTexto());
 //            }
             if (patenteValoracionActal == null) {
                 patValExActualCargado = false;
@@ -279,6 +279,7 @@ public class GestionExoDedMulPatenteControlador extends BaseControlador {
             patenteValoracionActal.setPatvalTotal(valTemporal);
             patenteValoracionActal.setPatvalTasaBomb(valTemporal);
             patenteValoracionActal.setPatvalActivo(false);
+            
             patenteServicio.crearPatenteValoracion(patenteValoracionActal);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, null, e);

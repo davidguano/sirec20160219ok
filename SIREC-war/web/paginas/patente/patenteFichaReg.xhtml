@@ -140,6 +140,21 @@
                                                  maxlength="20" size="40"/>
                                     <p:message for="compPnl1_2" display="icon"/>
 
+
+                                    <p:outputLabel rendered="#{gestionPatenteControlador.cambioPropietario==true}" value="Ingrese la Cédula/Ruc:"  style="font-size: 12px" />
+                                    <p:autoComplete rendered="#{gestionPatenteControlador.cambioPropietario==true}"  
+                                                    value="#{gestionPatenteControlador.propietarioActual}"
+                                                    onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                    completeMethod="#{gestionPatenteControlador.sugiereCedulaRuc}"
+                                                    var="player"
+                                                    itemLabel="#{player.proCi}"
+                                                    itemValue="#{player}"
+                                                    size="15"
+                                                    converter="#{propietarioConverter}" >
+                                        <p:ajax event="itemSelect" process="@this,panlDatosPropietario" listener="#{gestionPatenteControlador.onItemSelectPropietario}" update="panlDatosPropietario" />
+                                    </p:autoComplete>    
+                                    <p:column rendered="#{gestionPatenteControlador.cambioPropietario==true}" />
+
                                     <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_propietario}"/>
                                     <p:inputText style="background: lightgreen;color:black;font-weight: bold" requiredMessage="#{txt.lbl_propietario} Se necesita un valor" disabled="#{gestionPatenteControlador.habilitaCamposPropietario}"   id="compPnl1_3"  value="#{gestionPatenteControlador.propietarioActual.proRazonSocial}" 
                                                  size="40"/>
@@ -182,9 +197,10 @@
                                     <p:message for="compPnl1_9" display="icon"/>
                                     <p:column/>
                                     <h:panelGrid columns="3">
-                                        <p:commandButton value="#{txt.btn_editar}" process="@this,panlDatosPropietario" update="panlDatosPropietario"
+                                        <p:commandButton rendered="#{gestionPatenteControlador.cambioPropietario==false}"  value="Editar Datos Propietario" process="@this,panlDatosPropietario" update="panlDatosPropietario"
                                                          action="#{gestionPatenteControlador.habilitaCamposPropietario()}"/>
-                                        <p:commandButton process="@this,panlDatosPropietario" update="panlDatosPropietario,frmPat:msgs" value="#{txt.btn_actualizar}" action="#{gestionPatenteControlador.actualizaDatosPropietario()}"/>
+                                        <p:commandButton rendered="#{gestionPatenteControlador.cambioPropietario==false}"  process="@this,panlDatosPropietario" update="panlDatosPropietario,frmPat:msgs" value="Actualizar Datos Propietario" action="#{gestionPatenteControlador.actualizaDatosPropietario()}"/>
+                                        <p:commandButton rendered="#{gestionPatenteControlador.habilitaCamposPropietario == true}" process="@this,panlDatosPropietario" update="panlDatosPropietario,frmPat:msgs" value="Cambiar Propietario - Patente " action="#{gestionPatenteControlador.habilitaCamposCambioPropietario()}"/>
                                     </h:panelGrid>
                                     <p:column/>
                                 </h:panelGrid>
@@ -193,14 +209,14 @@
                                 <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_representante}"/>
                                 <h:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="100" size="40">
-                                  
+
                                 </h:inputText>
                                 <p:message for="compPnl1_10" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_contado}"/>
                                 <h:inputText validatorMessage="#{txt.lbl_contado} Solo se admiten letras" requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="50" size="40"> 
-                                     
+
                                 </h:inputText>
                                 <p:message for="compPnl1_11" display="icon"/>
 
