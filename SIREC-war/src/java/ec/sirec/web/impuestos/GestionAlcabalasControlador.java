@@ -544,27 +544,27 @@ public class GestionAlcabalasControlador extends BaseControlador {
     public void calularAdicionalesAlcabalas(AdicionalesDeductivos adicionalesDeductivosActual1) {
         try {                    
                                     
-            if(adicionalesDeductivosActual1.getAdidedNemonico().equals("E_R10")){
-                
-                // capital quemado
-                BigDecimal capital = new BigDecimal("3550");
-                BigDecimal RBU10  = renumeracion.multiply(new BigDecimal("10")); 
-                double porcentaje=0.0;
-                if(capital.compareTo(RBU10)==-1){
-                    porcentaje = 100.0;                    
-                }else{
-                    if(capital.compareTo(RBU10)==0 || capital.compareTo(RBU10)==1){
-                          porcentaje = 50; 
-                    }
-                }
-                
-            cpAlcabalaValoracionExtrasActual.setCpalcvalextBase(catastroPredialAlcabalaValoracion.getCatprealcvalTotal());
-            cpAlcabalaValoracionExtrasActual.setCpalcvalextValor(catastroPredialAlcabalaValoracion.getCatprealcvalTotal().multiply(new BigDecimal(porcentaje)).divide(new BigDecimal(100)));           
-                
-            }else{
+//            if(adicionalesDeductivosActual1.getAdidedNemonico().equals("E_R10")){
+//                
+//                // capital quemado
+//                BigDecimal capital = new BigDecimal("3550");
+//                BigDecimal RBU10  = renumeracion.multiply(new BigDecimal("10")); 
+//                double porcentaje=0.0;
+//                if(capital.compareTo(RBU10)==-1){
+//                    porcentaje = 100.0;                    
+//                }else{
+//                    if(capital.compareTo(RBU10)==0 || capital.compareTo(RBU10)==1){
+//                          porcentaje = 50; 
+//                    }
+//                }
+//                
+//            cpAlcabalaValoracionExtrasActual.setCpalcvalextBase(catastroPredialAlcabalaValoracion.getCatprealcvalTotal());
+//            cpAlcabalaValoracionExtrasActual.setCpalcvalextValor(catastroPredialAlcabalaValoracion.getCatprealcvalTotal().multiply(new BigDecimal(porcentaje)).divide(new BigDecimal(100)));           
+//                
+//            }else{
                 cpAlcabalaValoracionExtrasActual.setCpalcvalextBase(catastroPredialAlcabalaValoracion.getCatprealcvalTotal());
             cpAlcabalaValoracionExtrasActual.setCpalcvalextValor(catastroPredialAlcabalaValoracion.getCatprealcvalTotal().multiply(new BigDecimal(adicionalesDeductivosActual1.getAdidedPorcentaje())).divide(new BigDecimal(100)));           
-            }
+//            }
             
             
             
@@ -583,11 +583,11 @@ public class GestionAlcabalasControlador extends BaseControlador {
                 try {
                     if (listaAlcabalasArchivo.size() > 0) {
 
-                        if(visibleRenumeracion.equals("E_R10") && renumeracion.compareTo(BigDecimal.ZERO)==0){
-                        
-                            addErrorMessage("Se necesita un valor: Remuneración","Se necesita un valor: Remuneración"); 
-                        
-                        }else{
+//                        if(visibleRenumeracion.equals("E_R10") && renumeracion.compareTo(BigDecimal.ZERO)==0){
+//                        
+//                            addErrorMessage("Se necesita un valor: Remuneración","Se necesita un valor: Remuneración"); 
+//                        
+//                        }else{
                         
                         //catastroPredialAlcabalaValoracion = catastroPredialServicio.buscarAlcabalaPorCatastroPredial(catastroPredialActual);
                         if (catastroPredialAlcabalaValoracion != null) {
@@ -625,7 +625,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
                         }
                         
                         
-                        } // fin remuneracion 
+                       /// } // fin remuneracion 
                         
 
                     } else {
