@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package ec.sirec.ejb.entidades;
 
 import java.io.Serializable;
@@ -37,6 +36,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Patente.findAll", query = "SELECT p FROM Patente p")})
 public class Patente implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -113,7 +113,7 @@ public class Patente implements Serializable {
     @Column(name = "ultacc_marcatiempo")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ultaccMarcatiempo;
-     @Column(name = "pat_fecha_adjudicacion")
+    @Column(name = "pat_fecha_adjudicacion")
     @Temporal(TemporalType.DATE)
     private Date patFechaAdjudicacion;
     @Column(name = "pat_fecha_vencimiento")
@@ -121,7 +121,7 @@ public class Patente implements Serializable {
     private Date patFechaVencimiento;
     @Column(name = "pat_deuda_inicial")
     private BigDecimal patDeudaInicial;
-   
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patCodigo")
     private List<PatenteArchivo> patenteArchivoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patCodigo")
@@ -152,6 +152,9 @@ public class Patente implements Serializable {
     private CatalogoDetalle catdetEspecialidad;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patCodigo")
     private List<Patente15xmilValoracion> patente15xmilValoracionList;
+    @JoinColumn(name = "pro_ci_patente", referencedColumnName = "pro_ci")
+    @ManyToOne
+    private Propietario proCiPatente;
 
     public Patente() {
     }
@@ -489,6 +492,14 @@ public class Patente implements Serializable {
         return patente15xmilValoracionList;
     }
 
+    public Propietario getProCiPatente() {
+        return proCiPatente;
+    }
+
+    public void setProCiPatente(Propietario proCiPatente) {
+        this.proCiPatente = proCiPatente;
+    }
+
     public void setPatente15xmilValoracionList(List<Patente15xmilValoracion> patente15xmilValoracionList) {
         this.patente15xmilValoracionList = patente15xmilValoracionList;
     }
@@ -517,5 +528,5 @@ public class Patente implements Serializable {
     public String toString() {
         return "ec.sirec.ejb.entidades.Patente[ patCodigo=" + patCodigo + " ]";
     }
-    
+
 }
