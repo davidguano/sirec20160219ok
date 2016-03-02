@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="alcabala_emitida" language="groovy" printOrder="Horizontal" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14d0ca8f-dfaa-4a9f-849c-934fb603e78e">
 	<property name="ireport.zoom" value="1.7379862784201412"/>
-	<property name="ireport.x" value="686"/>
+	<property name="ireport.x" value="596"/>
 	<property name="ireport.y" value="127"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="codigos" class="java.lang.String"/>
@@ -108,16 +108,10 @@ order by a.catprepluval_anio, nombre_propietario asc]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="373" y="67" width="29" height="20" uuid="be2cd7e4-3c84-47e6-97f7-f01eca7891a2"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[AÑO:]]></text>
-			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="402" y="67" width="100" height="20" uuid="d01310f0-8f80-4468-8d52-f7bfadf495a3"/>
-				<textFieldExpression><![CDATA[$F{catprepluval_anio}]]></textFieldExpression>
+				<reportElement x="327" y="65" width="183" height="20" uuid="d01310f0-8f80-4468-8d52-f7bfadf495a3"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["AÑO: "+$F{catprepluval_anio}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
