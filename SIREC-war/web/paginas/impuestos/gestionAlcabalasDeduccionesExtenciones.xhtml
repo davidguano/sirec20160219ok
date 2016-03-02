@@ -34,11 +34,11 @@
                                                value="#{gestionAlcabalasControlador.listaAdicionalesDeductivosExcenciones}" 
                                                itemLabel="#{tipo.adidedDescripcion}" 
                                                itemValue="#{tipo.adidedCodigo}"/> 
-                                <p:ajax event="change" listener="#{gestionAlcabalasControlador.muestraRenumeracion()}"                                        
+                              <!--  <p:ajax event="change" listener="#{gestionAlcabalasControlador.muestraRenumeracion()}"                                        
                                                     update=":frmAlcabalas:tabAlcaTodo:tabAlca:pnlEx" 
                                                     process="@this" 
                                                     async="true" global="false"/>
-                                
+                              -->                                
                             </p:selectManyCheckbox>
                                     <h:panelGrid id="pnlRenumeracion" columns="3" rendered="#{gestionAlcabalasControlador.visibleRenumeracion=='E_R10'}">                                        
                                          <p:outputLabel value="REMUNERACION:"/>
