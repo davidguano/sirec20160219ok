@@ -355,14 +355,37 @@ public class CatastroControlador extends BaseControlador {
                     addErrorMessage("Clave ya existe, presione Buscar.");
                 }
             } else {
-                catastroPredialActual.setUltaccDetalle("Se ha editado el registro");
-                catastroServicio.editarCatastroPredial(catastroPredialActual);
-                addSuccessMessage("Correcto", "Ficha editada exitosamente");
+                if (validarCamposObligatorios(catastroPredialActual).equals("")) {
+                    catastroPredialActual.setUltaccDetalle("Se ha editado el registro");
+                    catastroServicio.editarCatastroPredial(catastroPredialActual);
+                    addSuccessMessage("Correcto", "Ficha editada exitosamente");
+                } else {
+                    addErrorMessage(validarCamposObligatorios(catastroPredialActual));
+                }
             }
 
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
+    }
+
+    public String validarCamposObligatorios(CatastroPredial cp) {
+        String msg = "";
+        try {
+            if (cp.getCatpreAreaTotal() != null) {
+                if (cp.getCatpreAreaTotal() <= 0) {
+                    msg = "Area total debe ser mayor a 0";
+                }
+            }
+            if (cp.getCatpreAreaTotalCons() != null) {
+                if (cp.getCatpreAreaTotalCons() <= 0) {
+                    msg = "-Area total de construccion debe ser mayor a 0";
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return msg;
     }
 
     public void guardarRegistroPrincipalyPropietario() {
@@ -495,6 +518,8 @@ public class CatastroControlador extends BaseControlador {
                 catastroServicio.guardarAreaBloque(catastroPredialActual, catastroAreaActual);
                 if (catastroAreaActual.getCatpreareCodigo() != null) {
                     catastroServicio.crearRegistrosEdificacionesPorArea(catastroPredialActual, catastroAreaActual);
+                    edifBloque="0";
+                    edifPiso="0";
                     listaCatastroPredialAreasBloque = catastroServicio.listarAreasPorCatastro(catastroPredialActual.getCatpreCodigo());
                 }
                 catastroAreaActual = new CatastroPredialAreas();
@@ -530,6 +555,20 @@ public class CatastroControlador extends BaseControlador {
                 inicializarDatosEdificaciones();
                 listarInformacionEdificaciones();
             }
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void eliminarAreasyEdificacionPorArea(CatastroPredialAreas area) {
+        try {
+                catastroServicio.eliminarAreaBloque(area);
+                addSuccessMessage("Area y registros de edificacion eliminados correctamente");
+                editarRegistrosdeArea();
+                listaCatastroPredialAreasBloque = catastroServicio.listarAreasPorCatastro(catastroPredialActual.getCatpreCodigo());
+                edifBloque="0";
+                edifPiso="0";
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
@@ -856,15 +895,15 @@ public class CatastroControlador extends BaseControlador {
         try {
 
             if (catastroPredialActual.getCatpreCodigo() != null) {
-                boolean cp=predioArchivoActual.getCambioPropietario();
+                boolean cp = predioArchivoActual.getCambioPropietario();
                 predioArchivoActual = new PredioArchivo();
                 predioArchivoActual.setPrearcNombre(event.getFile().getFileName().replace(" ", "_"));
                 predioArchivoActual.setCatpreCodigo(catastroPredialActual);
                 predioArchivoActual.setPrearcData(event.getFile().getContents());
-                if(cp){
+                if (cp) {
                     predioArchivoActual.setProCi("CAMBIO1");
-                }else{
-                    
+                } else {
+
                 }
                 predioArchivoActual.setPrearcTipo("FC");
                 predioArchivoActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
@@ -899,7 +938,7 @@ public class CatastroControlador extends BaseControlador {
                 predioArchivoActual.setUsuIdentificacion(obtenerUsuarioAutenticado());
                 predioArchivoActual.setUltaccDetalle("");
                 predioArchivoActual.setUltaccMarcatiempo(new Date());
-                
+
                 predioArchivoServicio.crearPredioArchivo(predioArchivoActual);
 
                 FacesMessage msg = new FacesMessage("El documento ", event.getFile().getFileName() + " ha sido cargado satisfactoriamente.");

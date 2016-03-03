@@ -27,6 +27,10 @@ public class CementerioServicio {
 
     @EJB
     private CementerioFacade cementerioDao;
+    
+    @EJB
+    private CuentaPorCobrarServicio cxcServicio;
+
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -39,11 +43,13 @@ public class CementerioServicio {
 
     public String crearCementerio(Cementerio vCementerio) throws Exception {
         cementerioDao.crear(vCementerio);
+        cxcServicio.crearCxcPorCementerio(vCementerio);
         return "Se ha creado el permiso" + vCementerio.getCemCodigo();
     }
 
     public String editarCementerio(Cementerio vCementerio) throws Exception {
         cementerioDao.editar(vCementerio);
+        cxcServicio.crearCxcPorCementerio(vCementerio);
         return "Se ha modificado el permiso" + vCementerio.getCemCodigo();
     }
 

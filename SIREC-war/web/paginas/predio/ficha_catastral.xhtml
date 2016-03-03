@@ -66,7 +66,7 @@
                                                 <p:autoComplete id="apeProp" value="#{catastroControlador.propietarioPredioBusqueda}" 
                                                                 completeMethod="#{catastroControlador.obtenerPropietarioPredioPorApellidoProp}"
                                                                 converter="#{propietarioPredioConverter}"
-                                                                minQueryLength="5" 
+                                                                minQueryLength="6" dropdown="true" scrollHeight="200"
                                                                 size="30" inputStyle="color:white;font-weight: bold;background: black;"
                                                                 var="prop" itemLabel="#{prop.proCi.proApellidos}#{prop.proCi.proNombres}#{prop.catpreCodigo.claveCatastral}" 
                                                                 itemValue="#{prop}">
@@ -86,12 +86,12 @@
                                                     <p:commandButton value="V" type="button" onclick="PF('dlg1').show();" />
                                                     <p:dialog header="Valoracion del Predio" widgetVar="dlg1" minHeight="40">
                                                         <h:panelGrid columns="2">
-                                                        <h:outputText value="Avaluo Terreno:" />
-                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTerr}" />
-                                                        <h:outputText value="Avaluo Edificacion:" />
-                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoEdif}" />
-                                                        <h:outputText value="Avaluo Total:" />
-                                                        <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTot}" />
+                                                            <h:outputText value="Avaluo Terreno:" />
+                                                            <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTerr}" />
+                                                            <h:outputText value="Avaluo Edificacion:" />
+                                                            <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoEdif}" />
+                                                            <h:outputText value="Avaluo Total:" />
+                                                            <h:outputText value="#{catastroControlador.valoracionActual.catprevalAvaluoTot}" />
                                                         </h:panelGrid>
                                                     </p:dialog>
                                                 </h:panelGrid>
@@ -219,6 +219,7 @@
                                                                  async="true" global="false"
                                                                  process="@this,propCi"
                                                                  update="pnlPropietario"/>
+                                                
 
                                                 <p:outputLabel value="Tipo Persona:"/>
                                                 <p:outputLabel value="Natural" rendered="#{catastroControlador.propietarioActual.proTipoPersona=='N'}"/>
@@ -510,10 +511,16 @@
                                                     <h:panelGrid>
                                                         <h:panelGrid columns="2">
                                                             <p:dataTable id="lstAreasBloque" value="#{catastroControlador.listaCatastroPredialAreasBloque}"
-                                                                         var="area" style="width: 150px;" emptyMessage="No se ha registrado areas.">
+                                                                         var="area" style="width: 180px;" emptyMessage="No se ha registrado areas.">
                                                                 <p:column headerText="Bloque" width="10"><h:outputText value="#{area.catpreareBloque}"/></p:column>
                                                                 <p:column headerText="Piso" width="10"><h:outputText value="#{area.catprearePiso}"/></p:column>
                                                                 <p:column headerText="Area" width="20"><h:inputText value="#{area.catpreareArea}" size="5" onkeypress="return isNumericKey(event);"/></p:column>
+                                                                <p:column>
+                                                                    <p:commandButton icon="ui-icon-trash"
+                                                                            action="#{catastroControlador.eliminarAreasyEdificacionPorArea(area)}"
+                                                                                     process="@this" async="true" global="false" 
+                                                                                     update=":frmFicha:tbVw:pnlAreas,:frmFicha:tbVw:lstAreasBloque,:frmFicha:tbVw:atotalcons,:frmFicha:msgs,:frmFicha:tbVw:lstAreasBloqueReg,:frmFicha:tbVw:pnlListaEdif"/>
+                                                                </p:column>
                                                             </p:dataTable>
                                                             <p:commandButton style="font-size:12px;" icon="ui-icon-trash"  
                                                                              rendered="#{catastroControlador.listaCatastroPredialAreasBloque.size()>0}"
@@ -586,19 +593,19 @@
                                                 </p:selectBooleanCheckbox>
                                                 <p:tooltip for="cambioP">Activar si se trata de documentacion por cambio de Propietario</p:tooltip> 
                                                 <p:fileUpload fileUploadListener="#{catastroControlador.handleFileUpload}"  
-                                                          mode="advanced"
-                                                          dragDropSupport="false"
-                                                          process="@this"
-                                                          multiple="true"  
-                                                          update=":frmFicha:msgs,pnllstArch,cambioP"
-                                                          sizeLimit="10000000000"
-                                                          allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
-                                                          invalidSizeMessage="El archivo debe ser maximo 1MB"
-                                                          label="Seleccione el Documento" 
-                                                          uploadLabel="Cargar"
-                                                          cancelLabel="Cancelar"
-                                                          >                                                                                                                                        
-                                            </p:fileUpload>  
+                                                              mode="advanced"
+                                                              dragDropSupport="false"
+                                                              process="@this"
+                                                              multiple="true"  
+                                                              update=":frmFicha:msgs,pnllstArch,cambioP"
+                                                              sizeLimit="10000000000"
+                                                              allowTypes="/(\.|\/)(pdf|xls|xlsx|jpg)$/"
+                                                              invalidSizeMessage="El archivo debe ser maximo 1MB"
+                                                              label="Seleccione el Documento" 
+                                                              uploadLabel="Cargar"
+                                                              cancelLabel="Cancelar"
+                                                              >                                                                                                                                        
+                                                </p:fileUpload>  
                                             </h:panelGrid>
                                             <br/>
                                             <p:commandButton value="Ver Documentos" 
@@ -991,16 +998,10 @@
                                             <p:column headerText="Piso" width="10"><h:outputText value="#{area.catprearePiso}"/></p:column>
                                             <p:column headerText="Area" width="20"><h:outputText value="#{area.catpreareArea}"/></p:column>
                                         </p:dataTable>
-                                        <p:commandButton id="btnCrearEdif" value="Crear Registros"
-                                                         action="#{catastroControlador.crearRegistrosEdificaciones()}"
-                                                         process="@this"
-                                                         icon="fa fa-save"
-                                                         onstart="PF('dlgRegistrando').show();" 
-                                                         onsuccess="PF('dlgRegistrando').hide();"
-                                                         async="true" global="false" update="pnlListaEdif,:frmFicha:msgs"/>
                                     </h:panelGrid>
                                     <h:panelGrid columns="2">
                                         <p:selectOneMenu id="edifBloque" value="#{catastroControlador.edifBloque}">
+                                           <f:selectItem itemLabel="Seleccione.." itemValue="0"/>
                                             <f:selectItem itemLabel="Bloque 1" itemValue="1"/>
                                             <f:selectItem itemLabel="Bloque 2" itemValue="2"/>
                                             <f:selectItem itemLabel="Bloque 3" itemValue="3"/>
@@ -1013,6 +1014,7 @@
                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"/>
                                         </p:selectOneMenu>
                                         <p:selectOneMenu id="edifPiso" value="#{catastroControlador.edifPiso}">
+                                            <f:selectItem itemLabel="Seleccione.." itemValue="0"/>
                                             <f:selectItem itemLabel="Piso 1" itemValue="1"/>
                                             <f:selectItem itemLabel="Piso 2" itemValue="2"/>
                                             <f:selectItem itemLabel="Piso 3" itemValue="3"/>

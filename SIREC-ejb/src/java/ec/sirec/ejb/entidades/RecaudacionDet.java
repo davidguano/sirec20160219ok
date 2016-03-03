@@ -68,7 +68,13 @@ public class RecaudacionDet implements Serializable {
     @Transient
     private boolean activo;
     @Transient
+    private Integer anio;
+    @Transient
+    private String ubicacion;
+    @Transient
     private int numAniosCem;
+    
+    
 
     public RecaudacionDet() {
     }
@@ -177,6 +183,22 @@ public class RecaudacionDet implements Serializable {
 
     public void setNumAniosCem(int numAniosCem) {
         this.numAniosCem = numAniosCem;
+    }
+
+    public Integer getAnio() {
+        return anio;
+    }
+
+    public void setAnio(Integer anio) {
+        this.anio = anio;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     

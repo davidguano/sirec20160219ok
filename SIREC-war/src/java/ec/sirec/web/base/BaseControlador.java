@@ -125,7 +125,7 @@ public class BaseControlador {
         return (SegUsuario) this.getSession().getAttribute("usuario");
     }
 
-    public String obtenerIp() {
+    public String getObtenerIp() {
         //String ipCliente = getRequest().getRemoteAddr();
         String ipCliente = getRequest().getHeader("X-FORWARDED-FOR");
         if (ipCliente == null) {

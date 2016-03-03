@@ -193,7 +193,7 @@
                                             <h:outputText value="Cementerio" rendered="#{rec.recdetTipo=='CE'}"/>
                                         </p:column>
                                         <p:column headerText="Ubicacion" width="100">
-                                            <h:outputText value="#{rec.cxcCodigo.cxcReferencia2}"/>
+                                            <h:outputText value="#{rec.ubicacion}"/>
                                         </p:column>
                                         <p:column headerText="Referencia" width="150">
                                             <h:panelGrid rendered="#{rec.recdetTipo=='CE'}"
@@ -217,7 +217,7 @@
                                             </h:panelGrid>
                                         </p:column>
                                         <p:column headerText="Año">
-                                            <h:outputText value="#{rec.cxcCodigo.cxcAnio}"/>
+                                            <h:outputText value="#{rec.anio}"/>
                                         </p:column>
                                         <p:column headerText="Valor Inicial">
 

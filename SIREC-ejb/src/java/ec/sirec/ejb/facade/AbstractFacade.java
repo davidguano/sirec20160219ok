@@ -258,6 +258,13 @@ public abstract class AbstractFacade<T> {
         q.executeUpdate();
     }
     
+    public void eliminarPor3Campos(String ventidad, String vcampo, Object vvalor, String vcampo2, Object vvalor2,String vcampo3, Object vvalor3) throws Exception {
+        String sql = " delete  from " + ventidad + " e where e." + vcampo + "=:vvalor and e."+ vcampo2 + "=:vvalor2 and e."+vcampo3+"=:vvalor3";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("vvalor", vvalor).setParameter("vvalor2", vvalor2).setParameter("vvalor3", vvalor3);
+        q.executeUpdate();
+    }
+    
    public List<SegUsuarioRol> obtenerUsuariosXRol(Integer rolCodigo) {
         String sql = "select p from SegUsuarioRol p where p.rolCodigo.rolCodigo=:rolCodigo";
         Query q = getEntityManager().createQuery(sql);

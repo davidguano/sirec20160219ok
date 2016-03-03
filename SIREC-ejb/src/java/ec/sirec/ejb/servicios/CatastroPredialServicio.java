@@ -500,11 +500,15 @@ public class CatastroPredialServicio {
 
     public void eliminarAreaBloque(CatastroPredialAreas vareaBloque) throws Exception {
         catastroPredialAreasDao.eliminar(vareaBloque);
+        catastroPredialEdificacionDao.eliminarPor3Campos("CatastroPredialEdificacion", "catpreCodigo", vareaBloque.getCatpreCodigo(), "catpreediBloque", String.valueOf(vareaBloque.getCatpreareBloque()), "catpreediPiso", String.valueOf(vareaBloque.getCatprearePiso()));
+
     }
 
     public void eliminarAreaBloquedeCatastro(CatastroPredial vcatastro) throws Exception {
         catastroPredialAreasDao.eliminarGenerico("CatastroPredialAreas", "catpreCodigo", vcatastro);
     }
+    
+    
 
     //EDIFICACIONES
     public void crearRegistrosEdificacionesPorNumBloquesYPisos(CatastroPredial vcatastro, List<CatastroPredialAreas> listaAreas) throws Exception {
@@ -576,7 +580,7 @@ public class CatastroPredialServicio {
     }
 
     public void crearRegistrosEdificacionesPorArea(CatastroPredial vcatastro, CatastroPredialAreas area) throws Exception {
-        if (!catastroPredialAreasDao.existePor3Campos("CatastroPredialAreas", "catpreCodigo", vcatastro, "catpreareBloque", area.getCatpreareBloque(), "catprearePiso", area.getCatprearePiso())) {
+        if (catastroPredialAreasDao.existePor3Campos("CatastroPredialAreas", "catpreCodigo", vcatastro, "catpreareBloque", area.getCatpreareBloque(), "catprearePiso", area.getCatprearePiso())) {
 
             if (area != null) {
                 // 1 (4 items)
@@ -640,7 +644,7 @@ public class CatastroPredialServicio {
         } else {
             //ya existen areas con el mismo bloque y piso.
         }
-    }
+    } 
 
     public boolean existenRegistrosEdificacionesPorPredio(CatastroPredial vcatastro) throws Exception {
         return catastroPredialEdificacionDao.existePorCampo("CatastroPredialEdificacion", "catpreCodigo", vcatastro);

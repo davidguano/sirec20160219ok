@@ -48,7 +48,7 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
         List<Object[]> resultado = new ArrayList<Object[]>();
         List<RecaudacionDet> lstDets = new ArrayList<RecaudacionDet>();
         try {
-            String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref, cxc_codigo from sirec.cuenta_por_cobrar \n"
+            String sql1 = "select cxc_tipo, cxc_referencia,cxc_valor_total, cxc_cod_ref, cxc_codigo , cxc_anio, cxc_referencia2 from sirec.cuenta_por_cobrar \n"
                     + " where cxc_estado='P' and pro_ci='" + vci + "' ";
             if (vAnio != null && vAnio > 0) {
                 sql1 = sql1 + " and cxc_anio=" + vAnio;
@@ -66,6 +66,8 @@ public class RecaudacionDetFacade extends AbstractFacade<RecaudacionDet> {
                     det.setRecdetPorDesc(obtenerPorcentajeDescuentoCxc(obj[0].toString(), vci, vAnio));
                     det.setRecdetValor((det.getRecdetValorInicial().multiply(new BigDecimal(det.getRecdetPorDesc())).divide(new BigDecimal("100"))).add(det.getRecdetValorInicial()));
                     det.setCxcCodigo(new CuentaPorCobrar((Integer) obj[4]));
+                    det.setAnio((Integer) obj[5]);
+                    det.setUbicacion(obj[6].toString());
                     lstDets.add(det);
                 }
             }
