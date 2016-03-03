@@ -42,7 +42,7 @@
                 </h:panelGrid>  
                      
                 
-                <h:panelGrid id="pnlListPred" columns="2">                                                                 
+                <h:panelGrid id="pnlListPred" width="1200" columns="2">                                                                 
                     <p:dataTable id="lstValsEmi" value="#{gestionAlcabalasControlador.listaEjecutarValoracion}" var="catastroP"  
                                  selection="#{gestionAlcabalasControlador.ejecutarValoracionSeleccion}"                                                                                            
                                  rowKey="#{catastroP}" rows="10"                                             
@@ -59,18 +59,18 @@
                         
                         <p:columnGroup type="header">
                                 <p:row>
-                                    <p:column rowspan="2" headerText="#{txt.clave_catastral}" filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.nombre_razón_social}" filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.ruc_ci}" filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.parroquia_t}"  filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.dirección}" filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.anio_t}" filterBy="#{catastroP.anio}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column colspan="4" headerText="Alcabalas" style="font-size:10px;"/>
-                                    <p:column rowspan="2" headerText="#{txt.total} Plusvalia" style="font-size:10px;"/>
+                                    <p:column rowspan="2"  width="100" headerText="#{txt.clave_catastral}" filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="100" headerText="#{txt.nombre_razón_social}" filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="90" headerText="#{txt.ruc_ci}" filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="90" headerText="#{txt.parroquia_t}"  filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="90" headerText="#{txt.dirección}" filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="50" headerText="#{txt.anio_t}" filterBy="#{catastroP.anio}" filterMatchMode="contains" style="font-size:10px;"/>
+                                    <p:column colspan="4"  headerText="Alcabalas" style="font-size:10px;"/>
+                                    <p:column rowspan="2" width="90" headerText="#{txt.total} Plusvalia" style="font-size:10px;"/>
                                 </p:row>
 
                                 <p:row>
-                                    <p:column headerText="Subtotal" style="font-size:10px;"/>
+                                    <p:column width="50"  headerText="Subtotal" style="font-size:10px;"/>
                                     <p:column headerText="(-) Deducciones" style="font-size:10px;"/>               
                                     <p:column headerText="(-) Exenciones" style="font-size:10px;"/>               
                                     <p:column headerText="Total" style="font-size:10px;"/>               
@@ -79,43 +79,43 @@
                             </p:columnGroup>
                         
                         
-                        <p:column   width="90" > 
+                        <p:column   > 
                             <h:outputText value="#{catastroP.catpreClaveCatastal}" style="font-size:11px;" />
                         </p:column>
-                        <p:column   width="50" style="font-size:10px;"> 
+                        <p:column  > 
                             <h:outputText value="#{catastroP.proCi.proRazonSocial}"  style="font-size:11px;" />
                         </p:column>
-                        <p:column  width="50" style="font-size:10px;"> 
+                        <p:column  > 
                             <h:outputText value="#{catastroP.proCi.proCi}"  style="font-size:10px;" />
                         </p:column>
-                        <p:column  width="50" style="font-size:10px;"> 
+                        <p:column  > 
                             <h:outputText value="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}"  style="font-size:10px;" />
                         </p:column>                            
-                        <p:column   width="50" style="font-size:10px;"> 
+                        <p:column   > 
                             <h:outputText value="#{catastroP.proCi.proDireccion}"  style="font-size:10px;"/>
                         </p:column> 
-                        <p:column   width="30" style="font-size:10px;"> 
+                        <p:column   > 
                             <h:outputText value="#{catastroP.anio}"  style="font-size:10px;"/>
                         </p:column>    
                         
                         
                         
-                        <p:column width="40" style="font-size:11px;"> 
+                        <p:column > 
                             <h:outputText value="#{catastroP.catastroPredialAlcabalaValoracion.catprealcvalTotal}"  style="font-size:10px;"/>
                         </p:column>                          
-                         <p:column  width="40" style="font-size:11px;"> 
+                         <p:column > 
                              <h:outputText value="#{catastroP.totalAlcabalaDeducciones}"  style="font-size:10px;"/>
                         </p:column>                        
-                         <p:column  width="40" style="font-size:11px;"> 
+                         <p:column  > 
                              <h:outputText value="#{catastroP.totalAlcabalaExenciones}"  style="font-size:10px;"/>
                         </p:column>
-                         <p:column  width="40" style="font-size:11px;"> 
+                         <p:column  > 
                              <h:outputText value="#{catastroP.totalAlcabalaFinal}"  style="font-size:10px;"/>
                         </p:column>
                         
                         
                                                                                                                                               
-                        <p:column  width="40" style="font-size:11px;"> 
+                        <p:column > 
                             <h:outputText value="#{catastroP.catastroPredialPlusvaliaValoracion.catprepluvalImpuesto}"  style="font-size:10px;"/>
                         </p:column>                                                                                                                        
                        <!-- <p:column headerText="Seleccione" selectionMode="single" exportable="false" width="40" style="width:16px;text-align:center"/>                                                                                                                                                                       
