@@ -157,7 +157,7 @@
                                                 <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionCementeriosControlador.nombreOcciso}" 
                                                               size="40"/>
                                                 <p:message for="compPnl1_7" display="icon"/>
-                                                
+
                                                 <p:outputLabel style="font-size: #{txt.font_size}" value="Occiso Parroquia:"/>
                                                 <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="txtParroquia" disabled="true" value="#{gestionCementeriosControlador.nomParroquiaOcciso}" 
                                                               size="40"/>
@@ -167,24 +167,24 @@
                                     </p:panel>
                                     <p:panel>
                                         <h:panelGrid columns="6" id="pnlConCedRep">
-                                           
-                                            
-                                          <!--  <h:panelGrid columns="4" id="pnlBuscaCedRep"> -->
-                                                <p:outputLabel value="Ingrese la Cédula/Ruc del Rep:"  style="font-size: 12px" />
-                                                <p:autoComplete  
-                                                    value="#{gestionCementeriosControlador.propietarioActual}"
-                                                    onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
-                                                    completeMethod="#{gestionCementeriosControlador.sugiereCedulaRuc}"
-                                                    var="player"
-                                                    itemLabel="#{player.proCi}"
-                                                    itemValue="#{player}"
-                                                    size="15"
-                                                    converter="#{propietarioConverter}" >
-                                                    <p:ajax event="itemSelect" process="@this,pnlConCedRep" listener="#{gestionCementeriosControlador.onItemSelectPropietario}" update="pnlConCedRep" />
-                                                </p:autoComplete>    
-                                                <p:column/>
-                                          <!--  </h:panelGrid> -->
-                                            
+
+
+                                            <!--  <h:panelGrid columns="4" id="pnlBuscaCedRep"> -->
+                                            <p:outputLabel value="Ingrese la Cédula/Ruc del Rep:"  style="font-size: 12px" />
+                                            <p:autoComplete  
+                                                value="#{gestionCementeriosControlador.propietarioActual}"
+                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                completeMethod="#{gestionCementeriosControlador.sugiereCedulaRuc}"
+                                                var="player"
+                                                itemLabel="#{player.proCi}"
+                                                itemValue="#{player}"
+                                                size="15"
+                                                converter="#{propietarioConverter}" >
+                                                <p:ajax event="itemSelect" process="@this,pnlConCedRep" listener="#{gestionCementeriosControlador.onItemSelectPropietario}" update="pnlConCedRep" />
+                                            </p:autoComplete>    
+                                            <p:column/>
+                                            <!--  </h:panelGrid> -->
+
                                             <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_representante}"/>
                                             <p:inputText   onkeyup="value = value.toUpperCase()" requiredMessage="#{txt.lbl_representante} Se necesita un valor"   id="compPnl1_8"  value="#{gestionCementeriosControlador.nombreRep}" 
                                                            size="40"/>
@@ -436,7 +436,10 @@
                                     </p:column>
                                     <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
                                         <h:outputText value="#{inuColumna.cemNumNicho}" style="font-size:12px;" />
-                                    </p:column>  
+                                    </p:column>
+                                    <p:column headerText="Sepultado (Parroquia)" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{inuColumna.catdetParroquia.catdetTexto}" style="font-size:12px;" />
+                                    </p:column>
                                     <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
                                         <h:outputText value="#{inuColumna.cemFechaFallece}" style="font-size:12px;" />
                                     </p:column>
@@ -552,6 +555,9 @@
                                     <p:column headerText="#{txt.lbl_num_nicho_list}" width="25" style="font-size:12px;">
                                         <h:outputText value="#{exuColumna.cemNumNicho}" style="font-size:12px;" />
                                     </p:column>  
+                                    <p:column headerText="Sepultado (Parroquia)" width="25" style="font-size:12px;">
+                                        <h:outputText value="#{exuColumna.catdetParroquia.catdetTexto}" style="font-size:12px;" />
+                                    </p:column>
                                     <p:column headerText="#{txt.lbl_fecha_fallece_list}" width="35" style="font-size:12px;">
                                         <h:outputText value="#{exuColumna.cemFechaFallece}" style="font-size:12px;" />
                                     </p:column>

@@ -45,7 +45,7 @@
                                                      icon="ui-icon-extlink"  
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      process="@this,pnl15xMiDeterBuscaPatente" 
-                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnlConAvisoDedPatxMil,frmPat:tabPrin:pnl15xMiDeterBuscaPatente,:frmPat:tabPrin:pnlConAnioDecla"
+                                                     update=":frmPat:tabPrin:pnlCon15xMilDetMulNumPat,:frmPat:tabPrin:pnlConDetValDetPorMil,:frmPat:tabPrin:pnl15xMilDetBtnGuAct,:frmPat:tabPrin:pnlContDetDedporMil,:frmPat:tabPrin:pnlBotAniLimVerxMil,:frmPat:tabPrin:pnl15xMiDeterBuscaPatente,:frmPat:tabPrin:pnlConAnioDecla"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -90,13 +90,13 @@
                                 </h:panelGrid>
                             </p:panel>
                         </h:panelGrid>
-                        <h:panelGrid id="pnlConAvisoDedPatxMil">
+                     <!--   <h:panelGrid id="pnlConAvisoDedPatxMil">
                             <p:panel rendered="#{gestionDetPatenteUnoCincoporMilControlador.deducciones==false}">
                                 <p:outputLabel style="font-size: #{txt.font_size}" id="preExistexMil" value="Existe exoneración, multa o deducción que aplicar a la patente ? "/>                                                                                       
                                 <p:selectBooleanButton required="true" requiredMessage="Existe exoneración, multa o deducción que aplicar a la patente ? Se necesita un valor" id="preExisteChkxMil" value="#{gestionDetPatenteUnoCincoporMilControlador.existeDedPatente}" onLabel="Si" offLabel="No" style="width:60px" />
                                 <p:message for="preExisteChkxMil"/> 
                             </p:panel>  
-                        </h:panelGrid>
+                        </h:panelGrid> -->
                         <h:panelGrid columns="3" id="pnlBotAniLimVerxMil">
                             <p:commandButton value="#{txt.btn_anadir_periodo}" 
                                              id="btnAnPeriodoPag4" 
