@@ -94,7 +94,7 @@
 
                                 <h:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_estado}"/>
                                 <p:selectOneMenu requiredMessage="#{txt.lbl_estado} Se necesita un valor" required="true" id="cmbIdentEstado" 
-                                                 value="#{gestionPatenteControlador.catDetIdentEstadoActual}" style="width:250px"
+                                                 value="#{gestionPatenteControlador.catDetIdentEstadoActual}" style="width:150px"
                                                  converter="#{catalogoDetalleConverter}" var="t">
                                     <f:selectItem  itemLabel="#{gestionPatenteControlador.catDetIdentEstadoActual.setCatdetCodigo(449)}" itemValue="" /> 
                                     <f:selectItems var="tipTem"  
@@ -109,7 +109,7 @@
                                 <p:message for="cmbIdentEstado" display="icon"/>
                                 <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='A'}" value="Estado Actual: ACTIVO"/> 
                                 <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='I'}" value="Estado Actual: INACTIVO"/>
-                                <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='P'}" value="Estado Actual: PRE - INSCRITO"/>
+                                <h:outputText style="font-weight: bold;size: 12px;color: crimson" rendered="#{gestionPatenteControlador.verActualiza==1 and gestionPatenteControlador.patenteActual.patEstado=='P'}" value="Estado Actual: PRE-INSCRITO"/>
                             </h:panelGrid>
                             <h:panelGrid columns="6" id="pnlConContrasenia">
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_nombre_comercial}"/>
@@ -209,14 +209,14 @@
                                 <p:outputLabel style="font-size: #{txt.font_size}"  value="#{txt.lbl_representante}"/>
                                 <h:inputText validatorMessage="#{txt.lbl_representante} Solo se admiten letras" requiredMessage="#{txt.lbl_representante} Se necesita un valor"  disabled="false" id="compPnl1_10"  value="#{gestionPatenteControlador.patenteActual.patRepresentanteLegal}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="100" size="40">
-
+                                    <f:validateRegex pattern="^[a-zA-Z.,áéíóúÁÉÍÓÚ ]+$" />
                                 </h:inputText>
                                 <p:message for="compPnl1_10" display="icon"/>
 
                                 <p:outputLabel style="font-size: #{txt.font_size}" value="#{txt.lbl_contado}"/>
                                 <h:inputText validatorMessage="#{txt.lbl_contado} Solo se admiten letras" requiredMessage="#{txt.lbl_contado} Se necesita un valor"  disabled="false" id="compPnl1_11"  value="#{gestionPatenteControlador.patenteActual.patContador}" 
                                              onkeyup="value = value.toUpperCase()" maxlength="50" size="40"> 
-
+                                    <f:validateRegex pattern="^[a-zA-Z.,áéíóúÁÉÍÓÚ ]+$" />
                                 </h:inputText>
                                 <p:message for="compPnl1_11" display="icon"/>
 

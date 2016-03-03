@@ -93,17 +93,21 @@
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      async="true"
                                                      global="false"
-                                                     process="@this,pnlReporPat1,pnlReport1List" 
-                                                     />
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="PDF" /> 
+                                    </p:commandButton>
 
                                     <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
-                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonioXLS()}"
+                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
                                                      oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                      async="true"
                                                      global="false"
-                                                     process="@this,pnlReporPat1,pnlReport1List" 
-                                                     />
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="XLS" /> 
+                                    </p:commandButton>
                                 </h:panelGrid>
                             </h:panelGrid>
                         </h:panelGrid>

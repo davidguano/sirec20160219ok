@@ -237,7 +237,7 @@ public class GestionPatenteControlador extends BaseControlador {
                 artesCalificado = patenteActual.getPatArtesanoCalificado();
                 llevaConta = patenteActual.getPatObligadoCont();
                 catastroPredBusca = patenteActual.getCatpreCodigo().getCatpreCodNacional() + patenteActual.getCatpreCodigo().getCatpreCodLocal();
-                propietarioActual = propietarioServicio.buscarPropietarioPorCatastro(patenteActual.getCatpreCodigo().getCatpreCodigo());
+                propietarioActual = propietarioServicio.buscarPropietarioPorCedula(patenteActual.getProCiPatente().getProCi());
                 catDetParroquia = catalogoDetalleServicio.buscarPorCodigoCatDet(propietarioActual.getCatdetCiudad().getCatdetCodigo());
                 catastroPredialActual = catastroPredialServicio.buscarCatastroPorCodigoCatastro(patenteActual.getCatpreCodigo().getCatpreCodigo());
             }
