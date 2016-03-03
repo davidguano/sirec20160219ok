@@ -28,6 +28,7 @@ import javax.faces.application.ProjectStage;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -66,10 +67,12 @@ public class GestionRepPatenteControlador extends BaseControlador {
     String cadenaRegSeleccionados;
     private int seleccionaReporte;
     private int numReporte;
+    private String tipoReporte;
 
     @PostConstruct
     public void inicializar() {
         try {
+            tipoReporte = null;
             fechaActual = new Date();
             listaReportes = new ArrayList<Object[]>();
             listaRepSeleccion = new ArrayList<Object[]>();
@@ -79,6 +82,58 @@ public class GestionRepPatenteControlador extends BaseControlador {
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
+    }
+
+    public String retornaFecha() {
+        String fechaSistema = "";
+        Calendar fecha = Calendar.getInstance();
+        int anio = fecha.get(Calendar.YEAR);
+        int mes = fecha.get(Calendar.MONTH) + 1;
+        int dia = fecha.get(Calendar.DAY_OF_MONTH);
+        int hora = fecha.get(Calendar.HOUR_OF_DAY);
+        int minuto = fecha.get(Calendar.MINUTE);
+        //int segundo = fecha.get(Calendar.SECOND);
+        String mesLetras = "";
+        switch (mes) {
+            case 1:
+                mesLetras = "Enero";
+                break;
+            case 2:
+                mesLetras = "Febrero";
+                break;
+            case 3:
+                mesLetras = "Marzo";
+                break;
+            case 4:
+                mesLetras = "Abril";
+                break;
+            case 5:
+                mesLetras = "Mayo";
+                break;
+            case 6:
+                mesLetras = "Junio";
+                break;
+            case 7:
+                mesLetras = "Julio";
+                break;
+            case 8:
+                mesLetras = "Agosto";
+                break;
+            case 9:
+                mesLetras = "Septiembre";
+                break;
+            case 10:
+                mesLetras = "Octubre";
+                break;
+            case 11:
+                mesLetras = "Noviembre";
+                break;
+            case 12:
+                mesLetras = "Diciembre";
+                break;
+        }
+        fechaSistema = "Fecha de emisión: " + dia + " de " + mesLetras + " del " + anio + " a las: " + hora + ":" + minuto;
+        return fechaSistema;
     }
 
     public void buscaSelecciona() {
@@ -128,84 +183,63 @@ public class GestionRepPatenteControlador extends BaseControlador {
     }
 
     public String reporteNegRangoPatrimonio() throws Exception {
-        //Conexion con local datasource
-        usuarioActual = new SegUsuario();
-        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
-        UtilitariosCod util = new UtilitariosCod();
-        Connection conexion = util.getConexion();
-        byte[] fichero = null;
-        JasperReport jasperReport = null;
-        Map parameters = new HashMap();
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
-            session.removeAttribute("reporteInforme");
-            parameters.put("valor_inicial", valorInicial);
-            parameters.put("valor_final", valorFinal);
-            parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
-            parameters.put("fecha_genera", fechaActual.getDay() + "-" + fechaActual.getMonth() + "-" + fechaActual.getYear());
-            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
-            parameters.put("rango_parametros", cargarRgistroSeleccionado());
-            jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
-            fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
-            session.setAttribute("reporteInforme", fichero);
+        if (cargarRgistroSeleccionado().equals("")) {
+            addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
+        } else {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = facesContext.getExternalContext();
+            Map<String, String> params = externalContext.getRequestParameterMap();
+            tipoReporte = params.get("paramTipoReporte");
+            System.out.println("Parametro Enviado" + tipoReporte);
+            //Conexion con local datasource
             usuarioActual = new SegUsuario();
-        } catch (JRException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, null, e);
-        } finally {
-            if (conexion != null) {
-                conexion.close();
-            }
-        }
-        return null;
-    }
+            usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+            UtilitariosCod util = new UtilitariosCod();
+            Connection conexion = util.getConexion();
+            byte[] fichero = null;
+            JasperReport jasperReport = null;
+            JasperPrint jasperPrint = new JasperPrint(); //Excel
+            Map parameters = new HashMap();
+            try {
+                FacesContext context = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+                ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+                session.removeAttribute("reporteInforme");
+                parameters.put("valor_inicial", valorInicial);
+                parameters.put("valor_final", valorFinal);
+                parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+                parameters.put("fecha_genera", retornaFecha());
+                parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+                parameters.put("rango_parametros", cargarRgistroSeleccionado());
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
+                if (tipoReporte.equals("PDF")) {
+                    fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+                    session.setAttribute("reporteInforme", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+                if (tipoReporte.equals("XLS")) {
+                    jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
+                    JRXlsExporter exporterXLS = new JRXlsExporter();
+                    ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
+                    exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+                    exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
+                    exporterXLS.exportReport();
+                    fichero = xlsReport.toByteArray();
+                    session.setAttribute("reporteInformeXls", fichero);
+                    usuarioActual = new SegUsuario();
+                }
 
-    public String reporteNegRangoPatrimonioXLS() throws Exception {
-        //Conexion con local datasource
-        usuarioActual = new SegUsuario();
-        usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
-        UtilitariosCod util = new UtilitariosCod();
-        Connection conexion = util.getConexion();
-        byte[] fichero = null;
-        JasperReport jasperReport = null;
-        JasperPrint jasperPrint = new JasperPrint(); //Excel
-        Map parameters = new HashMap();
-        try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
-            session.removeAttribute("reporteInforme");
-            parameters.put("valor_inicial", valorInicial);
-            parameters.put("valor_final", valorFinal);
-            parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
-            parameters.put("fecha_genera", fechaActual.getDay() + "-" + fechaActual.getMonth() + "-" + fechaActual.getYear());
-            parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
-            parameters.put("rango_parametros", cargarRgistroSeleccionado());
-           jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorRangoPatrimonio.jasper"));
-            
-                jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
-                JRXlsExporter exporterXLS = new JRXlsExporter();
-                ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
-                exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
-                exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
-                exporterXLS.exportReport();
-                fichero = xlsReport.toByteArray();
-                session.setAttribute("reporteInformeXls", fichero);
-               
-            session.setAttribute("reporteInforme", fichero);
-            usuarioActual = new SegUsuario();
-        } catch (JRException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, null, e);
-        } finally {
-            if (conexion != null) {
-                conexion.close();
+            } catch (JRException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, null, e);
+            } finally {
+                if (conexion != null) {
+                    conexion.close();
+                }
             }
         }
+
         return null;
     }
 
@@ -326,4 +360,11 @@ public class GestionRepPatenteControlador extends BaseControlador {
         this.numReporte = numReporte;
     }
 
+    public String getTipoReporte() {
+        return tipoReporte;
+    }
+
+    public void setTipoReporte(String tipoReporte) {
+        this.tipoReporte = tipoReporte;
+    }
 }
