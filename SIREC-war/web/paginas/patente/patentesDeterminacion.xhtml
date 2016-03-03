@@ -46,7 +46,7 @@
                                                      icon="ui-icon-extlink"  
                                                      process="@this,DedPatBuscaPatente" 
                                                      onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat:tabPrin:detPatenBtnGuAct,:frmPat:tabPrin:pnlBotAniLimVerDet,:frmPat:tabPrin:pnlConDetalleDeducDet,frmPat:tabPrin:pnlConAvisoDedPat,frmPat:tabPrin:DedPatBuscaPatente"
+                                                     update=":frmPat:tabPrin:pnlPatDetNumero,:frmPat:tabPrin:pnlContienDetImpuestos,:frmPat:tabPrin:detPatenBtnGuAct,:frmPat:tabPrin:pnlBotAniLimVerDet,:frmPat:tabPrin:pnlConDetalleDeducDet,frmPat:tabPrin:DedPatBuscaPatente"
                                                      async="true"
                                                      global="false"
                                                      />            
@@ -91,7 +91,7 @@
                                     </h:panelGrid>
                                 </p:panel>
                             </h:panelGrid>
-                            <h:panelGrid id="pnlConAvisoDedPat">
+                          <!--  <h:panelGrid id="pnlConAvisoDedPat">
                                 <p:panel rendered="#{gestionDetPatenteControlador.deducciones==false}">
                                     <p:outputLabel style="font-size: #{txt.font_size}" id="preExiste" value="Existe exoneración, multa o deducción que aplicar a la patente ? "/>                                                                                       
                                     <p:selectBooleanButton required="true" requiredMessage="Existe exoneración, multa o deducción que aplicar a la patente ? Se necesita un valor" id="preExisteChk" value="#{gestionDetPatenteControlador.existeDedPatente}" onLabel="Si" offLabel="No" style="width:60px" >
@@ -100,7 +100,7 @@
                                     </p:selectBooleanButton>
                                     <p:message for="preExiste"/> 
                                 </p:panel>  
-                            </h:panelGrid>
+                            </h:panelGrid> -->
                             <h:panelGrid columns="3" id="pnlBotAniLimVerDet">
                                 <p:commandButton value="#{txt.btn_anadir_periodo}" 
                                                  id="btnAnPeriodo" 
