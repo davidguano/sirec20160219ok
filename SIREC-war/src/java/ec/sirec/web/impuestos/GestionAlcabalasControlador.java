@@ -581,7 +581,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
 
             if (catastroPredialActual != null) {
                 try {
-                    if (listaAlcabalasArchivo.size() > 0) {
+//                    if (listaAlcabalasArchivo.size() > 0) {
 
 //                        if(visibleRenumeracion.equals("E_R10") && renumeracion.compareTo(BigDecimal.ZERO)==0){
 //                        
@@ -628,9 +628,9 @@ public class GestionAlcabalasControlador extends BaseControlador {
                        /// } // fin remuneracion 
                         
 
-                    } else {
-                        addSuccessMessage("No se han cargado documentos!","No se han cargado documentos!");
-                    }
+//                    } else {
+//                        addSuccessMessage("No se han cargado documentos!","No se han cargado documentos!");
+//                    }
                 } catch (NullPointerException exNull) {
                     // LOGGER.log(Level.SEVERE, null, exNull);
                     addSuccessMessage("No se han cargado documentos!","No se han cargado documentos!");
@@ -748,15 +748,15 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
     
     public void guardarPlusvalia() {
         try {
-          if (listaPlusvaliaArchivo.size() > 0) {
+          //if (listaPlusvaliaArchivo.size() > 0) {
           catastroPredialPlusvaliaValoracion.setCatpreCodigo(catastroPredialActual); 
             catastroPredialPlusvaliaValoracion.setCatprepluvalActivo(false); 
             catastroPredialPlusvaliaValoracion.setCatprepluvalAnio(anio);
             catastroPredialPlusvaliaValoracionServicio.crearCatastroPredialPlusvaliaValoracion(catastroPredialPlusvaliaValoracion);           
             addSuccessMessage("Guardado Exitosamente!","Guardado Exitosamente!");
-         } else {
-            addErrorMessage("No se han cargado documentos!","No se han cargado documentos!");             
-           }                                    
+//         } else {
+//            addErrorMessage("No se han cargado documentos!","No se han cargado documentos!");             
+//           }                                    
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
