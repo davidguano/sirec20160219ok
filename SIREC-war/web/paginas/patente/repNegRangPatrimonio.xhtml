@@ -15,16 +15,23 @@
                     <p:panel   header="Seleccione una opción:" style="font-size: 12px">
                         <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5"> 
                             <p:outputLabel for="console" value="Reportes:" />
-                            <p:selectOneRadio  columns="1" layout="grid" id="console" value="#{gestionRepPatenteControlador.seleccionaReporte}"  >
+                            <p:selectOneRadio  columns="3" layout="grid" id="console" value="#{gestionRepPatenteControlador.seleccionaReporte}"  >
                                 <f:selectItem itemLabel="Reporte de negocios por rango de patrimonio" itemValue="#{1}" />
-                                <f:selectItem itemLabel="Reporte de emisión Inicial" itemValue="#{2}" />
+                                <f:selectItem itemLabel="Reporte de emisión inicial" itemValue="#{2}" />
+                                <f:selectItem itemLabel="Reporte de negocios por parroquia" itemValue="#{3}" />
+                                <f:selectItem itemLabel="Reporte de negocios por sector" itemValue="#{4}" />
+                                <f:selectItem itemLabel="Reporte de negocios por propietario" itemValue="#{5}" />
+                                <f:selectItem itemLabel="Reporte de negocios por tipo de actividad económica" itemValue="#{6}" />
+                                <f:selectItem itemLabel="Reporte de negocios por artesano calificado" itemValue="#{7}" />
+                                <f:selectItem itemLabel="Reporte de negocios (lleva contabilidad)" itemValue="#{8}" />
+                                <f:selectItem itemLabel="Reporte de negocios (no lleva contabilidad)" itemValue="#{9}" />
                                 <p:ajax update="pnlContieneReportes" listener="#{gestionRepPatenteControlador.buscaSelecciona()}" process="@this" ></p:ajax>
                             </p:selectOneRadio>
                         </h:panelGrid> 
                     </p:panel>
                     <p:panel header="Reportes Patentes y 1.5 por mil:" id="pnlContieneReportes" >
-                        <h:panelGrid id="pnlReporPat1" rendered="#{gestionRepPatenteControlador.numReporte==1}">
-                            <p:panel header="Reporte de negocios por rango de patrimonio:" style="font-size: 12px">
+                        <h:panelGrid id="pnlReporPat1" >
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==1}" header="Reporte de negocios por rango de patrimonio:" style="font-size: 12px">
                                 <h:panelGrid columns="4">
                                     <p:outputLabel value="Ingrese el valor inicial: " style="font-size: 12px"/> <p:inputText value="#{gestionRepPatenteControlador.valorInicial}"></p:inputText>
                                     <p:outputLabel value="Ingrese el valor final: " style="font-size: 12px"/> <p:inputText value="#{gestionRepPatenteControlador.valorFinal}"></p:inputText>
@@ -36,84 +43,10 @@
                                                      update="pnlReport1List"
                                                      async="true"
                                                      global="false"
-                                                     />  </h:panelGrid>
-                            </p:panel>
-                            <h:panelGrid id="pnlReport1List" width="1200">
-                                <p:dataTable rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}" id="listaDatosReporte1" var="car" value="#{gestionRepPatenteControlador.listaReportes}" scrollable="true" scrollHeight="200"
-                                             selection="#{gestionRepPatenteControlador.listaRepSeleccion}" scrollWidth="1200" widgetVar="carsTable"  rowKey="#{car[0]}"  >                    
-                                    <p:column style="font-size: 12px" width="60" headerText="Patente">
-                                        <h:outputText style="font-size: 12px" value="AE-MPM-#{car[0]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="20" headerText="Año">
-                                        <h:outputText style="font-size: 12px" value="#{car[13]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="100" headerText="Estado">
-                                        <h:outputText style="font-size: 12px" value="#{car[1]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="100" headerText="Catastro Predial">
-                                        <h:outputText style="font-size: 12px" value="#{car[2]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="250" headerText="Nombre Comercial">
-                                        <h:outputText style="font-size: 12px" value="#{car[3]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="150" headerText="Representante Legal">
-                                        <h:outputText style="font-size: 12px" value="#{car[4]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="250" headerText="Propietario">
-                                        <h:outputText style="font-size: 12px" value="#{car[5]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="150" headerText="Tipo establecimiento">
-                                        <h:outputText style="font-size: 12px" value="#{car[6]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="Tipo Empresa">
-                                        <h:outputText style="font-size: 12px" value="#{car[7]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="100" headerText="Act.Economica">
-                                        <h:outputText style="font-size: 12px" value="#{car[8]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="100" headerText="Inicio act.Economica">
-                                        <h:outputText style="font-size: 12px" value="#{car[9]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="Art.Calificado">
-                                        <h:outputText style="font-size: 12px" value="#{car[10]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="Obl.lleva.contab.">
-                                        <h:outputText style="font-size: 12px" value="#{car[11]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="Patrimonio">
-                                        <h:outputText style="font-size: 12px" value="#{car[12]}" />
-                                    </p:column>                                                                     
-                                    <p:column width="80" selectionMode="multiple"   headerText="Seleccionar" style="font-size: 12px">
-                                    </p:column>
-                                </p:dataTable>
-                                <h:panelGrid columns="2">
-                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1" value="Generar (PDF)"
-                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
-                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
-                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                     async="true"
-                                                     global="false"
-                                                     update=":frmPat:msgs"
-                                                     process="@this,pnlReporPat1,pnlReport1List">
-                                        <f:param name="paramTipoReporte" value="PDF" /> 
-                                    </p:commandButton>
-
-                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
-                                                     action="#{gestionRepPatenteControlador.reporteNegRangoPatrimonio()}"
-                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
-                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
-                                                     async="true"
-                                                     global="false"
-                                                     update=":frmPat:msgs"
-                                                     process="@this,pnlReporPat1,pnlReport1List">
-                                        <f:param name="paramTipoReporte" value="XLS" /> 
-                                    </p:commandButton>
+                                                     />
                                 </h:panelGrid>
-                            </h:panelGrid>
-                        </h:panelGrid>
-
-                        <h:panelGrid id="pnlReporPat2" rendered="#{gestionRepPatenteControlador.numReporte==2}">
-                            <p:panel header="Reporte de emisión inicial:" style="font-size: 12px">
+                            </p:panel>
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==2}"  header="Reporte de emisión inicial:" style="font-size: 12px">
                                 <h:panelGrid columns="2">
                                     <h:panelGrid>
                                         <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
@@ -130,74 +63,418 @@
                                                      id="btnCargaInfRep2" 
                                                      action="#{gestionRepPatenteControlador.listarDatosReporte2()}" 
                                                      icon="ui-icon-search"  
-                                                     process="@this,pnlReporPat2" 
+                                                     process="@this,pnlReporPat1" 
                                                      update="pnlReport2List"
                                                      async="true"
                                                      global="false"
                                                      />                                   
                                 </h:panelGrid>
                             </p:panel>
-                            <h:panelGrid id="pnlReport2List" width="1200">
-                                <p:dataTable rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}" id="listaDatosReporte2" var="car" value="#{gestionRepPatenteControlador.listaReportes}" scrollable="true" scrollHeight="200"
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==3}" header="Reporte de negocios por parroquia:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_3" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_3" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_3" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_3" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Sector"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusParroquia" 
+                                                         value="#{gestionRepPatenteControlador.catDetParroquia}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepPatenteControlador.listParroquias}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusParroquia" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRepPa" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte3()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     /> 
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==4}" header="Reporte de negocios por sector:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_4" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_4" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_4" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_4" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Sector"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusSector" 
+                                                         value="#{gestionRepPatenteControlador.catDetSector}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepPatenteControlador.listaSectores}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusSector" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep3" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte4()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />  </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==5}" header="Reporte de negocios por propietario:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid columns="6" id="pnlConCedOcciso">
+                                        <h:panelGrid columns="4" id="pnlBuscaCedOcciso">
+                                            <p:outputLabel value="Ingrese la Cédula/Ruc:"  style="font-size: 12px" />
+                                            <p:autoComplete  
+                                                value="#{gestionRepPatenteControlador.propietarioActual}"
+                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                completeMethod="#{gestionRepPatenteControlador.sugiereCedulaRuc}"
+                                                var="player"
+                                                itemLabel="#{player.proCi}"
+                                                itemValue="#{player}"
+                                                size="15"
+                                                converter="#{propietarioConverter}" >
+                                                <p:ajax event="itemSelect" process="@this,pnlBuscaCedOcciso" listener="#{gestionRepPatenteControlador.onItemSelectPropietarioOcciso}" update="pnlConCedOcciso" />
+                                            </p:autoComplete>                                            
+                                        </h:panelGrid>
+                                        <p:column/>
+                                        <p:column/>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Nombre del propietario:"/>
+                                        <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionRepPatenteControlador.nombrePropietario}" 
+                                                      size="40"/>
+                                        <p:message for="compPnl1_7" display="icon"/>
+                                    </h:panelGrid> 
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_5" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_5" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_5" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_5" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep4" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte5()}" 
+                                                     icon="ui-icon-search"  
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     process="@this,pnlReporPat1" 
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />  
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==6}" header="Reporte de negocios por actividad económica:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Actividad Económica:"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusActividad" 
+                                                         value="#{gestionRepPatenteControlador.actEconomica}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepPatenteControlador.listActividadEconomica}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusActividad" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_6" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_6" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_6" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_6" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep5" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte6()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     /> 
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==7}" header="Reporte de negocios por artesano calificado:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_7" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_7" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_7" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_7" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep6" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte7()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     update="pnlReport1List"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     />  </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==8}" header="Reporte de negocios por (Obligado a llevar contabilidad):" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_8" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_8" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_8" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_8" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep7" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte8()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />  </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepPatenteControlador.numReporte==9}" header="Reporte de negocios por (No Obligado a llevar contabilidad):" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_9" value="#{gestionRepPatenteControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_9" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_9" value="#{gestionRepPatenteControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_9" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep8" 
+                                                     action="#{gestionRepPatenteControlador.listarDatosReporte9()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     /> 
+                                </h:panelGrid>
+                            </p:panel>
+
+
+                            <h:panelGrid id="pnlReport1List" width="1200">
+
+                                <p:dataTable rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}" id="listaDatosReporte1" var="car" value="#{gestionRepPatenteControlador.listaReportes}" scrollable="true" scrollHeight="200"
                                              selection="#{gestionRepPatenteControlador.listaRepSeleccion}" scrollWidth="1200" widgetVar="carsTable"  rowKey="#{car[0]}"  >                    
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_clave_pat}">
+                                    <p:column style="font-size: 12px" width="60" headerText="Patente">
                                         <h:outputText style="font-size: 12px" value="AE-MPM-#{car[0]}" />
                                     </p:column>
-                                    <p:column style="font-size: 12px" width="200" headerText="#{txt.lbl_emi_nom_contri}">
-                                        <h:outputText style="font-size: 12px" value="#{car[1]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_ruc}">
-                                        <h:outputText style="font-size: 12px" value="#{car[2]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="250" headerText="#{txt.lbl_emi_direccion}">
-                                        <h:outputText style="font-size: 12px" value="#{car[3]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="150" headerText="#{txt.lbl_emi_parroquia}">
-                                        <h:outputText style="font-size: 12px" value="#{car[4]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="20" headerText="#{txt.lbl_emi_anio}">
-                                        <h:outputText style="font-size: 12px" value="#{car[5]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_patri}">
-                                        <h:outputText style="font-size: 12px" value="#{car[6]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_imp}">
-                                        <h:outputText style="font-size: 12px" value="#{car[7]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_bomb}">
-                                        <h:outputText style="font-size: 12px" value="#{car[8]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_tasa_proc}">
-                                        <h:outputText style="font-size: 12px" value="#{car[9]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_tot_patente}">
-                                        <h:outputText style="font-size: 12px" value="#{car[10]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_bas_imp}">
-                                        <h:outputText style="font-size: 12px" value="#{car[11]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_imporMil}">
-                                        <h:outputText style="font-size: 12px" value="#{car[12]}" />
-                                    </p:column>
-                                    <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_tas_proc_mil}">
+                                    <p:column style="font-size: 12px" width="30" headerText="Año">
                                         <h:outputText style="font-size: 12px" value="#{car[13]}" />
                                     </p:column>
-                                    <p:column style="font-size: 12px" width="40" headerText="#{txt.lbl_emi_tot_porMil}">
-                                        <h:outputText style="font-size: 12px" value="#{car[14]}" />
+                                    <p:column style="font-size: 12px" width="100" headerText="Estado">
+                                        <h:outputText style="font-size: 12px" value="#{car[1]}" />
                                     </p:column>
+                                    <p:column style="font-size: 12px" width="110" headerText="Catastro Predial">
+                                        <h:outputText style="font-size: 12px" value="#{car[2]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Nombre Comercial">
+                                        <h:outputText style="font-size: 12px" value="#{car[3]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="150" headerText="Representante Legal">
+                                        <h:outputText style="font-size: 12px" value="#{car[4]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Propietario">
+                                        <h:outputText style="font-size: 12px" value="#{car[5]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="100" headerText="Tipo establecimiento">
+                                        <h:outputText style="font-size: 12px" value="#{car[6]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="50" headerText="Tipo Empresa">
+                                        <h:outputText style="font-size: 12px" value="#{car[7]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="100" headerText="Act.Economica">
+                                        <h:outputText style="font-size: 12px" value="#{car[8]}" />
+                                    </p:column>
+                                    <!--  <p:column style="font-size: 12px" width="100" headerText="Inicio act.Economica">
+                                          <h:outputText style="font-size: 12px" value="#{car[9]}" />
+                                      </p:column> -->
+                                    <!--  <p:column style="font-size: 12px" width="50" headerText="Art.Calificado">
+                                          <h:outputText style="font-size: 12px" value="#{car[10]}" />
+                                      </p:column> -->
+                                    <!--  <p:column style="font-size: 12px" width="50" headerText="Obl.lleva.contab.">
+                                          <h:outputText style="font-size: 12px" value="#{car[11]}" />
+                                      </p:column> -->
+                                    <!--  <p:column style="font-size: 12px" width="60" headerText="Patrimonio">
+                                          <h:outputText style="font-size: 12px" value="#{car[12]}" />
+                                      </p:column> -->                                                                    
                                     <p:column width="80" selectionMode="multiple"   headerText="Seleccionar" style="font-size: 12px">
                                     </p:column>
                                 </p:dataTable>
-                                <p:commandButton style="font-size: 12px" id="btnGeneraRep2" value="Generar Reporte"
-                                                 action="#{gestionRepPatenteControlador.reporteEmisionPatentes()}"
+                                <p:panel rendered="#{gestionRepPatenteControlador.verResultados==1}">
+                                    <center>
+                                        <h:outputText value="NO SE ENCONTRARON RESULTADOS" style="font-size: 12px; font-weight: bold"></h:outputText>
+                                    </center>
+                                </p:panel>
+                                <h:panelGrid columns="2" rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}">
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1" value="Generar (PDF)"
+                                                     action="#{gestionRepPatenteControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="PDF" /> 
+                                    </p:commandButton>
+
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
+                                                     action="#{gestionRepPatenteControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="XLS" /> 
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+
+
+                        <h:panelGrid id="pnlReport2List" width="1200">
+                            <p:dataTable rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}" id="listaDatosReporte2" var="car" value="#{gestionRepPatenteControlador.listaReportes}" scrollable="true" scrollHeight="200"
+                                         selection="#{gestionRepPatenteControlador.listaRepSeleccion}" scrollWidth="1200" widgetVar="carsTable"  rowKey="#{car[0]}"  >                    
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_clave_pat}">
+                                    <h:outputText style="font-size: 12px" value="AE-MPM-#{car[0]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="200" headerText="#{txt.lbl_emi_nom_contri}">
+                                    <h:outputText style="font-size: 12px" value="#{car[1]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_ruc}">
+                                    <h:outputText style="font-size: 12px" value="#{car[2]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="250" headerText="#{txt.lbl_emi_direccion}">
+                                    <h:outputText style="font-size: 12px" value="#{car[3]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="150" headerText="#{txt.lbl_emi_parroquia}">
+                                    <h:outputText style="font-size: 12px" value="#{car[4]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="20" headerText="#{txt.lbl_emi_anio}">
+                                    <h:outputText style="font-size: 12px" value="#{car[5]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_patri}">
+                                    <h:outputText style="font-size: 12px" value="#{car[6]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_imp}">
+                                    <h:outputText style="font-size: 12px" value="#{car[7]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_bomb}">
+                                    <h:outputText style="font-size: 12px" value="#{car[8]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_tasa_proc}">
+                                    <h:outputText style="font-size: 12px" value="#{car[9]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="60" headerText="#{txt.lbl_emi_tot_patente}">
+                                    <h:outputText style="font-size: 12px" value="#{car[10]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_bas_imp}">
+                                    <h:outputText style="font-size: 12px" value="#{car[11]}" />
+                                </p:column>
+                                <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_imporMil}">
+                                    <h:outputText style="font-size: 12px" value="#{car[12]}" />
+                                </p:column>
+                             <!--   <p:column style="font-size: 12px" width="50" headerText="#{txt.lbl_emi_tas_proc_mil}">
+                                    <h:outputText style="font-size: 12px" value="#{car[13]}" />
+                                </p:column> -->
+                                <p:column style="font-size: 12px" width="40" headerText="#{txt.lbl_emi_tot_porMil}">
+                                    <h:outputText style="font-size: 12px" value="#{car[14]}" />
+                                </p:column>
+                                <p:column width="80" selectionMode="multiple"   headerText="Seleccionar" style="font-size: 12px">
+                                </p:column>
+                            </p:dataTable>
+                            <p:panel rendered="#{gestionRepPatenteControlador.verResultados==1}">
+                                <center>
+                                    <h:outputText value="NO SE ENCONTRARON RESULTADOS" style="font-size: 12px; font-weight: bold"></h:outputText>
+                                </center>
+                            </p:panel>
+                            <h:panelGrid columns="2" rendered="#{gestionRepPatenteControlador.listaReportes.size()>0}">
+                                <p:commandButton style="font-size: 12px" id="btnGeneraRep2" value="Generar (PDF)"
+                                                 action="#{gestionRepPatenteControlador.ejecutaReporteSeleccionado()}"
                                                  oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
                                                  onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
                                                  async="true"
                                                  global="false"
-                                                 process="@this,pnlReporPat2,pnlReport2List" 
-                                                 />
+                                                 update=":frmPat:msgs"
+                                                 process="@this,pnlReporPat1,pnlReport2List">
+                                    <f:param name="paramTipoReporte" value="PDF" /> 
+                                </p:commandButton>
+
+                                <p:commandButton style="font-size: 12px" id="btnGeneraRep2Excel" value="Generar (EXCEL)"
+                                                 action="#{gestionRepPatenteControlador.ejecutaReporteSeleccionado()}"
+                                                 oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
+                                                 onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                 async="true"
+                                                 global="false"
+                                                 update=":frmPat:msgs"
+                                                 process="@this,pnlReporPat1,pnlReport2List">
+                                    <f:param name="paramTipoReporte" value="XLS" /> 
+                                </p:commandButton>
                             </h:panelGrid>
                         </h:panelGrid>
+
                     </p:panel>
                 </center>
             </h:form>
