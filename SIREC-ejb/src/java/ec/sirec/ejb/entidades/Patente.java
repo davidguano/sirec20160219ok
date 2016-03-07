@@ -121,7 +121,9 @@ public class Patente implements Serializable {
     private Date patFechaVencimiento;
     @Column(name = "pat_deuda_inicial")
     private BigDecimal patDeudaInicial;
-
+    @Column(name = "pat_fecha_registra")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date patFechaRegistra;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patCodigo")
     private List<PatenteArchivo> patenteArchivoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patCodigo")
@@ -502,6 +504,14 @@ public class Patente implements Serializable {
 
     public void setPatente15xmilValoracionList(List<Patente15xmilValoracion> patente15xmilValoracionList) {
         this.patente15xmilValoracionList = patente15xmilValoracionList;
+    }
+
+    public Date getPatFechaRegistra() {
+        return patFechaRegistra;
+    }
+
+    public void setPatFechaRegistra(Date patFechaRegistra) {
+        this.patFechaRegistra = patFechaRegistra;
     }
 
     @Override
