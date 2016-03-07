@@ -296,6 +296,7 @@ public class GestionPatenteControlador extends BaseControlador {
                 patenteActual.setUltaccDetalle(datoGlobalActual.getDatgloDescripcion());
                 patenteActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
                 patenteActual.setProCiPatente(propietarioActual);
+                patenteActual.setPatFechaRegistra(java.util.Calendar.getInstance().getTime());
                 patenteServicio.crearPatente(patenteActual);
                 guardarArchivos();
                 getSession().setAttribute("patente", patenteActual);
