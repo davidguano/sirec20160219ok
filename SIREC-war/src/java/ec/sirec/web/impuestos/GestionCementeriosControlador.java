@@ -220,6 +220,7 @@ public class GestionCementeriosControlador extends BaseControlador {
                 cementerioActual.setUsuIdentificacion(usuarioActual);
                 cementerioActual.setUltaccDetalle(datoGlobalActual.getDatgloValor());
                 cementerioActual.setUltaccMarcatiempo(java.util.Calendar.getInstance().getTime());
+                cementerioActual.setCemFechaRegistra(java.util.Calendar.getInstance().getTime());
                 cementerioServicio.crearCementerio(cementerioActual);
                 if (!listaFiles.isEmpty()) {
                     guardarArchivos();

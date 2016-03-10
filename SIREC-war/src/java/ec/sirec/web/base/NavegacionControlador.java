@@ -153,7 +153,7 @@ public class NavegacionControlador extends BaseControlador {
             itemCatDet.setIcon("ui-icon-person");
             itemCatDet.setCommand("#{navegacionControlador.redireccionarAPagina('base','catalogo_detalle')}");
             subMenuAdmin.addElement(itemCatDet);
-            
+
             DefaultMenuItem itemInteres = new DefaultMenuItem("Parametrizacion de Interes");
             itemInteres.setIcon("ui-icon-person");
             itemInteres.setCommand("#{navegacionControlador.redireccionarAPagina('base','interes')}");
@@ -229,18 +229,18 @@ public class NavegacionControlador extends BaseControlador {
             recaudacion.setCommand("#{navegacionControlador.redireccionarAPagina('recaudacion','recaudacion')}");
             subMenurecaudacion.addElement(recaudacion);
             menu.addElement(subMenurecaudacion);
-            
+
             DefaultSubMenu subMenuTesoreria = new DefaultSubMenu("Tesoreria");
 
             DefaultMenuItem bajas = new DefaultMenuItem("Bajas");
             bajas.setIcon("ui-icon-person");
             bajas.setCommand("#{navegacionControlador.redireccionarAPagina('tesoreria','bajas')}");
             subMenuTesoreria.addElement(bajas);
-             DefaultMenuItem coactivas = new DefaultMenuItem("Coactivas");
+            DefaultMenuItem coactivas = new DefaultMenuItem("Coactivas");
             coactivas.setIcon("ui-icon-person");
             coactivas.setCommand("#{navegacionControlador.redireccionarAPagina('tesoreria','coactivas')}");
             subMenuTesoreria.addElement(coactivas);
-             DefaultMenuItem conveniosPago = new DefaultMenuItem("Convenios de Pago");
+            DefaultMenuItem conveniosPago = new DefaultMenuItem("Convenios de Pago");
             conveniosPago.setIcon("ui-icon-person");
             conveniosPago.setCommand("#{navegacionControlador.redireccionarAPagina('tesoreria','convenios_pago')}");
             subMenuTesoreria.addElement(conveniosPago);
@@ -251,12 +251,17 @@ public class NavegacionControlador extends BaseControlador {
             reportePatente.setIcon("ui-icon-person");
             reportePatente.setCommand("#{navegacionControlador.redireccionarAPagina('patente','repNegRangPatrimonio')}");
             subMenuReportes.addElement(reportePatente);
-                        
+
+            DefaultMenuItem repComisariaMunicipal = new DefaultMenuItem("Comisaria Municipal");
+            repComisariaMunicipal.setIcon("ui-icon-person");
+            repComisariaMunicipal.setCommand("#{navegacionControlador.redireccionarAPagina('patente','reporteCementerios')}");
+            subMenuReportes.addElement(repComisariaMunicipal);
+
             DefaultMenuItem reporteAlcabalas = new DefaultMenuItem("Alcabalas Y Plusvalias");
             reporteAlcabalas.setIcon("ui-icon-person");
             reporteAlcabalas.setCommand("#{navegacionControlador.redireccionarAPagina('impuestos','repAlcabalasEmitidas')}");
             subMenuReportes.addElement(reporteAlcabalas);
-            
+
             menu.addElement(subMenuReportes);
 
             DefaultMenuItem itemInicio = new DefaultMenuItem("Inicio");

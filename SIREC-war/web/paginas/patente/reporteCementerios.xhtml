@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition template="/plantillas/sirec_plantilla1.xhtml">
+        <ui:define name="contenido">
+            <!--REPORTES DE PATENTE-->
+            <h:form id="frmPat">   
+                <p:growl id="msgs" showSummary="true" sticky="true" showDetail="false"   /> 
+                <center>
+                    <p:panel   header="Seleccione una opción:" style="font-size: 12px">
+                        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5"> 
+                            <p:outputLabel for="console" value="Reportes:" />
+                            <p:selectOneRadio  columns="3" layout="grid" id="console" value="#{gestionRepCementerioControlador.seleccionaReporte}"  >
+                             <!--   <f:selectItem itemLabel="Reporte de deudores mayores a 4 años" itemValue="#{1}" /> -->
+                                <f:selectItem itemLabel="Reporte de occisos por tipo (Adulto, Niño)" itemValue="#{2}" />
+                                <f:selectItem itemLabel="Reporte de occisos por parroquia" itemValue="#{3}" />
+                                <f:selectItem itemLabel="Reporte de occisos por género" itemValue="#{4}" />
+                              <!--  <f:selectItem itemLabel="Reporte de tiempo de mora por año (Seleccionar años 1, 2, 3)" itemValue="#{5}" /> -->
+                               <!-- <f:selectItem itemLabel="Reporte de todos los cancelados (desde, hasta)" itemValue="#{6}" /> -->                            
+                                <p:ajax update="pnlContieneReportes" listener="#{gestionRepCementerioControlador.buscaSelecciona()}" process="@this" ></p:ajax>
+                            </p:selectOneRadio>
+                        </h:panelGrid> 
+                    </p:panel>
+                    <p:panel header="Reportes Comisaria Municipal:" id="pnlContieneReportes" >
+                        <h:panelGrid id="pnlReporPat1" >
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==1}" header="Reporte de deudores mayores a 4 años:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                     <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_1" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_1" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_1" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_1" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep1" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte1()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     update="pnlReport2List"
+                                                     async="true"
+                                                     global="false"
+                                                     />
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==2}"  header="Reporte de occisos por tipo (Adulto, Niño):" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Tipo nicho "/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusTipoPerNicho" 
+                                                         value="#{gestionRepCementerioControlador.catDetTipoPerNicho}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepCementerioControlador.listTipoPerNicho}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusTipoPerNicho" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep2" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte2()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />                                   
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==3}" header="Reporte de Occisos por parroquia:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_3" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_3" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_3" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_3" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Parroquia Occiso"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusParroquia" 
+                                                         value="#{gestionRepCementerioControlador.catDetParroquia}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepCementerioControlador.listParroquias}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusParroquia" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRepPa" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte3()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     /> 
+                                </h:panelGrid>
+                            </p:panel>
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==4}" header="Reporte de occisos por genero" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_4" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_4" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_4" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_4" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Genero"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusSector" 
+                                                         value="#{gestionRepCementerioControlador.catDetGenero}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepCementerioControlador.listaGenero}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusSector" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep3" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte4()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />  </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==5}" header="Reporte de negocios por propietario:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid columns="6" id="pnlConCedOcciso">
+                                        <h:panelGrid columns="4" id="pnlBuscaCedOcciso">
+                                            <p:outputLabel value="Ingrese la Cédula/Ruc:"  style="font-size: 12px" />
+                                            <p:autoComplete  
+                                                value="#{gestionRepCementerioControlador.propietarioActual}"
+                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
+                                                completeMethod="#{gestionRepCementerioControlador.sugiereCedulaRuc}"
+                                                var="player"
+                                                itemLabel="#{player.proCi}"
+                                                itemValue="#{player}"
+                                                size="15"
+                                                converter="#{propietarioConverter}" >
+                                                <p:ajax event="itemSelect" process="@this,pnlBuscaCedOcciso" listener="#{gestionRepCementerioControlador.onItemSelectPropietarioOcciso}" update="pnlConCedOcciso" />
+                                            </p:autoComplete>                                            
+                                        </h:panelGrid>
+                                        <p:column/>
+                                        <p:column/>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Nombre del propietario:"/>
+                                        <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionRepCementerioControlador.nombrePropietario}" 
+                                                      size="40"/>
+                                        <p:message for="compPnl1_7" display="icon"/>
+                                    </h:panelGrid> 
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_5" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_5" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_5" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_5" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep4" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte5()}" 
+                                                     icon="ui-icon-search"  
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     process="@this,pnlReporPat1" 
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     />  
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==6}" header="Reporte de negocios por actividad económica:" style="font-size: 12px">
+                                <h:panelGrid columns="1">
+                                    <h:panelGrid>
+                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Actividad Económica:"/>
+                                        <p:selectOneMenu requiredMessage="#{txt.lbl_parroquia} Se necesita un valor"      id="cmbBusActividad" 
+                                                         value="#{gestionRepCementerioControlador.actEconomica}" style="font-size: 12px;width:250px"
+                                                         converter="#{catalogoDetalleConverter}" var="t">
+                                            <f:selectItem  itemLabel="Seleccione..." itemValue="" /> 
+                                            <f:selectItems var="tipTem"  
+                                                           value="#{gestionRepCementerioControlador.listActividadEconomica}" 
+                                                           itemLabel="#{tipTem.catdetTexto}" 
+                                                           itemValue="#{tipTem}"/> 
+                                            <p:column width="200" style="white-space: normal">  
+                                                <h:outputText escape="false" value="#{t.catdetTexto}" style="font-size: 10px"/> 
+                                            </p:column> 
+                                        </p:selectOneMenu>   
+                                        <p:message for="cmbBusActividad" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_6" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
+                                        <p:message for="button1_6" display="icon"/>
+                                    </h:panelGrid>
+                                    <h:panelGrid>
+                                        <p:outputLabel value="Fecha final (fecha de registro): " style="font-size: 12px"/> 
+                                        <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button2_6" value="#{gestionRepCementerioControlador.fechaFinal}" showOn="button" />
+                                        <p:message for="button2_6" display="icon"/>
+                                    </h:panelGrid>
+                                    <p:commandButton value="#{txt.btn_cargar_infor}" 
+                                                     id="btnCargaInfRep5" 
+                                                     action="#{gestionRepCementerioControlador.listarDatosReporte6()}" 
+                                                     icon="ui-icon-search"  
+                                                     process="@this,pnlReporPat1" 
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     update="pnlReport1List"
+                                                     async="true"
+                                                     global="false"
+                                                     /> 
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <h:panelGrid id="pnlReport1List" width="1200">
+                                <p:dataTable rendered="#{gestionRepCementerioControlador.listaReportes.size()>0}" id="listaDatosReporte1" var="car" value="#{gestionRepCementerioControlador.listaReportes}" scrollable="true" scrollHeight="200"
+                                             selection="#{gestionRepCementerioControlador.listaRepSeleccion}" scrollWidth="1200" widgetVar="carsTable"  rowKey="#{car[0]}"  >                    
+                                    <p:column style="font-size: 12px" width="60" headerText="C.I Occiso:">
+                                        <h:outputText style="font-size: 12px" value="#{car[1]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Nombere Occiso">
+                                        <h:outputText style="font-size: 12px" value="#{car[2]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="100" headerText="Parroquia Occiso">
+                                        <h:outputText style="font-size: 12px" value="#{car[3]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Genero">
+                                        <h:outputText style="font-size: 12px" value="#{car[4]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Estado">
+                                        <h:outputText style="font-size: 12px" value="#{car[5]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="40" headerText="Nº Papeleta">
+                                        <h:outputText style="font-size: 12px" value="#{car[6]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Fecha Fallecimiento">
+                                        <h:outputText style="font-size: 12px" value="#{car[7]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Representante">
+                                        <h:outputText style="font-size: 12px" value="#{car[8]}" />
+                                    </p:column>
+                                    <p:column width="80" selectionMode="multiple"   headerText="Seleccionar" style="font-size: 12px">
+                                    </p:column>
+                                </p:dataTable>
+                                <p:panel rendered="#{gestionRepCementerioControlador.verResultados==1}">
+                                    <center>
+                                        <h:outputText value="NO SE ENCONTRARON RESULTADOS" style="font-size: 12px; font-weight: bold"></h:outputText>
+                                    </center>
+                                </p:panel>
+                                <h:panelGrid columns="2" rendered="#{gestionRepCementerioControlador.listaReportes.size()>0}">
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1" value="Generar (PDF)"
+                                                     action="#{gestionRepCementerioControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="PDF" /> 
+                                    </p:commandButton>
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep1Excel" value="Generar (EXCEL)"
+                                                     action="#{gestionRepCementerioControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="XLS" /> 
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            <!--
+                             <h:panelGrid id="pnlReport2List" width="1200">
+                                <p:dataTable rendered="#{gestionRepCementerioControlador.listaReportes.size()>0}" id="listaDatosReporte2" var="car" value="#{gestionRepCementerioControlador.listaReportes}" scrollable="true" scrollHeight="200"
+                                             selection="#{gestionRepCementerioControlador.listaRepSeleccion}" scrollWidth="1200" widgetVar="carsTable"  rowKey="#{car[0]}"  >                    
+                                    <p:column style="font-size: 12px" width="60" headerText="C.I Occiso:">
+                                        <h:outputText style="font-size: 12px" value="#{car[1]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Nombere Occiso">
+                                        <h:outputText style="font-size: 12px" value="#{car[2]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="100" headerText="Parroquia Occiso">
+                                        <h:outputText style="font-size: 12px" value="#{car[3]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Genero">
+                                        <h:outputText style="font-size: 12px" value="#{car[4]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Estado">
+                                        <h:outputText style="font-size: 12px" value="#{car[5]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="40" headerText="Nº Papeleta">
+                                        <h:outputText style="font-size: 12px" value="#{car[6]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="60" headerText="Fecha Fallecimiento">
+                                        <h:outputText style="font-size: 12px" value="#{car[7]}" />
+                                    </p:column>
+                                    <p:column style="font-size: 12px" width="250" headerText="Representante">
+                                        <h:outputText style="font-size: 12px" value="#{car[8]}" />
+                                    </p:column>
+                                    <p:column width="80" selectionMode="multiple"   headerText="Seleccionar" style="font-size: 12px">
+                                    </p:column>
+                                </p:dataTable>
+                                <p:panel rendered="#{gestionRepCementerioControlador.verResultados==1}">
+                                    <center>
+                                        <h:outputText value="NO SE ENCONTRARON RESULTADOS" style="font-size: 12px; font-weight: bold"></h:outputText>
+                                    </center>
+                                </p:panel>
+                                <h:panelGrid columns="2" rendered="#{gestionRepCementerioControlador.listaReportes.size()>0}">
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep2" value="Generar (PDF)"
+                                                     action="#{gestionRepCementerioControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServlet','ReporteServlet')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="PDF" /> 
+                                    </p:commandButton>
+                                    <p:commandButton style="font-size: 12px" id="btnGeneraRep2Excel" value="Generar (EXCEL)"
+                                                     action="#{gestionRepCementerioControlador.ejecutaReporteSeleccionado()}"
+                                                     oncomplete="javascript:window.open('#{facesContext.externalContext.requestContextPath}/ReporteServletXLS','ReporteServletXLS')"
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     async="true"
+                                                     global="false"
+                                                     update=":frmPat:msgs"
+                                                     process="@this,pnlReporPat1,pnlReport1List">
+                                        <f:param name="paramTipoReporte" value="XLS" /> 
+                                    </p:commandButton>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                            -->
+                        </h:panelGrid>
+                    </p:panel>
+                </center>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
