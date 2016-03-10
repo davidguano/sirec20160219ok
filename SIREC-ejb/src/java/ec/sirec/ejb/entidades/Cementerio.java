@@ -102,6 +102,9 @@ public class Cementerio implements Serializable {
     @Column(name = "ultacc_marcatiempo")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ultaccMarcatiempo;
+    @Column(name = "cem_fecha_registra")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date cemFechaRegistra;
     @OneToMany(mappedBy = "cemCodigo")
     private List<CementerioArchivo> cementerioArchivoList;
     @JoinColumn(name = "usu_identificacion", referencedColumnName = "usu_identificacion")
@@ -275,7 +278,6 @@ public class Cementerio implements Serializable {
         return cementerioArchivoList;
     }
 
-   
     public void setCementerioArchivoList(List<CementerioArchivo> cementerioArchivoList) {
         this.cementerioArchivoList = cementerioArchivoList;
     }
@@ -311,8 +313,14 @@ public class Cementerio implements Serializable {
     public void setProOccisoCi(Propietario proOccisoCi) {
         this.proOccisoCi = proOccisoCi;
     }
-    
-    
+
+    public Date getCemFechaRegistra() {
+        return cemFechaRegistra;
+    }
+
+    public void setCemFechaRegistra(Date cemFechaRegistra) {
+        this.cemFechaRegistra = cemFechaRegistra;
+    }
 
     @Override
     public int hashCode() {
