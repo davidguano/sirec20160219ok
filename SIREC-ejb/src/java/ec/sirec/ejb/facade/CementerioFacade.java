@@ -9,6 +9,7 @@ import ec.sirec.ejb.entidades.Catalogo;
 import ec.sirec.ejb.entidades.Cementerio;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -45,10 +46,11 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
     }
 
     //---------Reporte de deudores mayores a 4 años
+    public List<Object[]> listReporte1(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
+        List<Object[]> lista = new ArrayList<Object[]>();
 
-    public List<Object[]> listReporte1(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal,String fechActual) throws Exception {
-        List<Object[]> lista = new ArrayList<Object[]>();       
-        System.out.println("Parametro fecha " + fechActual);
+        Date fecHoy = new Date();
+        System.out.println("Parametro fecha " + fecHoy);
         String sql
                 = " select c.cem_codigo as codigo, c.pro_occiso_ci as cedula,c.cem_nombre_occiso as nomOcciso, cd.catdet_texto,case "
                 + "when c.cem_genero='M' then 'MASCULINO' "
@@ -61,12 +63,12 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
                 + "end as estadoCuerpo,c.cem_num_papeleta as papeleta, "
                 + "c.cem_fecha_fallece as fechaFallece, "
                 + "c.cem_representante as representante "
-                + ",(DATE_PART('year',:fechaFinal) - DATE_PART('year', c.cem_fecha_fin_contrato)) as aniosMora "
+                + ",(DATE_PART('year',CAST(:fechaHoy AS DATE)) - DATE_PART('year', c.cem_fecha_fin_contrato)) as aniosMora "
                 + " from sirec.cementerio  c,sirec.catalogo_detalle cd "
                 + " where c.catdet_parroquia=cd.catdet_codigo "
                 + " and c.cem_fecha_registra between :fechaInicial and :fechaFinal ";
-        Query q = em.createQuery(sql);
-        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaInicial);
+        Query q = em.createNativeQuery(sql);
+        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("fechaHoy", fecHoy);
         if (q.getResultList().isEmpty()) {
             return null;
         } else {

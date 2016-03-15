@@ -32,8 +32,8 @@ public class CementerioReporteServicio {
     @EJB
     private CementerioFacade cementerioDao;
 
-    public List<Object[]> listarDatReporte1(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal,String fecActual) throws Exception {
-        return cementerioDao.listReporte1(fechaInicial, fechaFinal,fecActual);
+    public List<Object[]> listarDatReporte1(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
+        return cementerioDao.listReporte1(fechaInicial, fechaFinal);
     }
 
     public List<Object[]> listaDatReporte2(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, String tipoNicho) throws Exception {
