@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptOccisoDeuMas4Anios" language="groovy" pageWidth="980" pageHeight="595" orientation="Landscape" columnWidth="980" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
-	<property name="ireport.zoom" value="3.452271214393177"/>
-	<property name="ireport.x" value="557"/>
+	<property name="ireport.zoom" value="2.1435888100000495"/>
+	<property name="ireport.x" value="1322"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="fecha_inicial" class="java.sql.Timestamp"/>
@@ -59,53 +59,53 @@ order by 1]]>
 				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="141" y="0" width="459" height="18" uuid="8bb5b337-e808-477d-9d60-811bb9f8f8d9"/>
+				<reportElement x="141" y="0" width="553" height="18" uuid="8bb5b337-e808-477d-9d60-811bb9f8f8d9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[GAD MUNICIPAL DEL CANTÓN PEDRO MONCAYO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="141" y="18" width="459" height="15" uuid="0b68be57-4e73-4152-9a2e-afcf513e9683"/>
+				<reportElement x="141" y="18" width="553" height="15" uuid="0b68be57-4e73-4152-9a2e-afcf513e9683"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Reporte de deudores mayores a 4 años]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="600" y="0" width="289" height="18" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
+				<reportElement x="694" y="0" width="274" height="18" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
 				<textElement verticalAlignment="Bottom">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Generado por: " +$P{usuario_genera}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
-				<reportElement x="141" y="33" width="459" height="15" uuid="39968d79-0b5d-4f59-9e90-b726dd8d11b8"/>
+				<reportElement x="141" y="33" width="553" height="15" uuid="39968d79-0b5d-4f59-9e90-b726dd8d11b8"/>
 				<textElement textAlignment="Center">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha_genera}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="600" y="18" width="70" height="15" uuid="c52a0dba-7d27-4476-adf5-5bd14023ac18"/>
+				<reportElement x="694" y="18" width="70" height="15" uuid="c52a0dba-7d27-4476-adf5-5bd14023ac18"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha inicial:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="600" y="33" width="70" height="15" uuid="d3df46a5-7134-4763-85a5-bda886e12535"/>
+				<reportElement x="694" y="33" width="70" height="15" uuid="d3df46a5-7134-4763-85a5-bda886e12535"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha final:]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="670" y="18" width="219" height="15" uuid="8d3a5dc6-68e9-49a1-99cf-949a95778812"/>
+				<reportElement x="764" y="18" width="204" height="15" uuid="8d3a5dc6-68e9-49a1-99cf-949a95778812"/>
 				<textFieldExpression><![CDATA[$P{fecha_inicial}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MM/dd/yyyy">
-				<reportElement x="670" y="33" width="219" height="15" uuid="211f78af-d07e-4d17-b5a8-7f78f2eef694"/>
+				<reportElement x="764" y="33" width="204" height="15" uuid="211f78af-d07e-4d17-b5a8-7f78f2eef694"/>
 				<textFieldExpression><![CDATA[$P{fecha_final}]]></textFieldExpression>
 			</textField>
 		</band>

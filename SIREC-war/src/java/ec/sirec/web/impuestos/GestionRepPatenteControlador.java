@@ -238,6 +238,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
             listaReportes = patenteReporteServicio.listarDatReporte1(valorInicial, valorFinal);
             if (listaReportes == null) {
                 verResultados = 1;
+            } else {
+                verResultados = 0;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -254,6 +256,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
             listaReportes = patenteReporteServicio.listaDatReporte2(fec1, fec2);
             if (listaReportes == null) {
                 verResultados = 1;
+            }else{
+            verResultados=0;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);

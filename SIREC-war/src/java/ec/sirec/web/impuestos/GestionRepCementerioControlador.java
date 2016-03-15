@@ -37,6 +37,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import net.sf.jasperreports.charts.util.TimePeriodDatasetLabelGenerator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -240,10 +241,11 @@ public class GestionRepCementerioControlador extends BaseControlador {
         try {
             Timestamp fec1 = new Timestamp(fechaInicial.getTime());
             Timestamp fec2 = new Timestamp(fechaFinal.getTime());
-            String fechActual = "2016-01-01 11:01:28".toLowerCase();
-            listaReportes = cementerioReporteServicio.listarDatReporte1(fec1, fec2, fechActual);
+            listaReportes = cementerioReporteServicio.listarDatReporte1(fec1, fec2);
             if (listaReportes == null) {
                 verResultados = 1;
+            } else {
+                verResultados = 0;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -418,6 +420,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
             addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
         } else {
             //Conexion con local datasource
+            Date fechaHoy = new Date();
             usuarioActual = new SegUsuario();
             usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
             UtilitariosCod util = new UtilitariosCod();
@@ -433,13 +436,17 @@ public class GestionRepCementerioControlador extends BaseControlador {
                 session.removeAttribute("reporteInforme");
                 Timestamp fec1 = new Timestamp(fechaInicial.getTime());
                 Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+                Timestamp fec3 = new Timestamp(fechaHoy.getTime());
                 System.out.println("Fecha inical" + fec1);
                 System.out.println("Fecha final" + fec2);
+                parameters.put("fecha_inicial", fec1);
+                parameters.put("fecha_final", fec2);
                 parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
                 parameters.put("fecha_genera", retornaFecha());
+                parameters.put("fechaActual", fec3);
                 parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
                 parameters.put("rango_parametros", cargarRgistroSeleccionado());
-                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptOccisoDeuMas4Anios.jasper"));
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/cementerios/rptOccisoDeuMas4Anios.jasper"));
                 if (tipoReporte.equals("PDF")) {
                     fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
                     session.setAttribute("reporteInforme", fichero);
@@ -482,8 +489,6 @@ public class GestionRepCementerioControlador extends BaseControlador {
             //Conexion con local datasource
             Timestamp fec1 = new Timestamp(fechaInicial.getTime());
             Timestamp fec2 = new Timestamp(fechaFinal.getTime());
-            System.out.println("Fecha inical" + fec1);
-            System.out.println("Fecha final" + fec2);
             System.out.println("Parroquias" + catDetParroquia.getCatdetCodigo());
             usuarioActual = new SegUsuario();
             usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
