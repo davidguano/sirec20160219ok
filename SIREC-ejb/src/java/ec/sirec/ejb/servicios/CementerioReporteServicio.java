@@ -48,8 +48,8 @@ public class CementerioReporteServicio {
         return cementerioDao.listReporte4(fechaInicial, fechaFinal, genero);
     }
 
-    public List<Object[]> listaDatReporte5(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, String propietario) throws Exception {
-        return cementerioDao.listReporte5(fechaInicial, fechaFinal, propietario);
+    public List<Object[]> listaDatReporte5(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
+        return cementerioDao.listReporte5(fechaInicial, fechaFinal);
     }
 
     public List<Object[]> listaDatReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int actEco) throws Exception {
