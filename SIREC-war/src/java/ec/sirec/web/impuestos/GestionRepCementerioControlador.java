@@ -287,7 +287,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
-//Reporte de negocios por sector
+//Reporte de occisos por sector
 
     public void listarDatosReporte4() {
         try {
@@ -305,14 +305,14 @@ public class GestionRepCementerioControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
-//Reporte denegocios por propietario
+//Reporte de todos los cancelados
 
     public void listarDatosReporte5() {
         try {
-            System.out.println("Reporte denegocios por propietario");
+
             Timestamp fec1 = new Timestamp(fechaInicial.getTime());
             Timestamp fec2 = new Timestamp(fechaFinal.getTime());
-            listaReportes = cementerioReporteServicio.listaDatReporte5(fec1, fec2, propietarioActual.getProCi());
+            listaReportes = cementerioReporteServicio.listaDatReporte5(fec1, fec2);
             if (listaReportes == null) {
                 verResultados = 1;
             } else {
@@ -404,7 +404,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
             case 5:
                 numReporte = 5;
                 System.out.println("Reporte5");
-                // reporteNegPropietario();
+                reporteOccisoTodosCancelados();
                 break;
             case 6:
                 numReporte = 6;
@@ -576,6 +576,65 @@ public class GestionRepCementerioControlador extends BaseControlador {
                 parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
                 parameters.put("rango_parametros", cargarRgistroSeleccionado());
                 jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/cementerios/rptOccisoPorGenero.jasper"));
+                if (tipoReporte.equals("PDF")) {
+                    fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+                    session.setAttribute("reporteInforme", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+                if (tipoReporte.equals("XLS")) {
+                    jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
+                    JRXlsExporter exporterXLS = new JRXlsExporter();
+                    ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
+                    exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+                    exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
+                    exporterXLS.exportReport();
+                    fichero = xlsReport.toByteArray();
+                    session.setAttribute("reporteInformeXls", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+
+            } catch (JRException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, null, e);
+            } finally {
+                if (conexion != null) {
+                    conexion.close();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public String reporteOccisoTodosCancelados() throws Exception {
+       
+        if (cargarRgistroSeleccionado().equals("")) {
+            addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
+        } else {
+            Timestamp fec1 = new Timestamp(fechaInicial.getTime());
+            Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+            //Conexion con local datasource
+            usuarioActual = new SegUsuario();
+            usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+            UtilitariosCod util = new UtilitariosCod();
+            Connection conexion = util.getConexion();
+            byte[] fichero = null;
+            JasperReport jasperReport = null;
+            JasperPrint jasperPrint = new JasperPrint(); //Excel
+            Map parameters = new HashMap();
+            try {
+                FacesContext context = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+                ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+                session.removeAttribute("reporteInforme");
+                parameters.put("fecha_inicial", fec1);
+                parameters.put("fecha_final", fec2);
+                parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+                parameters.put("fecha_genera", retornaFecha());
+                parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+                parameters.put("rango_parametros", cargarRgistroSeleccionado());
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/cementerios/rptOccisoPorCancelados.jasper"));
                 if (tipoReporte.equals("PDF")) {
                     fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
                     session.setAttribute("reporteInforme", fichero);

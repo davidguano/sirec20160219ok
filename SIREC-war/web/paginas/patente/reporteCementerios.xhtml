@@ -20,8 +20,8 @@
                                 <f:selectItem itemLabel="Reporte de occisos por tipo (Adulto, Niño)" itemValue="#{2}" />
                                 <f:selectItem itemLabel="Reporte de occisos por parroquia" itemValue="#{3}" />
                                 <f:selectItem itemLabel="Reporte de occisos por género" itemValue="#{4}" />
+                                <f:selectItem itemLabel="Reporte de todos los cancelados" itemValue="#{5}" />                            
                               <!--  <f:selectItem itemLabel="Reporte de tiempo de mora por año (Seleccionar años 1, 2, 3)" itemValue="#{5}" /> -->
-                               <!-- <f:selectItem itemLabel="Reporte de todos los cancelados (desde, hasta)" itemValue="#{6}" /> -->                            
                                 <p:ajax update="pnlContieneReportes" listener="#{gestionRepCementerioControlador.buscaSelecciona()}" process="@this" ></p:ajax>
                             </p:selectOneRadio>
                         </h:panelGrid> 
@@ -170,30 +170,8 @@
                                                      />  </h:panelGrid>
                             </p:panel>
 
-                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==5}" header="Reporte de negocios por propietario:" style="font-size: 12px">
-                                <h:panelGrid columns="1">
-                                    <h:panelGrid columns="6" id="pnlConCedOcciso">
-                                        <h:panelGrid columns="4" id="pnlBuscaCedOcciso">
-                                            <p:outputLabel value="Ingrese la Cédula/Ruc:"  style="font-size: 12px" />
-                                            <p:autoComplete  
-                                                value="#{gestionRepCementerioControlador.propietarioActual}"
-                                                onkeyup="value = value.toUpperCase()" inputStyle="color:white;font-weight: bold;background: black;"
-                                                completeMethod="#{gestionRepCementerioControlador.sugiereCedulaRuc}"
-                                                var="player"
-                                                itemLabel="#{player.proCi}"
-                                                itemValue="#{player}"
-                                                size="15"
-                                                converter="#{propietarioConverter}" >
-                                                <p:ajax event="itemSelect" process="@this,pnlBuscaCedOcciso" listener="#{gestionRepCementerioControlador.onItemSelectPropietarioOcciso}" update="pnlConCedOcciso" />
-                                            </p:autoComplete>                                            
-                                        </h:panelGrid>
-                                        <p:column/>
-                                        <p:column/>
-                                        <p:outputLabel style="font-size: #{txt.font_size}" value="Nombre del propietario:"/>
-                                        <p:inputText  onkeyup="value = value.toUpperCase()"  requiredMessage="#{txt.lbl_nombre_occioso} Se necesita un valor" id="compPnl1_7"  value="#{gestionRepCementerioControlador.nombrePropietario}" 
-                                                      size="40"/>
-                                        <p:message for="compPnl1_7" display="icon"/>
-                                    </h:panelGrid> 
+                            <p:panel rendered="#{gestionRepCementerioControlador.numReporte==5}" header="Reporte de todos los cancelados:" style="font-size: 12px">
+                                <h:panelGrid columns="1">                                     
                                     <h:panelGrid>
                                         <p:outputLabel value="Fecha inicial (fecha de registro): " style="font-size: 12px"/> 
                                         <p:calendar required="true" requiredMessage="#{txt.lbl_inicio_actividad} Se necesita un valor" id="button1_5" value="#{gestionRepCementerioControlador.fechaInicial}" showOn="button" />
