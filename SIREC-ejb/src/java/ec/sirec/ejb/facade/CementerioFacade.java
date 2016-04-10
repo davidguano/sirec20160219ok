@@ -68,7 +68,7 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
                 + " where c.catdet_parroquia=cd.catdet_codigo "
                 + " and c.cem_fecha_registra between :fechaInicial and :fechaFinal ";
         Query q = em.createNativeQuery(sql);
-        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("fechaHoy", fecHoy);
+          q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("fechaHoy", fecHoy);
         if (q.getResultList().isEmpty()) {
             return null;
         } else {
@@ -168,7 +168,7 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
     public List<Object[]> listReporte5(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
         String sql
-                =   " select c.cem_codigo as codigo, c.pro_occiso_ci as cedula,c.cem_nombre_occiso as nomOcciso, cd.catdet_texto,case "
+                = " select c.cem_codigo as codigo, c.pro_occiso_ci as cedula,c.cem_nombre_occiso as nomOcciso, cd.catdet_texto,case "
                 + "when c.cem_genero='M' then 'MASCULINO' "
                 + "when c.cem_genero='F' then 'FEMENINO' "
                 + "end as genero,case "
@@ -193,104 +193,30 @@ public class CementerioFacade extends AbstractFacade<Cementerio> {
         }
     }
 
-    //------Reporte de negocios por actividad economica
-    public List<Object[]> listReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int actEconomica) throws Exception {
+    //------Reporte de tiempo de mora por año (Seleccionar años 1, 2, 3)
+    public List<Object[]> listReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int numAnios) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
+        Date fecHoy = new Date();
+        System.out.println("Parametro fecha " + fecHoy);
         String sql
-                = " select distinct( pa.pat_codigo) as clavePatente, "
-                + "CASE "
-                + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
-                + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
-                + "WHEN pa.pat_estado ='I' THEN 'INACTIVO' "
-                + "END as estado "
-                + ",cp.catpre_cod_nacional||''||cp.catpre_cod_local as catastroPredial,pa.pat_nombre_comercial as nombreComercial,pa.pat_representante_legal, "
-                + "p.pro_apellidos||' '||p.pro_nombres as nomContribuente , "
-                + "tes.catdet_texto as tipoEstablecimiento, tem.catdet_texto as tipoEmpresa, "
-                + "tae.catdet_texto as actividadEconomica, "
-                + "pa.pat_inicio_act_eco as inicioActEconomica, "
-                + "CASE "
-                + "WHEN  pa.pat_artesano_calificado =TRUE THEN 'SI' "
-                + "WHEN  pa.pat_artesano_calificado =FALSE THEN 'NO' "
-                + "END as artCalificado, "
-                + " CASE "
-                + "WHEN  pa.pat_obligado_cont =TRUE THEN 'SI' "
-                + "WHEN  pa.pat_obligado_cont =FALSE THEN 'NO' "
-                + "END as obligadoContabilidad, "
-                + "pv.patval_patrimonio as patrimonio, "
-                + "pv.patval_anio as anio "
-                + "from "
-                + "sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, "
-                + "sirec.patente pa,sirec.patente_valoracion pv , "
-                + "sirec.catalogo_detalle tes,sirec.catalogo_detalle as tem, "
-                + "sirec.catalogo_detalle as tlo,sirec.catalogo_detalle as tae, "
-                + "sirec.catalogo_detalle cdp,sirec.catalogo "
-                + "where p.pro_ci=pp.pro_ci "
-                + "and pp.catpre_codigo=cp.catpre_codigo "
-                + "and cp.catpre_codigo=pa.catpre_codigo "
-                + "and pa.pat_codigo=pv.pat_codigo "
-                + " and cp.catdet_parroquia=cdp.catdet_codigo "
-                + " and pa.catdet_tipo_est=tes.catdet_codigo "
-                + " and pa.catdet_tipo_empresa=tem.catdet_codigo "
-                + " and pa.catdet_tipo_local=tlo.catdet_codigo "
-                + " and pa.catdet_tipo_act_eco=tae.catdet_codigo "
-                + " and pa.pat_fecha_registra between  :fechaInicial   and  :fechaFinal "
-                + "and pa.catdet_tipo_act_eco=:actEconomica "
-                + " order by 1 ";
+                = " select c.cem_codigo as codigo, c.pro_occiso_ci as cedula,c.cem_nombre_occiso as nomOcciso, cd.catdet_texto,case "
+                + "when c.cem_genero='M' then 'MASCULINO' "
+                + "when c.cem_genero='F' then 'FEMENINO' "
+                + "end as genero,case "
+                + "when c.cem_estado='I' then 'INHUMADO' "
+                + "when c.cem_estado='E' then 'EXHUMADO' "
+                + "when c.cem_estado='R' then 'RESERVADO' "
+                + "when c.cem_estado='G' then 'GRATUITO' "
+                + "end as estadoCuerpo,c.cem_num_papeleta as papeleta, "
+                + "c.cem_fecha_fallece as fechaFallece, "
+                + "c.cem_representante as representante "
+                + ",(DATE_PART('year',CAST(:fechaHoy AS DATE)) - DATE_PART('year', c.cem_fecha_fin_contrato)) as aniosMora "
+                + " from sirec.cementerio  c,sirec.catalogo_detalle cd "
+                + " where c.catdet_parroquia=cd.catdet_codigo "
+                + " and (DATE_PART('year',CAST(:fechaHoy AS DATE)) - DATE_PART('year', c.cem_fecha_fin_contrato))=:numAnios "
+                + " and c.cem_fecha_registra between :fechaInicial and :fechaFinal ";
         Query q = em.createNativeQuery(sql);
-        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("actEconomica", actEconomica);
-        if (q.getResultList().isEmpty()) {
-            return null;
-        } else {
-            lista = q.getResultList();
-            return lista;
-        }
-    }
-
-    //----Reporte de negocios por artesano calificado-----
-    public List<Object[]> listReporte7(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
-        List<Object[]> lista = new ArrayList<Object[]>();
-        String sql
-                = " select distinct( pa.pat_codigo) as clavePatente, "
-                + "CASE "
-                + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
-                + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
-                + "WHEN pa.pat_estado ='I' THEN 'INACTIVO' "
-                + "END as estado "
-                + ",cp.catpre_cod_nacional||''||cp.catpre_cod_local as catastroPredial,pa.pat_nombre_comercial as nombreComercial,pa.pat_representante_legal, "
-                + "p.pro_apellidos||' '||p.pro_nombres as nomContribuente , "
-                + "tes.catdet_texto as tipoEstablecimiento, tem.catdet_texto as tipoEmpresa, "
-                + "tae.catdet_texto as actividadEconomica, "
-                + "pa.pat_inicio_act_eco as inicioActEconomica, "
-                + "CASE "
-                + "WHEN  pa.pat_artesano_calificado =TRUE THEN 'SI' "
-                + "WHEN  pa.pat_artesano_calificado =FALSE THEN 'NO' "
-                + "END as artCalificado, "
-                + " CASE "
-                + "WHEN  pa.pat_obligado_cont =TRUE THEN 'SI' "
-                + "WHEN  pa.pat_obligado_cont =FALSE THEN 'NO' "
-                + "END as obligadoContabilidad, "
-                + "pv.patval_patrimonio as patrimonio, "
-                + "pv.patval_anio as anio "
-                + "from "
-                + "sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, "
-                + "sirec.patente pa,sirec.patente_valoracion pv , "
-                + "sirec.catalogo_detalle tes,sirec.catalogo_detalle as tem, "
-                + "sirec.catalogo_detalle as tlo,sirec.catalogo_detalle as tae, "
-                + "sirec.catalogo_detalle cdp,sirec.catalogo "
-                + "where p.pro_ci=pp.pro_ci "
-                + "and pp.catpre_codigo=cp.catpre_codigo "
-                + "and cp.catpre_codigo=pa.catpre_codigo "
-                + "and pa.pat_codigo=pv.pat_codigo "
-                + " and cp.catdet_parroquia=cdp.catdet_codigo "
-                + " and pa.catdet_tipo_est=tes.catdet_codigo "
-                + " and pa.catdet_tipo_empresa=tem.catdet_codigo "
-                + " and pa.catdet_tipo_local=tlo.catdet_codigo "
-                + " and pa.catdet_tipo_act_eco=tae.catdet_codigo "
-                + " and pa.pat_fecha_registra between  :fechaInicial   and  :fechaFinal "
-                + " and pa.pat_artesano_calificado=true "
-                + " order by 1 ";
-        Query q = em.createNativeQuery(sql);
-        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal);
+        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("numAnios", numAnios).setParameter("fechaHoy", fecHoy);
         if (q.getResultList().isEmpty()) {
             return null;
         } else {

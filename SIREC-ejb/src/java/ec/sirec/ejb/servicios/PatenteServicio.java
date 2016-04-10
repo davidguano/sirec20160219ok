@@ -78,6 +78,10 @@ public class PatenteServicio {
         return patenteDao.listarTodos();
     }
 
+    public List<Patente> listarPatenteDesActEco(String descActEcon) throws Exception {
+        return patenteDao.listarPatentePorDesActEconContiene(descActEcon);
+    }
+
     public Patente cargarMaxObjPatente() throws Exception {
         return patenteDao.retornaNumSecuencial();
     }
@@ -109,7 +113,7 @@ public class PatenteServicio {
     public boolean buscaPatPrimeraVez(int codPatValor, int catasPredial, int anio) throws Exception {
         return patenteDao.buscaPatentePrimeraVez(codPatValor, catasPredial, anio);
     }
-
+   
 //*****************************Metodos Exoneracion Deduccion y Multas de Patente*************************
     public String crearPatenteValoracionExtra(PatenteValoracionExtras patvalexCodigo) throws Exception {
         patenteValoracionExtrasDao.crear(patvalexCodigo);

@@ -5,16 +5,8 @@
  */
 package ec.sirec.ejb.servicios;
 
-import ec.sirec.ejb.entidades.Cementerio;
-import ec.sirec.ejb.entidades.CementerioArchivo;
-import ec.sirec.ejb.entidades.Patente;
-import ec.sirec.ejb.entidades.PatenteArchivo;
-import ec.sirec.ejb.facade.CementerioArchivoFacade;
-import ec.sirec.ejb.facade.PatenteArchivoFacade;
 import ec.sirec.ejb.facade.PatenteFacade;
 import java.math.BigDecimal;
-import java.security.Timestamp;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -54,13 +46,20 @@ public class PatenteReporteServicio {
     public List<Object[]> listaDatReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int actEco) throws Exception {
         return patenteDao.listReporte6(fechaInicial, fechaFinal, actEco);
     }
+
     public List<Object[]> listaDatReporte7(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         return patenteDao.listReporte7(fechaInicial, fechaFinal);
     }
-     public List<Object[]> listaDatReporte8(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
+
+    public List<Object[]> listaDatReporte8(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         return patenteDao.listReporte8(fechaInicial, fechaFinal);
     }
-      public List<Object[]> listaDatReporte9(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
+
+    public List<Object[]> listaDatReporte9(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         return patenteDao.listReporte9(fechaInicial, fechaFinal);
+    }
+
+    public List<Object[]> listaDatReporte10(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, String desActEconomica) throws Exception {
+        return patenteDao.listReporte10(fechaInicial, fechaFinal, desActEconomica);
     }
 }

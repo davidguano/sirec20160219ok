@@ -6,6 +6,7 @@
 package ec.sirec.ejb.facade;
 
 import ec.sirec.ejb.entidades.Patente;
+import ec.sirec.ejb.entidades.Propietario;
 import java.math.BigDecimal;
 import java.security.Timestamp;
 import java.util.ArrayList;
@@ -180,12 +181,21 @@ public class PatenteFacade extends AbstractFacade<Patente> {
         }
     }
 
+    public List<Patente> listarPatentePorDesActEconContiene(String desActEconomica) throws Exception {
+        String sql = "select distinct(pa) from Patente pa "
+                + " where pa.patDescActEco like :desActEconomica and pa.patDescActEco is not null ";
+        Query q = em.createQuery(sql);
+        q.setParameter("desActEconomica", "%" + desActEconomica + "%");
+        q.setMaxResults(5);
+        return q.getResultList();
+    }
+
     //*****************************Listado para reportes*****************************
     //Reporte 1:Negocios por rango de patrimonio
     public List<Object[]> listReporte1(BigDecimal valorInicial, BigDecimal valorFinal) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -268,8 +278,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //-----Reporte de negocios por parroquia
     public List<Object[]> listReporte3(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int codParroquia) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-             " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -321,8 +331,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //-----Repòrte de negocios por sector
     public List<Object[]> listReporte4(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int codSector) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -374,8 +384,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //------Reporte de negocios por propietario
     public List<Object[]> listReporte5(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, String propietario) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -427,8 +437,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //------Reporte de negocios por actividad economica
     public List<Object[]> listReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int actEconomica) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -480,8 +490,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //----Reporte de negocios por artesano calificado-----
     public List<Object[]> listReporte7(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -533,8 +543,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //----Reporte de negocios por obligado a llevar contabilidad
     public List<Object[]> listReporte8(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql = 
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -586,8 +596,8 @@ public class PatenteFacade extends AbstractFacade<Patente> {
     //---Reporte de negocios por obligado a no llevar contabilidad
     public List<Object[]> listReporte9(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
         List<Object[]> lista = new ArrayList<Object[]>();
-        String sql =
-                " select distinct( pa.pat_codigo) as clavePatente, "
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
                 + "CASE "
                 + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
                 + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
@@ -635,4 +645,58 @@ public class PatenteFacade extends AbstractFacade<Patente> {
             return lista;
         }
     }
+
+    //------Reporte de negocios por descripcion de actividad economica
+    public List<Object[]> listReporte10(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, String nomDesActEco) throws Exception {
+        List<Object[]> lista = new ArrayList<Object[]>();
+        String sql
+                = " select distinct( pa.pat_codigo) as clavePatente, "
+                + "CASE "
+                + "WHEN pa.pat_estado ='A' THEN 'ACTIVO' "
+                + "WHEN pa.pat_estado ='P' THEN 'PRE-INSCRITO' "
+                + "WHEN pa.pat_estado ='I' THEN 'INACTIVO' "
+                + "END as estado "
+                + ",cp.catpre_cod_nacional||''||cp.catpre_cod_local as catastroPredial,pa.pat_nombre_comercial as nombreComercial,pa.pat_representante_legal, "
+                + "p.pro_apellidos||' '||p.pro_nombres as nomContribuente , "
+                + "tes.catdet_texto as tipoEstablecimiento, tem.catdet_texto as tipoEmpresa, "
+                + "tae.catdet_texto as actividadEconomica, "
+                + "pa.pat_inicio_act_eco as inicioActEconomica, "
+                + "CASE "
+                + "WHEN  pa.pat_artesano_calificado =TRUE THEN 'SI' "
+                + "WHEN  pa.pat_artesano_calificado =FALSE THEN 'NO' "
+                + "END as artCalificado, "
+                + " CASE "
+                + "WHEN  pa.pat_obligado_cont =TRUE THEN 'SI' "
+                + "WHEN  pa.pat_obligado_cont =FALSE THEN 'NO' "
+                + "END as obligadoContabilidad, "
+                + "pv.patval_patrimonio as patrimonio, "
+                + "pv.patval_anio as anio "
+                + "from "
+                + "sirec.propietario  p,sirec.propietario_predio pp,sirec.catastro_predial cp, "
+                + "sirec.patente pa,sirec.patente_valoracion pv , "
+                + "sirec.catalogo_detalle tes,sirec.catalogo_detalle as tem, "
+                + "sirec.catalogo_detalle as tlo,sirec.catalogo_detalle as tae, "
+                + "sirec.catalogo_detalle cdp,sirec.catalogo "
+                + "where p.pro_ci=pp.pro_ci "
+                + "and pp.catpre_codigo=cp.catpre_codigo "
+                + "and cp.catpre_codigo=pa.catpre_codigo "
+                + "and pa.pat_codigo=pv.pat_codigo "
+                + " and cp.catdet_parroquia=cdp.catdet_codigo "
+                + " and pa.catdet_tipo_est=tes.catdet_codigo "
+                + " and pa.catdet_tipo_empresa=tem.catdet_codigo "
+                + " and pa.catdet_tipo_local=tlo.catdet_codigo "
+                + " and pa.catdet_tipo_act_eco=tae.catdet_codigo "
+                + " and pa.pat_fecha_registra between  :fechaInicial   and  :fechaFinal "
+                + " and pa.pat_desc_act_eco like :desActEco "
+                + " order by 1 ";
+        Query q = em.createNativeQuery(sql);
+        q.setParameter("fechaInicial", fechaInicial).setParameter("fechaFinal", fechaFinal).setParameter("desActEco","%"+nomDesActEco+"%");
+        if (q.getResultList().isEmpty()) {
+            return null;
+        } else {
+            lista = q.getResultList();
+            return lista;
+        }
+    }
+
 }

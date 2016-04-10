@@ -5,11 +5,8 @@
  */
 package ec.sirec.ejb.servicios;
 
-import ec.sirec.ejb.entidades.Cementerio;
-import ec.sirec.ejb.entidades.CementerioArchivo;
-import ec.sirec.ejb.entidades.Patente;
-import ec.sirec.ejb.entidades.PatenteArchivo;
-import ec.sirec.ejb.facade.CementerioArchivoFacade;
+
+
 import ec.sirec.ejb.facade.CementerioFacade;
 import ec.sirec.ejb.facade.PatenteArchivoFacade;
 import ec.sirec.ejb.facade.PatenteFacade;
@@ -52,12 +49,8 @@ public class CementerioReporteServicio {
         return cementerioDao.listReporte5(fechaInicial, fechaFinal);
     }
 
-    public List<Object[]> listaDatReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int actEco) throws Exception {
-        return cementerioDao.listReporte6(fechaInicial, fechaFinal, actEco);
-    }
-
-    public List<Object[]> listaDatReporte7(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal) throws Exception {
-        return cementerioDao.listReporte7(fechaInicial, fechaFinal);
+    public List<Object[]> listaDatReporte6(java.sql.Timestamp fechaInicial, java.sql.Timestamp fechaFinal, int numAnios) throws Exception {
+        return cementerioDao.listReporte6(fechaInicial, fechaFinal, numAnios);
     }
 
 }
