@@ -6,10 +6,12 @@
 package ec.sirec.web.impuestos;
 
 import ec.sirec.ejb.entidades.CatalogoDetalle;
+import ec.sirec.ejb.entidades.Patente;
 import ec.sirec.ejb.entidades.Propietario;
 import ec.sirec.ejb.entidades.SegUsuario;
 import ec.sirec.ejb.servicios.CatalogoDetalleServicio;
 import ec.sirec.ejb.servicios.PatenteReporteServicio;
+import ec.sirec.ejb.servicios.PatenteServicio;
 import ec.sirec.ejb.servicios.PropietarioServicio;
 import ec.sirec.web.base.BaseControlador;
 import ec.sirec.web.util.UtilitariosCod;
@@ -55,6 +57,9 @@ import org.primefaces.event.SelectEvent;
 public class GestionRepPatenteControlador extends BaseControlador {
 
     @EJB
+    private PatenteServicio patenteServicio;
+
+    @EJB
     private PropietarioServicio propietarioServicio;
 
     @EJB
@@ -82,8 +87,11 @@ public class GestionRepPatenteControlador extends BaseControlador {
     private int numReporte;
     private String tipoReporte;
     private Propietario propietarioActual;
+    private Patente patenteActual;
     private List<Propietario> listaPropietarios;
+    private List<Patente> listaPatenteDesActEco;
     private String nombrePropietario;
+    private String nomDesActEconomica;
     private CatalogoDetalle actEconomica;
     private List<CatalogoDetalle> listActividadEconomica;
     private CatalogoDetalle catDetParroquia;
@@ -100,6 +108,7 @@ public class GestionRepPatenteControlador extends BaseControlador {
             actEconomica = new CatalogoDetalle();
             listActividadEconomica = new ArrayList<CatalogoDetalle>();
             listaPropietarios = new ArrayList<Propietario>();
+            listaPatenteDesActEco = new ArrayList<Patente>();
             catDetSector = new CatalogoDetalle();
             listaSectores = new ArrayList<CatalogoDetalle>();
             tipoReporte = null;
@@ -110,6 +119,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
             seleccionaReporte = 0;
             numReporte = 0;
             propietarioActual = new Propietario();
+            patenteActual = new Patente();
+            nomDesActEconomica = "";
             listarSectores();
             listarActividadesEconomicas();
             listarParroquias();
@@ -256,8 +267,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
             listaReportes = patenteReporteServicio.listaDatReporte2(fec1, fec2);
             if (listaReportes == null) {
                 verResultados = 1;
-            }else{
-            verResultados=0;
+            } else {
+                verResultados = 0;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -380,12 +391,18 @@ public class GestionRepPatenteControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
+//Reporte de negocios por descripción de actividad económica
 
     public void listarDatosReporte10() {
         try {
-            listaReportes = patenteReporteServicio.listarDatReporte1(valorInicial, valorFinal);
+            System.out.println("Reporte de negocios por descripción de actividad económica");
+            Timestamp fec1 = new Timestamp(fechaInicial.getTime());
+            Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+            listaReportes = patenteReporteServicio.listaDatReporte10(fec1, fec2, nomDesActEconomica);
             if (listaReportes == null) {
                 verResultados = 1;
+            } else {
+                verResultados = 0;
             }
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -403,6 +420,31 @@ public class GestionRepPatenteControlador extends BaseControlador {
             e.printStackTrace();
         }
         return listNombresProp;
+    }
+
+    public List<Patente> sugiereDesActEconomica(String desActEco) {
+        List<Patente> listNombresActEco = new ArrayList<Patente>();
+        try {
+            listaPatenteDesActEco = patenteServicio.listarPatenteDesActEco(desActEco);
+            for (Patente patente : listaPatenteDesActEco) {
+                listNombresActEco.add(patente);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listNombresActEco;
+    }
+
+    public void onItemSelectDescActEconomica(SelectEvent event) throws Exception {
+        Patente objPat = (Patente) event.getObject();
+        patenteActual = patenteServicio.cargarObjPatente(objPat.getPatCodigo());
+        nomDesActEconomica = patenteActual.getPatDescActEco();
+        //  patenteActual = objPat;
+        //  nomDesActEconomica = patenteActual.getPat;
+        System.out.println("Descripcion Actividad Eonomica" + nomDesActEconomica + " Id: " + patenteActual.getPatCodigo());
+//--patenteServicio.buscaParPrRucActEco(tipoReporte, numReporte)
+        //propietarioServicio.buscarPropietarioPorCedula(objProp.getProCi());
+        //nombrePropietario = propietarioActual.getProApellidos() + " " + propietarioActual.getProNombres();
     }
 
     public void onItemSelectPropietarioOcciso(SelectEvent event) throws Exception {
@@ -463,6 +505,8 @@ public class GestionRepPatenteControlador extends BaseControlador {
                 break;
             case 10:
                 numReporte = 10;
+                 System.out.println("Reporte10");
+                reporteNegDesActEconomica();
                 break;
         }
     }
@@ -953,6 +997,65 @@ public class GestionRepPatenteControlador extends BaseControlador {
         return null;
     }
 
+    public String reporteNegDesActEconomica() throws Exception {
+        if (cargarRgistroSeleccionado().equals("")) {
+            addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
+        } else {
+            Timestamp fec1 = new Timestamp(fechaInicial.getTime());
+            Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+            //Conexion con local datasource
+            usuarioActual = new SegUsuario();
+            usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+            UtilitariosCod util = new UtilitariosCod();
+            Connection conexion = util.getConexion();
+            byte[] fichero = null;
+            JasperReport jasperReport = null;
+            JasperPrint jasperPrint = new JasperPrint(); //Excel
+            Map parameters = new HashMap();
+            try {
+                FacesContext context = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+                ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+                session.removeAttribute("reporteInforme");
+                parameters.put("fecha_inicial", fec1);
+                parameters.put("fecha_final", fec2);
+                parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+                parameters.put("nomActividad", nomDesActEconomica);
+                parameters.put("fecha_genera", retornaFecha());
+                parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+                parameters.put("rango_parametros", cargarRgistroSeleccionado());
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/patentes/rptNegocioPorDesActEco.jasper"));
+                if (tipoReporte.equals("PDF")) {
+                    fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+                    session.setAttribute("reporteInforme", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+                if (tipoReporte.equals("XLS")) {
+                    jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
+                    JRXlsExporter exporterXLS = new JRXlsExporter();
+                    ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
+                    exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+                    exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
+                    exporterXLS.exportReport();
+                    fichero = xlsReport.toByteArray();
+                    session.setAttribute("reporteInformeXls", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+
+            } catch (JRException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, null, e);
+            } finally {
+                if (conexion != null) {
+                    conexion.close();
+                }
+            }
+        }
+
+        return null;
+    }
+
     public String cargarRgistroSeleccionado() {
         String codigos = "";
         for (int i = 0; i <= listaRepSeleccion.size() - 1; i++) {
@@ -1164,6 +1267,22 @@ public class GestionRepPatenteControlador extends BaseControlador {
 
     public void setVerResultados(int verResultados) {
         this.verResultados = verResultados;
+    }
+
+    public Patente getPatenteActual() {
+        return patenteActual;
+    }
+
+    public void setPatenteActual(Patente patenteActual) {
+        this.patenteActual = patenteActual;
+    }
+
+    public String getNomDesActEconomica() {
+        return nomDesActEconomica;
+    }
+
+    public void setNomDesActEconomica(String nomDesActEconomica) {
+        this.nomDesActEconomica = nomDesActEconomica;
     }
 
 }

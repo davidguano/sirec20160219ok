@@ -11,15 +11,15 @@ function isNumberKey(evt) {
 }
 function isNumericKey(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 46 || charCode > 57 || charCode===47))
+    if (charCode > 31 && (charCode < 46 || charCode > 57 || charCode === 47))
         return false;
     return true;
 }
 
 function isDecimalKey(evt) {
 
-   var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 46 || charCode > 57 || charCode===47))
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 46 || charCode > 57 || charCode === 47))
         return false;
     return true;
 }
@@ -50,9 +50,19 @@ PrimeFaces.locales ['es'] = {
     allDayText: 'Todo el día'
 };
 
-
 function getid(a) {
     var nombre = a.name;
     var valor = a.id;
     alert('ID: ' + nombre + ' valor: ' + valor + ' id: ');
+}
+function validaIngresaLetras(element, AlertMessage) {
+    var regexp = /^[a-zA-Z]+$/;
+    if (element.value.match(regexp))
+    {
+        return true;
+    } else {
+        alert(AlertMessage);
+        element.focus();
+        return false;
+    }
 }

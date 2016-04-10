@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptNegocioPorDesActEco" language="groovy" pageWidth="1080" pageHeight="595" orientation="Landscape" columnWidth="1080" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="8662a249-9fa5-4a67-8f25-655180834f9b">
 	<property name="ireport.zoom" value="1.9487171000000352"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="1411"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="logo_gad" class="java.lang.String"/>
 	<parameter name="fecha_inicial" class="java.sql.Timestamp"/>
@@ -10,7 +10,6 @@
 	<parameter name="fecha_genera" class="java.lang.String"/>
 	<parameter name="rango_parametros" class="java.lang.String"/>
 	<parameter name="nomActividad" class="java.lang.String"/>
-	<parameter name="actEco" class="java.lang.Integer"/>
 	<queryString>
 		<![CDATA[select distinct( pa.pat_codigo) as clavePatente,
 CASE
@@ -47,8 +46,8 @@ and pa.pat_codigo=pv.pat_codigo
  and pa.catdet_tipo_empresa=tem.catdet_codigo
  and pa.catdet_tipo_local=tlo.catdet_codigo
  and pa.catdet_tipo_act_eco=tae.catdet_codigo
-and pa.catdet_tipo_act_eco= $P{actEco}
- and pa.pat_fecha_registra between  $P{fecha_inicial}  and  $P{fecha_final}
+and pa.pat_desc_act_eco  like $P{nomActividad}
+ and pa.pat_fecha_registra between  $P{fecha_inicial}  and   $P{fecha_final}
 and pa.pat_codigo in($P!{rango_parametros})
  order by 1]]>
 	</queryString>
@@ -76,7 +75,7 @@ and pa.pat_codigo in($P!{rango_parametros})
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="60" splitType="Stretch">
+		<band height="74" splitType="Stretch">
 			<image>
 				<reportElement x="9" y="0" width="151" height="60" uuid="ca1e179b-a32a-4a9c-b5ac-2c64853d5ff4"/>
 				<imageExpression><![CDATA[$P{logo_gad}]]></imageExpression>
@@ -93,7 +92,7 @@ and pa.pat_codigo in($P!{rango_parametros})
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Patentes y 1.5 por mil - Reporte de negocios por rango de patrimonio]]></text>
+				<text><![CDATA[Patentes y 1.5 por mil - Reporte de negocios por descripción de actividad económica]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="782" y="0" width="262" height="15" uuid="f8bea084-7971-4211-97e4-33bd3b13b4e8"/>
@@ -124,11 +123,11 @@ and pa.pat_codigo in($P!{rango_parametros})
 				<text><![CDATA[Fecha final:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="783" y="45" width="81" height="15" uuid="30c0042b-5609-48cf-abe7-ebb92fdc1c43"/>
-				<textElement>
+				<reportElement x="783" y="45" width="81" height="29" uuid="30c0042b-5609-48cf-abe7-ebb92fdc1c43"/>
+				<textElement verticalAlignment="Top">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Act. económica:]]></text>
+				<text><![CDATA[Descripcion.Act. económica:]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="864" y="15" width="180" height="15" uuid="0c1da572-2e47-47b4-beb7-516e0f0fa61f"/>
@@ -139,7 +138,7 @@ and pa.pat_codigo in($P!{rango_parametros})
 				<textFieldExpression><![CDATA[$P{fecha_final}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="865" y="45" width="179" height="15" uuid="630c9828-618a-4fcf-9db0-c9db57b24d4f"/>
+				<reportElement x="865" y="45" width="179" height="29" uuid="630c9828-618a-4fcf-9db0-c9db57b24d4f"/>
 				<textFieldExpression><![CDATA[$P{nomActividad}]]></textFieldExpression>
 			</textField>
 		</band>

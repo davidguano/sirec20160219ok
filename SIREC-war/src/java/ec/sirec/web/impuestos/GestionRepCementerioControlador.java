@@ -92,6 +92,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
     private CatalogoDetalle catDetTipoPerNicho;
     private List<CatalogoDetalle> listTipoPerNicho;
     private int verResultados;
+    private int paramNumAnios;
 
     @PostConstruct
     public void inicializar() {
@@ -114,6 +115,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
             propietarioActual = new Propietario();
             catDetParroquia = new CatalogoDetalle();
             listParroquias = new ArrayList<CatalogoDetalle>();
+            paramNumAnios = 0;
             listarSectores();
             listarParroquias();
             listarTipoPersonaNicho();
@@ -322,14 +324,14 @@ public class GestionRepCementerioControlador extends BaseControlador {
             LOGGER.log(Level.SEVERE, null, ex);
         }
     }
-//Reporte de negocios por actividad economica
+//Reporte de tiempo de mora por año (Seleccionar años 1, 2, 3)
 
     public void listarDatosReporte6() {
-        System.out.println("Reporte de negocios por actividad economica");
+        System.out.println("Reporte de tiempo de mora por año (Seleccionar años 1, 2, 3)");
         try {
             Timestamp fec1 = new Timestamp(fechaInicial.getTime());
             Timestamp fec2 = new Timestamp(fechaFinal.getTime());
-            listaReportes = cementerioReporteServicio.listaDatReporte6(fec1, fec2, actEconomica.getCatdetCodigo());
+            listaReportes = cementerioReporteServicio.listaDatReporte6(fec1, fec2, paramNumAnios);
             if (listaReportes == null) {
                 verResultados = 1;
             } else {
@@ -338,25 +340,8 @@ public class GestionRepCementerioControlador extends BaseControlador {
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         }
-    }
-//Reporte d negocios por artesano calificado
-
-    public void listarDatosReporte7() {
-        try {
-            System.out.println("Reporte d negocios por artesano calificado");
-            Timestamp fec1 = new Timestamp(fechaInicial.getTime());
-            Timestamp fec2 = new Timestamp(fechaFinal.getTime());
-            listaReportes = cementerioReporteServicio.listaDatReporte7(fec1, fec2);
-            if (listaReportes == null) {
-                verResultados = 1;
-            } else {
-                verResultados = 0;
-            }
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        }
-    }
-
+    } 
+    
     public List<Propietario> sugiereCedulaRuc(String cedulaNumero) {
         List<Propietario> listNombresProp = new ArrayList<Propietario>();
         try {
@@ -409,7 +394,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
             case 6:
                 numReporte = 6;
                 System.out.println("Reporte6");
-                //  reporteNegActEconomica();
+                  reporteAniosSelecciona();
                 break;
 
         }
@@ -608,7 +593,7 @@ public class GestionRepCementerioControlador extends BaseControlador {
     }
 
     public String reporteOccisoTodosCancelados() throws Exception {
-       
+
         if (cargarRgistroSeleccionado().equals("")) {
             addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
         } else {
@@ -959,6 +944,70 @@ public class GestionRepCementerioControlador extends BaseControlador {
 //
 //        return null;
 //    }
+    
+      public String reporteAniosSelecciona() throws Exception {
+        if (cargarRgistroSeleccionado().equals("")) {
+            addErrorMessage("Debe seleccionar  al menos un registro", "Debe seleccionar al menos un registro");
+        } else {
+            //Conexion con local datasource
+            Date fechaHoy = new Date();
+            usuarioActual = new SegUsuario();
+            usuarioActual = (SegUsuario) this.getSession().getAttribute("usuario");
+            UtilitariosCod util = new UtilitariosCod();
+            Connection conexion = util.getConexion();
+            byte[] fichero = null;
+            JasperReport jasperReport = null;
+            JasperPrint jasperPrint = new JasperPrint(); //Excel
+            Map parameters = new HashMap();
+            try {
+                FacesContext context = FacesContext.getCurrentInstance();
+                HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+                ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+                session.removeAttribute("reporteInforme");
+                Timestamp fec1 = new Timestamp(fechaInicial.getTime());
+                Timestamp fec2 = new Timestamp(fechaFinal.getTime());
+                Timestamp fec3 = new Timestamp(fechaHoy.getTime());
+                System.out.println("Fecha inical" + fec1);
+                System.out.println("Fecha final" + fec2);
+                parameters.put("fecha_inicial", fec1);
+                parameters.put("fecha_final", fec2);
+                parameters.put("usuario_genera", usuarioActual.getUsuNombres() + " " + usuarioActual.getUsuApellidos());
+                parameters.put("fecha_genera", retornaFecha());
+                parameters.put("fechaActual", fec3);
+                parameters.put("numAnios", paramNumAnios);
+                parameters.put("logo_gad", servletContext.getRealPath("/imagenes/icons/gadPedroMoncayo.jpg"));
+                parameters.put("rango_parametros", cargarRgistroSeleccionado());
+                jasperReport = (JasperReport) JRLoader.loadObject(servletContext.getRealPath("/reportes/cementerios/rptOccisoDeuAniosParam.jasper"));
+                if (tipoReporte.equals("PDF")) {
+                    fichero = JasperRunManager.runReportToPdf(jasperReport, parameters, conexion);
+                    session.setAttribute("reporteInforme", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+                if (tipoReporte.equals("XLS")) {
+                    jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conexion);
+                    JRXlsExporter exporterXLS = new JRXlsExporter();
+                    ByteArrayOutputStream xlsReport = new ByteArrayOutputStream();
+                    exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+                    exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, xlsReport);
+                    exporterXLS.exportReport();
+                    fichero = xlsReport.toByteArray();
+                    session.setAttribute("reporteInformeXls", fichero);
+                    usuarioActual = new SegUsuario();
+                }
+
+            } catch (JRException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, null, e);
+            } finally {
+                if (conexion != null) {
+                    conexion.close();
+                }
+            }
+        }
+
+        return null;
+    }
     public String cargarRgistroSeleccionado() {
         String codigos = "";
         for (int i = 0; i <= listaRepSeleccion.size() - 1; i++) {
@@ -1197,6 +1246,14 @@ public class GestionRepCementerioControlador extends BaseControlador {
 
     public void setListParroquias(List<CatalogoDetalle> listParroquias) {
         this.listParroquias = listParroquias;
+    }
+
+    public int getParamNumAnios() {
+        return paramNumAnios;
+    }
+
+    public void setParamNumAnios(int paramNumAnios) {
+        this.paramNumAnios = paramNumAnios;
     }
 
 }
