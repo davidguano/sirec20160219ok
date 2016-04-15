@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:psirec="http://java.sun.com/jsf/composite/psirec">
 
     <center>
         <h:panelGrid id="panelEmiAlcaPlus" width="1000" columns="1" >                                                 
@@ -55,74 +56,54 @@
                             <p:outputLabel value="Lista de Predios" style="font-size:10px;"/> 
                         </f:facet>
                                                                          
-                        <p:ajax event="rowSelect" listener="#{gestionAlcabalasControlador.onRowSelect}" process="@this" update="" />
-                        
-                        <p:columnGroup type="header">
-                                <p:row>
-                                    <p:column rowspan="2"  width="100" headerText="#{txt.clave_catastral}" filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="100" headerText="#{txt.nombre_razón_social}" filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="90" headerText="#{txt.ruc_ci}" filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="90" headerText="#{txt.parroquia_t}"  filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="90" headerText="#{txt.dirección}" filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="50" headerText="#{txt.anio_t}" filterBy="#{catastroP.anio}" filterMatchMode="contains" style="font-size:10px;"/>
-                                    <p:column colspan="4"  headerText="Alcabalas" style="font-size:10px;"/>
-                                    <p:column rowspan="2" width="90" headerText="#{txt.total} Plusvalia" style="font-size:10px;"/>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column width="50"  headerText="Subtotal" style="font-size:10px;"/>
-                                    <p:column headerText="(-) Deducciones" style="font-size:10px;"/>               
-                                    <p:column headerText="(-) Exenciones" style="font-size:10px;"/>               
-                                    <p:column headerText="Total" style="font-size:10px;"/>               
-                                            
-                                </p:row>
-                            </p:columnGroup>
-                        
-                        
-                        <p:column   > 
+                        <p:ajax event="rowSelect" listener="#{gestionAlcabalasControlador.onRowSelect}" process="@this" update=":frmAlcabalas:tabAlcaTodo:pnlBotones" />
+                                                                                               
+                        <p:column  width="120" headerText="#{txt.clave_catastral}" filterBy="#{catastroP.catpreClaveCatastal}" filterMatchMode="contains" style="font-size:10px;">
                             <h:outputText value="#{catastroP.catpreClaveCatastal}" style="font-size:11px;" />
                         </p:column>
-                        <p:column  > 
+                        <p:column  width="100" headerText="#{txt.nombre_razón_social}" filterBy="#{catastroP.proCi.proRazonSocial}" filterMatchMode="contains" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.proCi.proRazonSocial}"  style="font-size:11px;" />
                         </p:column>
-                        <p:column  > 
+                        <p:column  width="90" headerText="#{txt.ruc_ci}" filterBy="#{catastroP.proCi.proCi}" filterMatchMode="contains" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.proCi.proCi}"  style="font-size:10px;" />
                         </p:column>
-                        <p:column  > 
+                        <p:column  width="90" headerText="#{txt.parroquia_t}"  filterBy="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}" filterMatchMode="contains" style="font-size:10px;">
                             <h:outputText value="#{catastroP.catastroPredial.catdetParroquia.catdetTexto}"  style="font-size:10px;" />
                         </p:column>                            
-                        <p:column   > 
+                        <p:column  width="50" headerText="#{txt.dirección}" filterBy="#{catastroP.proCi.proDireccion}" filterMatchMode="contains" style="font-size:10px;">                                   
                             <h:outputText value="#{catastroP.proCi.proDireccion}"  style="font-size:10px;"/>
                         </p:column> 
-                        <p:column   > 
+                        <p:column  headerText="#{txt.anio_t}" filterBy="#{catastroP.anio}" filterMatchMode="contains" style="font-size:10px;"> 
                             <h:outputText value="#{catastroP.anio}"  style="font-size:10px;"/>
                         </p:column>    
                         
                         
                         
-                        <p:column > 
+                        <p:column width="50"  headerText="Subtotal Alcabalas" style="font-size:10px;">
                             <h:outputText value="#{catastroP.catastroPredialAlcabalaValoracion.catprealcvalTotal}"  style="font-size:10px;"/>
                         </p:column>                          
-                         <p:column > 
+                          <p:column headerText="(-) Deducciones Alcabalas" style="font-size:10px;">  
                              <h:outputText value="#{catastroP.totalAlcabalaDeducciones}"  style="font-size:10px;"/>
                         </p:column>                        
-                         <p:column  > 
+                        <p:column headerText="(-) Exenciones Alcabalas" style="font-size:10px;">   
                              <h:outputText value="#{catastroP.totalAlcabalaExenciones}"  style="font-size:10px;"/>
                         </p:column>
-                         <p:column  > 
+                        <p:column headerText="Total alcabalas" style="font-size:10px;">
                              <h:outputText value="#{catastroP.totalAlcabalaFinal}"  style="font-size:10px;"/>
                         </p:column>
                         
                         
                                                                                                                                               
-                        <p:column > 
+                        <p:column width="90" headerText="#{txt.total} Plusvalia" style="font-size:10px;">
                             <h:outputText value="#{catastroP.catastroPredialPlusvaliaValoracion.catprepluvalImpuesto}"  style="font-size:10px;"/>
                         </p:column>                                                                                                                        
                        <!-- <p:column headerText="Seleccione" selectionMode="single" exportable="false" width="40" style="width:16px;text-align:center"/>                                                                                                                                                                       
                        -->
                     </p:dataTable>                                                                                                                                                                                                                                                                  
-                </h:panelGrid>                                
-                <p:commandButton id="btnLimpiar"
+                </h:panelGrid>       
+                
+                <h:panelGrid id="pnlBotones" width="700" columns="4">
+                    <p:commandButton id="btnLimpiar"
                                  value="LIMPIAR BUSQUEDA"
                                  action="#{gestionAlcabalasControlador.resetearFitrosTabla(':frmAlcabalas:tabAlca:lstValsEmi')}"  
                                  icon="ui-icon-document"  
@@ -132,7 +113,8 @@
                                  global="false"
                                  />
                 <p:commandButton value="#{txt.PRE_EMISION_btn}" 
-                                 id="btnPreEmir" immediate="true" ajax="false" process="@this,lstValsEmi">                                                                                                                                     
+                                 id="btnPreEmir" immediate="true" ajax="false" process="@this,lstValsEmi" 
+                                 disabled="#{gestionAlcabalasControlador.visibleEmision}" >                                                                                                                                     
                     <p:dataExporter type="xlsx" target="lstValsEmi" fileName="Pre_Emision_Alca_Plus" 
                                     postProcessor="#{gestionAlcabalasControlador.postProcessXLS}"
                                     selectionOnly="true"  />
@@ -143,12 +125,31 @@
                                      action="#{gestionAlcabalasControlador.emision()}"                                      
                                      icon="ui-icon-disk"  
                                      process="@this,lstValsEmi" 
-                                     update=":frmAlcabalas:msgs"
+                                     update=":frmAlcabalas:msgs, :frmAlcabalas:tabAlcaTodo:pnlBotones"
                                      async="true"
                                      global="false"
                                      immediate="true"
-                                     >                      
+                                     disabled="#{gestionAlcabalasControlador.visibleEmision}"                                     
+                                     >
+                
                     </p:commandButton> 
+                    
+                    <p:commandButton value="Descarga Archivo Emisión" 
+                                     disabled="#{gestionAlcabalasControlador.visibleDescarga}"
+                                     id="btnDesEmir" immediate="true" ajax="false" process="@this,lstValsEmi">                                                                                                                                     
+                    <p:dataExporter type="xlsx" target="lstValsEmi" fileName="Emision_Alca_Plus" 
+                                    postProcessor="#{gestionAlcabalasControlador.postProcessXLS}"
+                                    selectionOnly="true"  />
+                </p:commandButton>
+                    
+                    
+                </h:panelGrid>
+                    
+               
+                  
+              
+                 
+                
             </p:panel>                                                                                                                                                                                                                                                                     
         </h:panelGrid>
     </center>

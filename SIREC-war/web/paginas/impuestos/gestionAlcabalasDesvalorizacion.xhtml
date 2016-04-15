@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+                
+                <center>
+                    <h:panelGrid id="panelDesvalorizacion" width="1000" columns="1" >                                                 
+                        <p:panel id="pnlIng" header="Ingreso desvalorización de la moneda" style="background: #8BBAC9;">                                
+                                <h:panelGrid columns="3">
+                                  
+                                    <p:outputLabel value="Año:"/>    
+                                    <p:inputText id="desAnio" value="#{gestionAlcabalasControlador.rebajaDesvalorizacionIngreso.anio}"
+                                                 onkeypress="return isNumberKey(event)" required="true" requiredMessage="Se nesecita un valor: Año"
+                                                 style="font-family: Arial; font-size: 15px;"
+                                                 >                                             
+                                    </p:inputText>
+                                    <p:message  for="desAnio" display="icon" />
+
+                                    <p:outputLabel value="Porcentaje:"/>     
+                                    <p:inputText id="desPor" value="#{gestionAlcabalasControlador.rebajaDesvalorizacionIngreso.porcentajeRebaja}"
+                                                 onkeypress="return isDecimalKey(event)" required="true" requiredMessage="Se nesecita un valor: Porcentaje"
+                                                 style="font-family: Arial; font-size: 15px;"
+                                                 >                                             
+                                    </p:inputText>
+                                    <p:message  for="desPor" display="icon" />
+                                                                    
+                                </h:panelGrid>                                                                                                       
+                                
+                              <p:commandButton value="#{txt.guardar_btn}" 
+                                                     id="btnGuardarDes"  
+                                                     action="#{gestionAlcabalasControlador.guardarDesvalorizacion()}" 
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,pnlIng" 
+                                                     update=":frmAlcabalas:tabAlcaTodo:pnlTablaDes, :frmAlcabalas:tabAlcaTodo:pnlIng, :frmAlcabalas:msgs"
+                                                     async="true"
+                                                     global="false"                                                     
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     />    
+                              
+                              <p:commandButton value="Nuevo" 
+                                                     id="btnNuevoDes"  
+                                                     action="#{gestionAlcabalasControlador.nuevaDesvalorizacion()}" 
+                                                     icon="ui-icon-disk"  
+                                                     process="@this,pnlIng" 
+                                                     update=":frmAlcabalas:tabAlcaTodo:pnlIng"
+                                                     async="true"
+                                                     global="false"                                                     
+                                                     onstart="PF('dlgValidando').show();" onsuccess="PF('dlgValidando').hide();"
+                                                     />   
+                              
+                            
+                                </p:panel>
+                            
+                        
+                       
+                        <p:panel id="pnlTablaDes" header="Desvalorización de la moneda." style="background: #EED290;">                                                                                                              
+                            <p:panel id="pnllstDes">                                
+                                <p:dataTable id="lstDes" value="#{gestionAlcabalasControlador.listaDesvalorizacion}"  var="desvalor"  
+                                             rowKey="#{desvalor.rebdesCodigo}">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="Tabla rebaja por desvalorizacion de la moneda." style="font-size:12px;"/>
+                                    </f:facet>
+                                    <p:column headerText="Año" width="50">                                           
+                                        <h:outputText value="#{desvalor.anio}"  style="font-size:12px;" />
+                                    </p:column>
+                                    <p:column headerText="Porcentaje" width="50">
+                                        <h:outputText value="#{desvalor.porcentajeRebaja}" style="font-size:12px;" />
+                                    </p:column>
+
+                                    <p:column headerText="Editar" style="width:50px;text-align: center;font-size:12px;" >
+                                        <p:commandButton style="font-size:12px;" icon="ui-icon-pencil"  action="#{gestionAlcabalasControlador.editarDesvalorizacion(desvalor)}" 
+                                                         process="@this" update=":frmAlcabalas:tabAlcaTodo:pnlIng" async="true" global="false">
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <p:column headerText="Eliminar" style="width:50px;text-align: center;font-size:12px;">
+                                        <p:commandButton icon="ui-icon-trash" action="#{gestionAlcabalasControlador.eliminarDesvalorizacion(desvalor)}" 
+                                                         update=":frmAlcabalas:tabAlcaTodo:pnlTablaDes,:frmAlcabalas:msgs"
+                                                         process="@this" global="false" async="true"  ajax="true" >
+                                            <p:confirm header="Confirmacion" message="Desea eliminar el registro" icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                        <p:confirmDialog global="true" showEffect="fade" hideEffect="drop">
+                                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                            <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                        </p:confirmDialog>
+                                    </p:column>
+                                </p:dataTable>
+                                
+                                </p:panel>
+                        </p:panel>
+                                
+                                                                                                                                            
+                  </h:panelGrid>
+                </center>
+</html>        
