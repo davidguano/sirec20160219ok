@@ -965,4 +965,9 @@ public class CatastroPredialServicio {
     public List<CatalogoDetalle> listaCatTipoObra() throws Exception {
         return catalogoDetalleServicio.listarPorNemonicoCatalogo("TIPO_OBRA");
     }
+    
+    public List<CatastroPredial> listarCatastrosAlcaYPlus(Integer anio) throws Exception {      
+        return catastroPredialDao.listarPorAlcabalasPlusvaliasExistentes(anio);
+    }
+    
 }
