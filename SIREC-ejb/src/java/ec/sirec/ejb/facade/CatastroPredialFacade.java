@@ -44,4 +44,23 @@ public class CatastroPredialFacade extends AbstractFacade<CatastroPredial> {
         return q.getResultList();
 
     }
+     
+     public List<CatastroPredial> listarPorAlcabalasPlusvaliasExistentes(Integer anio) throws Exception {
+        String sql = "select distinct p from CatastroPredial p, CatastroPredialAlcabalaValoracion al,"
+                + " CatastroPredialPlusvaliaValoracion pl "
+                + " where (p.catpreCodigo=al.catpreCodigo or "
+                + " p.catpreCodigo=pl.catpreCodigo) and "
+                + " al.catprealcvalAnio=:anio and pl.catprepluvalAnio=:anio order by p.catpreCodigo asc";
+        Query q = getEntityManager().createQuery(sql);
+        q.setParameter("anio", anio);
+        return q.getResultList();
+
+    }
+     
+// SELECT distinct p.catpre_codigo
+// FROM sirec.catastro_predial p, sirec.catastro_predial_alcabala_valoracion al, sirec.catastro_predial_plusvalia_valoracion pl
+// where (p.catpre_codigo=al.catpre_codigo or
+// p.catpre_codigo=pl.catpre_codigo) and 
+// al.catprealcval_anio=2016 and pl.catprepluval_anio=2016 group by p.catpre_codigo;        
+     
 }
