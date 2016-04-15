@@ -626,7 +626,7 @@ public class GestionImpuestoPredialControlador extends BaseControlador {
             eVal.setCatpreCodigo(CP.getCatpreCodigo());
             eVal.setCatpreClaveCatastal(CP.getCatpreCodNacional() + CP.getCatpreCodLocal());
             eVal.setProCi(catastroPredialServicio.obtenerPropietarioPrincipalPredio(CP.getCatpreCodigo()));
-
+            
             //propietario = catastroPredialServicio.obtenerPropietarioPrincipalPredio(pp.getCatpreCodigo());
             if (CP.getCatpreAreaTotal() != null) {
                 eVal.setCatpreAreaTotal(CP.getCatpreAreaTotal());

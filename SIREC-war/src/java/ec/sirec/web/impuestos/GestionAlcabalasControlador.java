@@ -54,9 +54,16 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import static org.apache.poi.ss.util.CellUtil.createCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.component.datatable.DataTable;
@@ -124,7 +131,7 @@ public class GestionAlcabalasControlador extends BaseControlador {
     private RecaudacionCab recaudacioCab;
     private RecaudacionDet recaudacionDet;
     private EjecutarValoracion ejecutarValoracionSeleccion; 
-     private List<PredioArchivo> listaPlusvaliaArchivo;
+    private List<PredioArchivo> listaPlusvaliaArchivo;
     
     @EJB
     private RecaudacionCabServicio recaudacionCabServicio;
@@ -157,8 +164,13 @@ public class GestionAlcabalasControlador extends BaseControlador {
     
     @EJB
     private RebajaDesvalorizacionServicio rebajaDesvalorizacionServicio;
-   
+    
     private RebajaDesvalorizacion rebajaDesvalorizacion;
+    private RebajaDesvalorizacion rebajaDesvalorizacionIngreso;
+    private List<RebajaDesvalorizacion> listaDesvalorizacion;
+    private boolean editaDesvalorizacion;
+    private boolean visibleDescarga;
+    private boolean visibleEmision;
 
     @PostConstruct
     public void inicializar() {
@@ -196,6 +208,17 @@ public class GestionAlcabalasControlador extends BaseControlador {
             catDetAnio= new CatalogoDetalle();
             listaCatastroPredialTablaValoracionSeleccion = new ArrayList<EjecutarValoracion>();
             listarAnios();
+            visibleDescarga = true;
+            visibleEmision = false;
+            
+            
+            // desvalorizacion de moneda.
+            rebajaDesvalorizacionIngreso = new RebajaDesvalorizacion();
+            editaDesvalorizacion = false;
+            
+            
+            listarDesvalorizacion();
+            
             
             //ejecutarValoracion();
 
@@ -782,12 +805,14 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
     
     public void ejecutarValoracion() {
         try {
+             catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo());
             
             listaEjecutarValoracion = new ArrayList<EjecutarValoracion>();
             listaCatastroPredialTablaValoracion = new ArrayList<CatastroPredial>();                                                
-            listaCatastroPredialTablaValoracion = catastroPredialServicio.listarClaveCatastral();                           
-             catDetAnio = catastroPredialServicio.cargarObjetoCatalogoDetalle(catDetAnio.getCatdetCodigo());
-            // System.out.println("fsfsfsf "+ catDetAnio.getCatdetValor());
+           // listaCatastroPredialTablaValoracion = catastroPredialServicio.listarClaveCatastral();                           
+            listaCatastroPredialTablaValoracion = catastroPredialServicio.listarCatastrosAlcaYPlus(Integer.parseInt(catDetAnio.getCatdetTexto()));                           
+            
+             System.out.println("fsfsfsf "+ listaCatastroPredialTablaValoracion.size());
                         
             for (int i = 0; i < listaCatastroPredialTablaValoracion.size(); i++) {                                           
                 EjecutarValoracion eVal = new EjecutarValoracion();
@@ -884,9 +909,15 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
                  
                   catastroPredialAlcabalaValoracion1.setCatprealcvalActivo(true);  
                  catastroPredialAlcabalaValoracionServicio.editarCatastroPredialAlcabalaValoracion(catastroPredialAlcabalaValoracion1);                 
-                 addSuccessMessage("Emisión Realizada","Emisión Realizada");
+                 addSuccessMessage("Emisión Alcabala Realizada "+recaudacionDet.getRecdetReferencia(),"Emisión Alcabala Realizada "+recaudacionDet.getRecdetReferencia());
+                 
+                 visibleDescarga = false;
+                 visibleEmision = true;
+                 
                  }else{                 
-                  addSuccessMessage("Alcabala ya fue emitida","Alcabala ya fue emitida");                     
+                  addSuccessMessage("Alcabala ya fue emitida ","Alcabala ya fue emitida ");  
+                   visibleDescarga = true;
+                   visibleEmision = false;
                  } 
                  }
                  
@@ -913,10 +944,15 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
                  
                  CatastroPredialPlusvaliaValoracion1.setCatprepluvalActivo(true);
                  catastroPredialPlusvaliaValoracionServicio.editarCatastroPredialPlusvaliaValoracion(CatastroPredialPlusvaliaValoracion1);
-                 addSuccessMessage("Emisión Realizada","Emisión Realizada");
+                 addSuccessMessage("Emisión Plusvalía Realizada "+recaudacionDet.getRecdetReferencia(),"Emisión Plusvalía Realizada "+recaudacionDet.getRecdetReferencia());
+                 
+                  visibleDescarga = false;
+                  visibleEmision = true;
                   }else{
                   
-                   addSuccessMessage("Plusvalia ya fue emitida","Plusvalia ya fue emitida");   
+                   addSuccessMessage("Plusvalía ya fue emitida ","Plusvalía ya fue emitida");   
+                   visibleDescarga = true;
+                    visibleEmision = false;
                   }                                  
                   }                                                                     
                  
@@ -934,37 +970,44 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
         listAnios = catalogoDetalleServicio.listarPorNemonicoCatalogo("ANIOS");
     }
     
-    public void postProcessXLS(Object document) throws IOException {
-
+   
+    public void postProcessXLS(Object document) {
         XSSFWorkbook wb = (XSSFWorkbook) document;
-        XSSFSheet hoja = wb.getSheetAt(0);
-        CellStyle style = wb.createCellStyle();
-        style.setFillPattern(CellStyle.NO_FILL);
-        org.apache.poi.ss.usermodel.Font font = wb.createFont();
-        font.setFontName("Times Roman");
-        font.setBoldweight(org.apache.poi.ss.usermodel.Font.BOLDWEIGHT_BOLD);
-        font.setColor(IndexedColors.BLACK.getIndex());
+        XSSFSheet sheet = wb.getSheetAt(0); //Creo variable  hoja ()contiene los atributos para la hoja de calculo
+        List<String> encabezadoColumna = new ArrayList<String>();
+        for (Row row : sheet) { //Recorre los valores de la fila 1 (encabezado) pero en dataTable=0
+            if (row.getRowNum() == 0) {
+                for (Cell cell : row) {
+                    encabezadoColumna.add(cell.getStringCellValue() + " ");
+                }
+            } else {
+                break;
+            }
+        }
+        //----inicio crea estilo
+        XSSFCellStyle style = wb.createCellStyle(); //Se crea el estilo
+        XSSFFont font = wb.createFont();
+        font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+        font.setColor(IndexedColors.WHITE.getIndex());
         style.setFont(font);
-        /**
-         * ** ConfiguraciÃ³n del estilo de la celda header de la tabla. *****
-         */
-        CellStyle styleHeaderTable = wb.createCellStyle();
-        styleHeaderTable.setFillPattern(CellStyle.NO_FILL);
-
-        org.apache.poi.ss.usermodel.Font fontHeaderTable = wb.createFont();
-        fontHeaderTable.setFontName("Times Roman");
-        fontHeaderTable.setBoldweight(org.apache.poi.ss.usermodel.Font.BOLDWEIGHT_BOLD);
-        fontHeaderTable.setColor(IndexedColors.BLACK.getIndex());
-        styleHeaderTable.setFont(fontHeaderTable);
-        Sheet sheet = wb.getSheetAt(0);
-        sheet.autoSizeColumn((short) 0); //ajusta el ancho de la primera columna
-        sheet.autoSizeColumn((short) 1);
-        sheet.autoSizeColumn((short) 2);
+        byte[] rgb = new byte[3];
+        rgb[0] = (byte) 076;
+        rgb[1] = (byte) 145;
+        rgb[2] = (byte) 065;
+        XSSFColor myColor = new XSSFColor(rgb);
+        style.setFillForegroundColor(myColor);
+        style.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+        XSSFRow row0 = sheet.createRow((short) 0); //Creo una fila en la posicion 0
+        //----fin crea estilo
+        for (int i = 0; i <= encabezadoColumna.size() - 1; i++) {
+            createCell(row0, i, encabezadoColumna.get(i), style); //agrego celdas en la posicion indicada con los valores de los encabezados
+        }
+//Ajusta el ancho de las columnas
         for (int i = 0; i < 20; i++) {
-            hoja.autoSizeColumn((short) i);
+            sheet.autoSizeColumn((short) i);
         }
     }
-    
+   
     public void resetearFitrosTabla(String id) {
         DataTable table = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(id);
         table.reset();
@@ -972,11 +1015,77 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
 
     public void onRowSelect(SelectEvent event) {   
         
-        EjecutarValoracion d = (EjecutarValoracion) event.getObject();
-        ejecutarValoracionSeleccion=d;        
-        //System.out.println("fff"+ d.getCatastroPredialAlcabalaValoracion().getCatprealcvalTotal());        
         
+        
+        EjecutarValoracion d = (EjecutarValoracion) event.getObject();
+        ejecutarValoracionSeleccion=d;     
+        visibleDescarga = true;
+        visibleEmision = false;
     }
+    
+    public void guardarDesvalorizacion() {
+        try {
+            
+            if (editaDesvalorizacion == false) {
+                if (rebajaDesvalorizacionServicio.existeAnio(rebajaDesvalorizacionIngreso.getAnio()) == false) {
+                    rebajaDesvalorizacionServicio.crearDesvalorizacion(rebajaDesvalorizacionIngreso);
+                    addSuccessMessage("Se creo el registro correctamente", "Se creo el registro correctamente");
+                } else {
+                    addSuccessMessage("Año ya existe", "Año ya existe");
+                }
+            } else {
+                rebajaDesvalorizacionServicio.editarDesvalorizacion(rebajaDesvalorizacionIngreso);
+                addSuccessMessage("Se modificó el registro", "Se modificó el registro ");
+            }
+            
+            editaDesvalorizacion = false;
+            nuevaDesvalorizacion();
+            listarDesvalorizacion();
+
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void nuevaDesvalorizacion() {
+        try {
+            editaDesvalorizacion = false;
+            rebajaDesvalorizacionIngreso = new RebajaDesvalorizacion();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void listarDesvalorizacion() {
+        try {
+            listaDesvalorizacion = new ArrayList<RebajaDesvalorizacion>();
+            listaDesvalorizacion = rebajaDesvalorizacionServicio.listarDesvalorizacion();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void eliminarDesvalorizacion(RebajaDesvalorizacion rebajaDesvalorizacion1) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            rebajaDesvalorizacionServicio.eliminarDesvalorizacion(rebajaDesvalorizacion1);
+            addSuccessMessage("Se eliminó el registro", "Se eliminó el registro ");
+            listarDesvalorizacion();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void editarDesvalorizacion(RebajaDesvalorizacion rebajaDesvalorizacion1) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            rebajaDesvalorizacionIngreso = rebajaDesvalorizacion1;
+            editaDesvalorizacion = true;                        
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
+        }
+    }
+    
     ////////////////////////////////////// METODOS SET Y GET ALCABALA  ////////////////////////////////////
     
     public StreamedContent getArchivo() {
@@ -1224,6 +1333,38 @@ public void calularRebajaDesvalorizacionBaseImpImpuesto() {
 
     public void setListaPlusvaliaArchivo(List<PredioArchivo> listaPlusvaliaArchivo) {
         this.listaPlusvaliaArchivo = listaPlusvaliaArchivo;
+    }
+
+    public RebajaDesvalorizacion getRebajaDesvalorizacionIngreso() {
+        return rebajaDesvalorizacionIngreso;
+    }
+
+    public void setRebajaDesvalorizacionIngreso(RebajaDesvalorizacion rebajaDesvalorizacionIngreso) {
+        this.rebajaDesvalorizacionIngreso = rebajaDesvalorizacionIngreso;
+    }
+
+    public List<RebajaDesvalorizacion> getListaDesvalorizacion() {
+        return listaDesvalorizacion;
+    }
+
+    public void setListaDesvalorizacion(List<RebajaDesvalorizacion> listaDesvalorizacion) {
+        this.listaDesvalorizacion = listaDesvalorizacion;
+    }
+
+    public boolean isVisibleDescarga() {
+        return visibleDescarga;
+    }
+
+    public void setVisibleDescarga(boolean visibleDescarga) {
+        this.visibleDescarga = visibleDescarga;
+    }
+
+    public boolean isVisibleEmision() {
+        return visibleEmision;
+    }
+
+    public void setVisibleEmision(boolean visibleEmision) {
+        this.visibleEmision = visibleEmision;
     }
     
     
